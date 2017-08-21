@@ -7,12 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B2809580F0B4D4980A46FA1 /* Pods_Kiretan0.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E05A20B411B107A41B7B407C /* Pods_Kiretan0.framework */; };
 		5052637F1F4B02EE00113180 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5052637E1F4B02EE00113180 /* AppDelegate.swift */; };
 		505263811F4B02EE00113180 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263801F4B02EE00113180 /* ViewController.swift */; };
 		505263841F4B02EE00113180 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 505263821F4B02EE00113180 /* Main.storyboard */; };
 		505263861F4B02EE00113180 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 505263851F4B02EE00113180 /* Assets.xcassets */; };
 		505263891F4B02EE00113180 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 505263871F4B02EE00113180 /* LaunchScreen.storyboard */; };
 		505263941F4B02EE00113180 /* Kiretan0Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263931F4B02EE00113180 /* Kiretan0Tests.swift */; };
+		505263A11F4B155900113180 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 505263A01F4B155900113180 /* GoogleService-Info.plist */; };
+		B8CF05BD73E585ACE10CEEAF /* Pods_Kiretan0Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D5514D7F7DF8D3775DE2A23 /* Pods_Kiretan0Tests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1E1419A3FC37931B6B74467B /* Pods-Kiretan0Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kiretan0Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kiretan0Tests/Pods-Kiretan0Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		5052637B1F4B02EE00113180 /* Kiretan0.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kiretan0.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5052637E1F4B02EE00113180 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		505263801F4B02EE00113180 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -36,6 +40,12 @@
 		5052638F1F4B02EE00113180 /* Kiretan0Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Kiretan0Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		505263931F4B02EE00113180 /* Kiretan0Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kiretan0Tests.swift; sourceTree = "<group>"; };
 		505263951F4B02EE00113180 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		505263A01F4B155900113180 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		814DE02FC637B398D9A08055 /* Pods-Kiretan0Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kiretan0Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kiretan0Tests/Pods-Kiretan0Tests.release.xcconfig"; sourceTree = "<group>"; };
+		8D5514D7F7DF8D3775DE2A23 /* Pods_Kiretan0Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Kiretan0Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9CF2917EE1153BEF1E256A5E /* Pods-Kiretan0.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kiretan0.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kiretan0/Pods-Kiretan0.debug.xcconfig"; sourceTree = "<group>"; };
+		AC175F8B0AC660C9AE7F3431 /* Pods-Kiretan0.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kiretan0.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kiretan0/Pods-Kiretan0.release.xcconfig"; sourceTree = "<group>"; };
+		E05A20B411B107A41B7B407C /* Pods_Kiretan0.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Kiretan0.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B2809580F0B4D4980A46FA1 /* Pods_Kiretan0.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,18 +61,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8CF05BD73E585ACE10CEEAF /* Pods_Kiretan0Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		143E85C355B9ADC239F26090 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E05A20B411B107A41B7B407C /* Pods_Kiretan0.framework */,
+				8D5514D7F7DF8D3775DE2A23 /* Pods_Kiretan0Tests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		505263721F4B02EE00113180 = {
 			isa = PBXGroup;
 			children = (
 				5052637D1F4B02EE00113180 /* Kiretan0 */,
 				505263921F4B02EE00113180 /* Kiretan0Tests */,
 				5052637C1F4B02EE00113180 /* Products */,
+				7FE24AFD56E00FB772473CAE /* Pods */,
+				143E85C355B9ADC239F26090 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -83,6 +106,7 @@
 				505263851F4B02EE00113180 /* Assets.xcassets */,
 				505263871F4B02EE00113180 /* LaunchScreen.storyboard */,
 				5052638A1F4B02EE00113180 /* Info.plist */,
+				505263A01F4B155900113180 /* GoogleService-Info.plist */,
 			);
 			path = Kiretan0;
 			sourceTree = "<group>";
@@ -96,6 +120,17 @@
 			path = Kiretan0Tests;
 			sourceTree = "<group>";
 		};
+		7FE24AFD56E00FB772473CAE /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9CF2917EE1153BEF1E256A5E /* Pods-Kiretan0.debug.xcconfig */,
+				AC175F8B0AC660C9AE7F3431 /* Pods-Kiretan0.release.xcconfig */,
+				1E1419A3FC37931B6B74467B /* Pods-Kiretan0Tests.debug.xcconfig */,
+				814DE02FC637B398D9A08055 /* Pods-Kiretan0Tests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -103,9 +138,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 505263981F4B02EE00113180 /* Build configuration list for PBXNativeTarget "Kiretan0" */;
 			buildPhases = (
+				3502BBE380E0B88FCC127CAD /* [CP] Check Pods Manifest.lock */,
 				505263771F4B02EE00113180 /* Sources */,
 				505263781F4B02EE00113180 /* Frameworks */,
 				505263791F4B02EE00113180 /* Resources */,
+				A6DC842026B7F6AA26A120F8 /* [CP] Embed Pods Frameworks */,
+				CFAB0C8F44CC3923D5213B75 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -120,9 +158,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5052639B1F4B02EE00113180 /* Build configuration list for PBXNativeTarget "Kiretan0Tests" */;
 			buildPhases = (
+				30465BCD25BEFDC252516689 /* [CP] Check Pods Manifest.lock */,
 				5052638B1F4B02EE00113180 /* Sources */,
 				5052638C1F4B02EE00113180 /* Frameworks */,
 				5052638D1F4B02EE00113180 /* Resources */,
+				B89D978D8ABE2A6742DFBC1E /* [CP] Embed Pods Frameworks */,
+				873CF4456A4F6A5680B13742 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -182,6 +223,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				505263891F4B02EE00113180 /* LaunchScreen.storyboard in Resources */,
+				505263A11F4B155900113180 /* GoogleService-Info.plist in Resources */,
 				505263861F4B02EE00113180 /* Assets.xcassets in Resources */,
 				505263841F4B02EE00113180 /* Main.storyboard in Resources */,
 			);
@@ -195,6 +237,114 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		30465BCD25BEFDC252516689 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Kiretan0Tests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3502BBE380E0B88FCC127CAD /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Kiretan0-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		873CF4456A4F6A5680B13742 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Kiretan0Tests/Pods-Kiretan0Tests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A6DC842026B7F6AA26A120F8 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Kiretan0/Pods-Kiretan0-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Kiretan0/Pods-Kiretan0-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B89D978D8ABE2A6742DFBC1E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Kiretan0Tests/Pods-Kiretan0Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CFAB0C8F44CC3923D5213B75 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Kiretan0/Pods-Kiretan0-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		505263771F4B02EE00113180 /* Sources */ = {
@@ -341,6 +491,7 @@
 		};
 		505263991F4B02EE00113180 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9CF2917EE1153BEF1E256A5E /* Pods-Kiretan0.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = EPZSBGGQZS;
@@ -354,6 +505,7 @@
 		};
 		5052639A1F4B02EE00113180 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AC175F8B0AC660C9AE7F3431 /* Pods-Kiretan0.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = EPZSBGGQZS;
@@ -367,6 +519,7 @@
 		};
 		5052639C1F4B02EE00113180 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1E1419A3FC37931B6B74467B /* Pods-Kiretan0Tests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -382,6 +535,7 @@
 		};
 		5052639D1F4B02EE00113180 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 814DE02FC637B398D9A08055 /* Pods-Kiretan0Tests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -414,6 +568,7 @@
 				5052639A1F4B02EE00113180 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5052639B1F4B02EE00113180 /* Build configuration list for PBXNativeTarget "Kiretan0Tests" */ = {
 			isa = XCConfigurationList;
@@ -422,6 +577,7 @@
 				5052639D1F4B02EE00113180 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
