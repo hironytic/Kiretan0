@@ -9,12 +9,27 @@
 /* Begin PBXBuildFile section */
 		0B2809580F0B4D4980A46FA1 /* Pods_Kiretan0.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E05A20B411B107A41B7B407C /* Pods_Kiretan0.framework */; };
 		5052637F1F4B02EE00113180 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5052637E1F4B02EE00113180 /* AppDelegate.swift */; };
-		505263811F4B02EE00113180 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263801F4B02EE00113180 /* ViewController.swift */; };
+		505263811F4B02EE00113180 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263801F4B02EE00113180 /* MainViewController.swift */; };
 		505263841F4B02EE00113180 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 505263821F4B02EE00113180 /* Main.storyboard */; };
 		505263861F4B02EE00113180 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 505263851F4B02EE00113180 /* Assets.xcassets */; };
 		505263891F4B02EE00113180 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 505263871F4B02EE00113180 /* LaunchScreen.storyboard */; };
 		505263941F4B02EE00113180 /* Kiretan0Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263931F4B02EE00113180 /* Kiretan0Tests.swift */; };
 		505263A11F4B155900113180 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 505263A01F4B155900113180 /* GoogleService-Info.plist */; };
+		505263AB1F4EF7F300113180 /* ActionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A31F4EF7F300113180 /* ActionObserver.swift */; };
+		505263AC1F4EF7F300113180 /* DefaultLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A41F4EF7F300113180 /* DefaultLocator.swift */; };
+		505263AD1F4EF7F300113180 /* DismissingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A61F4EF7F300113180 /* DismissingMessage.swift */; };
+		505263AE1F4EF7F300113180 /* TransitionMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A71F4EF7F300113180 /* TransitionMessage.swift */; };
+		505263AF1F4EF7F300113180 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A81F4EF7F300113180 /* Message.swift */; };
+		505263B01F4EF7F300113180 /* MessageSlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A91F4EF7F300113180 /* MessageSlot.swift */; };
+		505263B11F4EF7F300113180 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263AA1F4EF7F300113180 /* ViewModel.swift */; };
+		505263B41F4EF9C500113180 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B21F4EF9C500113180 /* RxCocoa.framework */; };
+		505263B51F4EF9C500113180 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B31F4EF9C500113180 /* RxSwift.framework */; };
+		505263BB1F4F092700113180 /* ViewControllerCreatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263B91F4F092700113180 /* ViewControllerCreatable.swift */; };
+		505263C01F4F0A2F00113180 /* UIViewController+Transition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263BF1F4F0A2F00113180 /* UIViewController+Transition.swift */; };
+		505263C41F4F0F4C00113180 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263C31F4F0F4C00113180 /* MainViewModel.swift */; };
+		505263C71F4F14A300113180 /* Welcome.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 505263C61F4F14A300113180 /* Welcome.storyboard */; };
+		505263C91F4F150900113180 /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263C81F4F150900113180 /* WelcomeViewController.swift */; };
+		505263CB1F4F153700113180 /* WelcomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263CA1F4F153700113180 /* WelcomeViewModel.swift */; };
 		B8CF05BD73E585ACE10CEEAF /* Pods_Kiretan0Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D5514D7F7DF8D3775DE2A23 /* Pods_Kiretan0Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -32,7 +47,7 @@
 		1E1419A3FC37931B6B74467B /* Pods-Kiretan0Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kiretan0Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kiretan0Tests/Pods-Kiretan0Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		5052637B1F4B02EE00113180 /* Kiretan0.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kiretan0.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5052637E1F4B02EE00113180 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		505263801F4B02EE00113180 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		505263801F4B02EE00113180 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		505263831F4B02EE00113180 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		505263851F4B02EE00113180 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		505263881F4B02EE00113180 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -41,6 +56,21 @@
 		505263931F4B02EE00113180 /* Kiretan0Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kiretan0Tests.swift; sourceTree = "<group>"; };
 		505263951F4B02EE00113180 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		505263A01F4B155900113180 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		505263A31F4EF7F300113180 /* ActionObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionObserver.swift; sourceTree = "<group>"; };
+		505263A41F4EF7F300113180 /* DefaultLocator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultLocator.swift; sourceTree = "<group>"; };
+		505263A61F4EF7F300113180 /* DismissingMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissingMessage.swift; sourceTree = "<group>"; };
+		505263A71F4EF7F300113180 /* TransitionMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransitionMessage.swift; sourceTree = "<group>"; };
+		505263A81F4EF7F300113180 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Message.swift; path = Kiretan0/AppFramework/Message/Message.swift; sourceTree = SOURCE_ROOT; };
+		505263A91F4EF7F300113180 /* MessageSlot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessageSlot.swift; path = Kiretan0/AppFramework/Message/MessageSlot.swift; sourceTree = SOURCE_ROOT; };
+		505263AA1F4EF7F300113180 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		505263B21F4EF9C500113180 /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
+		505263B31F4EF9C500113180 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
+		505263B91F4F092700113180 /* ViewControllerCreatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewControllerCreatable.swift; sourceTree = "<group>"; };
+		505263BF1F4F0A2F00113180 /* UIViewController+Transition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Transition.swift"; sourceTree = "<group>"; };
+		505263C31F4F0F4C00113180 /* MainViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
+		505263C61F4F14A300113180 /* Welcome.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Welcome.storyboard; sourceTree = "<group>"; };
+		505263C81F4F150900113180 /* WelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
+		505263CA1F4F153700113180 /* WelcomeViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeViewModel.swift; sourceTree = "<group>"; };
 		814DE02FC637B398D9A08055 /* Pods-Kiretan0Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kiretan0Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kiretan0Tests/Pods-Kiretan0Tests.release.xcconfig"; sourceTree = "<group>"; };
 		8D5514D7F7DF8D3775DE2A23 /* Pods_Kiretan0Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Kiretan0Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CF2917EE1153BEF1E256A5E /* Pods-Kiretan0.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kiretan0.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kiretan0/Pods-Kiretan0.debug.xcconfig"; sourceTree = "<group>"; };
@@ -54,6 +84,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				0B2809580F0B4D4980A46FA1 /* Pods_Kiretan0.framework in Frameworks */,
+				505263B41F4EF9C500113180 /* RxCocoa.framework in Frameworks */,
+				505263B51F4EF9C500113180 /* RxSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,6 +103,8 @@
 		143E85C355B9ADC239F26090 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				505263B21F4EF9C500113180 /* RxCocoa.framework */,
+				505263B31F4EF9C500113180 /* RxSwift.framework */,
 				E05A20B411B107A41B7B407C /* Pods_Kiretan0.framework */,
 				8D5514D7F7DF8D3775DE2A23 /* Pods_Kiretan0Tests.framework */,
 			);
@@ -100,9 +134,9 @@
 		5052637D1F4B02EE00113180 /* Kiretan0 */ = {
 			isa = PBXGroup;
 			children = (
+				505263C11F4F0DAB00113180 /* View */,
+				505263A21F4EF7F300113180 /* AppFramework */,
 				5052637E1F4B02EE00113180 /* AppDelegate.swift */,
-				505263801F4B02EE00113180 /* ViewController.swift */,
-				505263821F4B02EE00113180 /* Main.storyboard */,
 				505263851F4B02EE00113180 /* Assets.xcassets */,
 				505263871F4B02EE00113180 /* LaunchScreen.storyboard */,
 				5052638A1F4B02EE00113180 /* Info.plist */,
@@ -118,6 +152,59 @@
 				505263951F4B02EE00113180 /* Info.plist */,
 			);
 			path = Kiretan0Tests;
+			sourceTree = "<group>";
+		};
+		505263A21F4EF7F300113180 /* AppFramework */ = {
+			isa = PBXGroup;
+			children = (
+				505263A31F4EF7F300113180 /* ActionObserver.swift */,
+				505263A41F4EF7F300113180 /* DefaultLocator.swift */,
+				505263A51F4EF7F300113180 /* Message */,
+				505263BF1F4F0A2F00113180 /* UIViewController+Transition.swift */,
+				505263B91F4F092700113180 /* ViewControllerCreatable.swift */,
+				505263AA1F4EF7F300113180 /* ViewModel.swift */,
+			);
+			path = AppFramework;
+			sourceTree = "<group>";
+		};
+		505263A51F4EF7F300113180 /* Message */ = {
+			isa = PBXGroup;
+			children = (
+				505263A81F4EF7F300113180 /* Message.swift */,
+				505263A91F4EF7F300113180 /* MessageSlot.swift */,
+				505263A61F4EF7F300113180 /* DismissingMessage.swift */,
+				505263A71F4EF7F300113180 /* TransitionMessage.swift */,
+			);
+			path = Message;
+			sourceTree = "<group>";
+		};
+		505263C11F4F0DAB00113180 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				505263C21F4F0DAB00113180 /* Main */,
+				505263C51F4F148400113180 /* Welcome */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		505263C21F4F0DAB00113180 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				505263821F4B02EE00113180 /* Main.storyboard */,
+				505263801F4B02EE00113180 /* MainViewController.swift */,
+				505263C31F4F0F4C00113180 /* MainViewModel.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		505263C51F4F148400113180 /* Welcome */ = {
+			isa = PBXGroup;
+			children = (
+				505263C61F4F14A300113180 /* Welcome.storyboard */,
+				505263C81F4F150900113180 /* WelcomeViewController.swift */,
+				505263CA1F4F153700113180 /* WelcomeViewModel.swift */,
+			);
+			path = Welcome;
 			sourceTree = "<group>";
 		};
 		7FE24AFD56E00FB772473CAE /* Pods */ = {
@@ -144,6 +231,7 @@
 				505263791F4B02EE00113180 /* Resources */,
 				A6DC842026B7F6AA26A120F8 /* [CP] Embed Pods Frameworks */,
 				CFAB0C8F44CC3923D5213B75 /* [CP] Copy Pods Resources */,
+				505263B61F4EF9E600113180 /* [Carthage] Copy Frameworks */,
 			);
 			buildRules = (
 			);
@@ -222,6 +310,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				505263C71F4F14A300113180 /* Welcome.storyboard in Resources */,
 				505263891F4B02EE00113180 /* LaunchScreen.storyboard in Resources */,
 				505263A11F4B155900113180 /* GoogleService-Info.plist in Resources */,
 				505263861F4B02EE00113180 /* Assets.xcassets in Resources */,
@@ -274,6 +363,24 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		505263B61F4EF9E600113180 /* [Carthage] Copy Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/RxCocoa.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RxSwift.framework",
+			);
+			name = "[Carthage] Copy Frameworks";
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxCocoa.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxSwift.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
 		};
 		873CF4456A4F6A5680B13742 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -351,8 +458,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				505263811F4B02EE00113180 /* ViewController.swift in Sources */,
+				505263BB1F4F092700113180 /* ViewControllerCreatable.swift in Sources */,
+				505263AD1F4EF7F300113180 /* DismissingMessage.swift in Sources */,
+				505263B11F4EF7F300113180 /* ViewModel.swift in Sources */,
+				505263CB1F4F153700113180 /* WelcomeViewModel.swift in Sources */,
+				505263AC1F4EF7F300113180 /* DefaultLocator.swift in Sources */,
+				505263C41F4F0F4C00113180 /* MainViewModel.swift in Sources */,
+				505263AE1F4EF7F300113180 /* TransitionMessage.swift in Sources */,
+				505263C91F4F150900113180 /* WelcomeViewController.swift in Sources */,
+				505263B01F4EF7F300113180 /* MessageSlot.swift in Sources */,
+				505263811F4B02EE00113180 /* MainViewController.swift in Sources */,
 				5052637F1F4B02EE00113180 /* AppDelegate.swift in Sources */,
+				505263C01F4F0A2F00113180 /* UIViewController+Transition.swift in Sources */,
+				505263AB1F4EF7F300113180 /* ActionObserver.swift in Sources */,
+				505263AF1F4EF7F300113180 /* Message.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -495,6 +614,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = EPZSBGGQZS;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = Kiretan0/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hironytic.Kiretan0;
@@ -509,6 +632,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = EPZSBGGQZS;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = Kiretan0/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hironytic.Kiretan0;

@@ -1,5 +1,5 @@
 //
-// ViewController.swift
+// WelcomeViewController.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -24,19 +24,35 @@
 //
 
 import UIKit
+import RxCocoa
+import RxSwift
 
-class ViewController: UIViewController {
-
-    override func viewDidLoad() {
+public class WelcomeViewController: UIViewController {
+    private var _disposeBag: DisposeBag?
+    public var viewModel: WelcomeViewModel?
+    
+    public override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        bindViewModel()
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    private func bindViewModel() {
+        _disposeBag = nil
+//        guard let viewModel = viewModel else { return }
+        guard viewModel != nil else { return }
+        
+        let disposeBag = DisposeBag()
+        
+        
+        _disposeBag = disposeBag
     }
-
-
 }
 
+extension DefaultWelcomeViewModel: ViewControllerCreatable {
+    public func createViewController() -> UIViewController {
+        let storyboard = UIStoryboard(name: "Welcome", bundle: Bundle.main)
+        let viewController = storyboard.instantiateInitialViewController() as! WelcomeViewController
+        viewController.viewModel = self
+        return viewController
+    }
+}
