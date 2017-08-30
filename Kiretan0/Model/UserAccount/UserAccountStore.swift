@@ -1,5 +1,5 @@
 //
-// DefaultLocator.swift
+// UserAccountStore.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -24,9 +24,41 @@
 //
 
 import Foundation
+import RxSwift
+import Firebase
 
-public protocol NullLocator {
+public protocol UserAccountStore {
+    var currentUser: Observable<UserAccount?> { get }
 }
 
-public class DefaultLocator: NullLocator {
+public protocol UserAccountStoreLocator {
+    func resolveUserAccountStore() -> UserAccountStore
+}
+extension DefaultLocator: UserAccountStoreLocator {
+    public func resolveUserAccountStore() -> UserAccountStore {
+        return userAccountStore
+    }
+}
+
+public class DefaultUserAccountStore: UserAccountStore {
+    public typealias Locator = NullLocator
+
+    public let currentUser: Observable<UserAccount?>
+    
+    private let _locator: Locator
+    
+    public init(locator: Locator) {
+        _locator = locator
+        
+        currentUser =
+            Observable.create({ (observer) -> Disposable in
+                let handle =  Auth.auth().addStateDidChangeListener() { (auth, user) in
+                    observer.onNext(user.map { UserAccount(user: $0) })
+                }
+                return Disposables.create {
+                    Auth.auth().removeStateDidChangeListener(handle)
+                }
+            })
+            .shareReplayLatestWhileConnected()
+    }
 }

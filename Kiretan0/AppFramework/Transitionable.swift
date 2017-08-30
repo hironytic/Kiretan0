@@ -1,5 +1,5 @@
 //
-// UIViewController+Transition.swift
+// Transitionable.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -26,7 +26,11 @@
 import UIKit
 import RxSwift
 
-public extension UIViewController {
+public protocol Transitionable {
+    func transitioner(_ observable: Observable<Message>) -> Disposable
+}
+
+public extension Transitionable where Self: UIViewController {
     public func transitioner(_ observable: Observable<Message>) -> Disposable {
         return observable
             .subscribe(onNext: { [unowned self] message in

@@ -1,5 +1,5 @@
 //
-// MainViewModel.swift
+// RootViewModel.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -24,26 +24,48 @@
 //
 
 import Foundation
+
 import RxSwift
 
-public protocol MainViewModel: ViewModel {
+public enum RootScene {
+    case welcome
+    case main
 }
 
-public protocol MainViewModelLocator {
-    func resolveMainViewModel() -> MainViewModel
-}
-extension DefaultLocator: MainViewModelLocator {
-    public func resolveMainViewModel() -> MainViewModel {
-        return DefaultMainViewModel(locator: self)
-    }
+public protocol RootViewModel: ViewModel {
+    var scene: Observable<RootScene> { get }
+    var onViewDidAppear: AnyObserver<[Any]> { get }
 }
 
-public class DefaultMainViewModel: MainViewModel {
-    public typealias Locator = NullLocator
+public class DefaultRootViewModel: RootViewModel {
+    public typealias Locator = UserAccountStoreLocator
     
+    public let scene: Observable<RootScene>
+    public let onViewDidAppear: AnyObserver<[Any]>
+
     private let _locator: Locator
+    private var _disposeBag: DisposeBag? = DisposeBag()
+    private let _onViewDidAppear = ActionObserver<[Any]>()
+    private let _scene = PublishSubject<RootScene>()
     
     public init(locator: Locator) {
         _locator = locator
+        scene = _scene.share().observeOn(MainScheduler.instance)
+        onViewDidAppear = _onViewDidAppear.asObserver()
+        
+        _onViewDidAppear.handler = { [weak self] _ in self?.handleViewDidAppear() }
+    }
+    
+    private func handleViewDidAppear() {
+        let userStore = _locator.resolveUserAccountStore()
+        userStore.currentUser
+            .subscribe(onNext: { (userAccount) in
+                if userAccount == nil {
+                    self._scene.onNext(.welcome)
+                } else {
+                    self._scene.onNext(.main)
+                }
+            })
+            .disposed(by: _disposeBag!)
     }
 }

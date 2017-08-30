@@ -1,5 +1,5 @@
 //
-// MainViewModel.swift
+// DefaultLocator.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -24,26 +24,7 @@
 //
 
 import Foundation
-import RxSwift
 
-public protocol MainViewModel: ViewModel {
-}
-
-public protocol MainViewModelLocator {
-    func resolveMainViewModel() -> MainViewModel
-}
-extension DefaultLocator: MainViewModelLocator {
-    public func resolveMainViewModel() -> MainViewModel {
-        return DefaultMainViewModel(locator: self)
-    }
-}
-
-public class DefaultMainViewModel: MainViewModel {
-    public typealias Locator = NullLocator
-    
-    private let _locator: Locator
-    
-    public init(locator: Locator) {
-        _locator = locator
-    }
+public class DefaultLocator: NullLocator {
+    public lazy var userAccountStore: UserAccountStore = DefaultUserAccountStore(locator: self)
 }

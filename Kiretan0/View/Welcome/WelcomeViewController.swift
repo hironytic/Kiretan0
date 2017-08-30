@@ -28,9 +28,10 @@ import RxCocoa
 import RxSwift
 
 public class WelcomeViewController: UIViewController {
-    private var _disposeBag: DisposeBag?
     public var viewModel: WelcomeViewModel?
-    
+
+    private var _disposeBag: DisposeBag?
+
     public override func viewDidLoad() {
         super.viewDidLoad()
         bindViewModel()

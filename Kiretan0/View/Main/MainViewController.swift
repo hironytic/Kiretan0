@@ -28,10 +28,10 @@ import RxCocoa
 import RxSwift
 
 public class MainViewController: UIViewController {
-    public let viewModel = DefaultMainViewModel(locator: DefaultLocator())
+    public var viewModel: MainViewModel?
 
     private var _disposeBag: DisposeBag?
-    
+
     public override func viewDidLoad() {
         super.viewDidLoad()
         bindViewModel()
@@ -39,17 +39,21 @@ public class MainViewController: UIViewController {
     
     private func bindViewModel() {
         _disposeBag = nil
+
+//        guard let viewModel = viewModel else { return }
+        guard viewModel != nil else { return }
         
         let disposeBag = DisposeBag()
-        
-        viewModel.message
-            .bind(to: transitioner)
-            .disposed(by: disposeBag)
-        
-        rx.sentMessage(#selector(viewDidAppear(_:)))
-            .bind(to: viewModel.onViewDidAppear)
-            .disposed(by: disposeBag)
-        
+
         _disposeBag = disposeBag
+    }
+}
+
+extension DefaultMainViewModel: ViewControllerCreatable {
+    public func createViewController() -> UIViewController {
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let viewController = storyboard.instantiateInitialViewController() as! MainViewController
+        viewController.viewModel = self
+        return viewController
     }
 }

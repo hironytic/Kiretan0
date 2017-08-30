@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -21,8 +22,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VHD-32-czx">
-                                <rect key="frame" x="151.5" y="323" width="71" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="下記のいずれかの認証を行うことで、他のデバイスでも同じデータを利用できます。" textAlignment="natural" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VHD-32-czx">
+                                <rect key="frame" x="16" y="45" width="343" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="C9Z-Zi-Q1i">
+                                <rect key="frame" x="72.5" y="587" width="230" height="30"/>
+                                <state key="normal" title="認証せずに新規の利用を開始する"/>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="認証を行わずに利用を開始して、必要になってから認証を行うこともできます。" textAlignment="natural" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dqL-WP-G4L">
+                                <rect key="frame" x="16" y="536.5" width="343" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -30,14 +41,20 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="VHD-32-czx" firstAttribute="centerX" secondItem="MRX-5X-30S" secondAttribute="centerX" id="OhQ-O0-IZU"/>
-                            <constraint firstItem="VHD-32-czx" firstAttribute="centerY" secondItem="MRX-5X-30S" secondAttribute="centerY" id="z0q-fp-BcH"/>
+                            <constraint firstItem="dqL-WP-G4L" firstAttribute="leading" secondItem="MRX-5X-30S" secondAttribute="leadingMargin" id="Fxj-Yh-WGI"/>
+                            <constraint firstItem="C9Z-Zi-Q1i" firstAttribute="centerX" secondItem="MRX-5X-30S" secondAttribute="centerX" id="MbK-m3-pRi"/>
+                            <constraint firstItem="wUg-ha-IYH" firstAttribute="top" secondItem="C9Z-Zi-Q1i" secondAttribute="bottom" constant="50" id="RjC-On-7ZJ"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="dqL-WP-G4L" secondAttribute="trailing" id="Ujy-vV-An4"/>
+                            <constraint firstItem="VHD-32-czx" firstAttribute="leading" secondItem="MRX-5X-30S" secondAttribute="leadingMargin" id="hpF-4W-ADg"/>
+                            <constraint firstItem="C9Z-Zi-Q1i" firstAttribute="top" secondItem="dqL-WP-G4L" secondAttribute="bottom" constant="30" id="jCP-wT-hqZ"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="VHD-32-czx" secondAttribute="trailing" id="vps-tY-Z7x"/>
+                            <constraint firstItem="VHD-32-czx" firstAttribute="top" secondItem="Mha-Y7-KWl" secondAttribute="bottom" constant="25" id="wDg-ZH-WHF"/>
                         </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uO4-7H-mFP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-162" y="15"/>
+            <point key="canvasLocation" x="-162.40000000000001" y="14.842578710644679"/>
         </scene>
     </scenes>
 </document>

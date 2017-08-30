@@ -1,5 +1,5 @@
 //
-// MainViewModel.swift
+// UserAccount.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -24,26 +24,18 @@
 //
 
 import Foundation
-import RxSwift
+import Firebase
 
-public protocol MainViewModel: ViewModel {
-}
-
-public protocol MainViewModelLocator {
-    func resolveMainViewModel() -> MainViewModel
-}
-extension DefaultLocator: MainViewModelLocator {
-    public func resolveMainViewModel() -> MainViewModel {
-        return DefaultMainViewModel(locator: self)
+public struct UserAccount {
+    public let displayName: String?
+    public let isAnonymous: Bool
+    
+    public init(displayName: String?, isAnonymous: Bool) {
+        self.displayName = displayName
+        self.isAnonymous = isAnonymous
     }
-}
 
-public class DefaultMainViewModel: MainViewModel {
-    public typealias Locator = NullLocator
-    
-    private let _locator: Locator
-    
-    public init(locator: Locator) {
-        _locator = locator
+    public init(user: User) {
+        self.init(displayName: user.displayName, isAnonymous: user.isAnonymous)
     }
 }
