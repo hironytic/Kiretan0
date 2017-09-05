@@ -30,6 +30,8 @@ import RxSwift
 public class WelcomeViewController: UIViewController {
     public var viewModel: WelcomeViewModel?
 
+    @IBOutlet private weak var newAnonymousUserButton: UIButton!
+    
     private var _disposeBag: DisposeBag?
 
     public override func viewDidLoad() {
@@ -39,11 +41,13 @@ public class WelcomeViewController: UIViewController {
     
     private func bindViewModel() {
         _disposeBag = nil
-//        guard let viewModel = viewModel else { return }
-        guard viewModel != nil else { return }
+        guard let viewModel = viewModel else { return }
         
         let disposeBag = DisposeBag()
         
+        newAnonymousUserButton.rx.tap
+            .bind(to: viewModel.onNewAnonymousUser)
+            .disposed(by: disposeBag)
         
         _disposeBag = disposeBag
     }

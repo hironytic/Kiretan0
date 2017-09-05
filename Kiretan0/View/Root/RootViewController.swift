@@ -30,7 +30,7 @@ import RxSwift
 public class RootViewController: UIViewController {
     private let locator: DefaultLocator
     private let viewModel: RootViewModel
-    private let currentViewController: UIViewController? = nil
+    private var currentViewController: UIViewController? = nil
 
     private var _disposeBag: DisposeBag?
 
@@ -54,10 +54,6 @@ public class RootViewController: UIViewController {
 
         viewModel.scene
             .bind(to: sceneChanger)
-            .disposed(by: disposeBag)
-        
-        rx.sentMessage(#selector(viewDidAppear(_:)))
-            .bind(to: viewModel.onViewDidAppear)
             .disposed(by: disposeBag)
         
         _disposeBag = disposeBag
@@ -87,10 +83,10 @@ public class RootViewController: UIViewController {
         if let currentVC = currentViewController {
             currentVC.willMove(toParentViewController: nil)
             addChildViewController(nextViewController)
-            view.insertSubview(nextViewController.view, belowSubview: currentVC.view)
             nextViewController.view.frame = view.bounds
             transition(from: currentVC, to: nextViewController, duration: 0.3, options: [], animations: {
-                currentVC.view.frame = CGRect(x: -self.view.bounds.width, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
+                self.view.sendSubview(toBack: nextViewController.view)
+                currentVC.view.frame = CGRect(x: -currentVC.view.bounds.width, y: 0, width: currentVC.view.bounds.width, height: currentVC.view.bounds.height)
             }, completion: { _ in
                 currentVC.removeFromParentViewController()
                 currentVC.view.removeFromSuperview()
@@ -102,5 +98,7 @@ public class RootViewController: UIViewController {
             nextViewController.view.frame = self.view.bounds
             nextViewController.didMove(toParentViewController: self)
         }
+
+        currentViewController = nextViewController
     }
 }

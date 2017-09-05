@@ -34,38 +34,33 @@ public enum RootScene {
 
 public protocol RootViewModel: ViewModel {
     var scene: Observable<RootScene> { get }
-    var onViewDidAppear: AnyObserver<[Any]> { get }
 }
 
 public class DefaultRootViewModel: RootViewModel {
     public typealias Locator = UserAccountStoreLocator
     
     public let scene: Observable<RootScene>
-    public let onViewDidAppear: AnyObserver<[Any]>
 
     private let _locator: Locator
     private var _disposeBag: DisposeBag? = DisposeBag()
-    private let _onViewDidAppear = ActionObserver<[Any]>()
-    private let _scene = PublishSubject<RootScene>()
+    private let _scene: Observable<RootScene>
     
     public init(locator: Locator) {
         _locator = locator
-        scene = _scene.share().observeOn(MainScheduler.instance)
-        onViewDidAppear = _onViewDidAppear.asObserver()
         
-        _onViewDidAppear.handler = { [weak self] _ in self?.handleViewDidAppear() }
-    }
-    
-    private func handleViewDidAppear() {
         let userStore = _locator.resolveUserAccountStore()
-        userStore.currentUser
-            .subscribe(onNext: { (userAccount) in
+        _scene = userStore.currentUser
+            .map { (userAccount) -> RootScene in
                 if userAccount == nil {
-                    self._scene.onNext(.welcome)
+                    return .welcome
                 } else {
-                    self._scene.onNext(.main)
+                    return .main
                 }
-            })
-            .disposed(by: _disposeBag!)
+            }
+            .distinctUntilChanged()
+        
+        scene = _scene
+            .shareReplayLatestWhileConnected()
+            .observeOn(MainScheduler.instance)
     }
 }

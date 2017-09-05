@@ -1,5 +1,5 @@
 //
-// DefaultLocator.swift
+// ErrorStore.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -24,8 +24,37 @@
 //
 
 import Foundation
+import RxSwift
 
-public class DefaultLocator: NullLocator {
-    public lazy var userAccountStore: UserAccountStore = DefaultUserAccountStore(locator: self)
-    public lazy var errorStore: ErrorStore = DefaultErrorStore(locator: self)
+public protocol ErrorStore {
+    var error: Observable<Error> { get }
+    
+    func post(error: Error)
+}
+
+public protocol ErrorStoreLocator {
+    func resolveErrorStore() -> ErrorStore
+}
+extension DefaultLocator: ErrorStoreLocator {
+    public func resolveErrorStore() -> ErrorStore {
+        return errorStore
+    }
+}
+
+public class DefaultErrorStore: ErrorStore {
+    public typealias Locator = NullLocator
+
+    public let error: Observable<Error>
+    
+    private let _locator: Locator
+    private let _errorSubject = PublishSubject<Error>()
+    
+    public init(locator: Locator) {
+        _locator = locator
+        error = _errorSubject.asObservable()
+    }
+    
+    public func post(error: Error) {
+        _errorSubject.onNext(error)
+    }
 }

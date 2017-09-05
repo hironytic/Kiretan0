@@ -29,6 +29,9 @@ import Firebase
 
 public protocol UserAccountStore {
     var currentUser: Observable<UserAccount?> { get }
+    
+    func signInAnonymously()
+    func signOut()
 }
 
 public protocol UserAccountStoreLocator {
@@ -41,7 +44,7 @@ extension DefaultLocator: UserAccountStoreLocator {
 }
 
 public class DefaultUserAccountStore: UserAccountStore {
-    public typealias Locator = NullLocator
+    public typealias Locator = ErrorStoreLocator
 
     public let currentUser: Observable<UserAccount?>
     
@@ -60,5 +63,17 @@ public class DefaultUserAccountStore: UserAccountStore {
                 }
             })
             .shareReplayLatestWhileConnected()
+    }
+    
+    public func signInAnonymously() {
+        Auth.auth().signInAnonymously()
+    }
+    
+    public func signOut() {
+        do {
+            try Auth.auth().signOut()
+        } catch let error {
+            _locator.resolveErrorStore().post(error: error)
+        }
     }
 }

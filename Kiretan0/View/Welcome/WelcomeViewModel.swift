@@ -24,9 +24,10 @@
 //
 
 import Foundation
+import RxSwift
 
 public protocol WelcomeViewModel: ViewModel {
-    
+    var onNewAnonymousUser: AnyObserver<Void> { get }
 }
 
 public protocol WelcomeViewModelLocator {
@@ -39,11 +40,22 @@ extension DefaultLocator: WelcomeViewModelLocator {
 }
 
 public class DefaultWelcomeViewModel: WelcomeViewModel {
-    public typealias Locator = NullLocator
+    public typealias Locator = UserAccountStoreLocator
 
+    public let onNewAnonymousUser: AnyObserver<Void>
+    
     private let _locator: Locator
+    private let _onNewAnonymousUser = ActionObserver<Void>()
     
     public init(locator: Locator) {
         _locator = locator
+        
+        onNewAnonymousUser = _onNewAnonymousUser.asObserver()
+        
+        _onNewAnonymousUser.handler = { [weak self] in self?.handleNewAnonymousUser() }
+    }
+    
+    private func handleNewAnonymousUser() {
+        _locator.resolveUserAccountStore().signInAnonymously()
     }
 }

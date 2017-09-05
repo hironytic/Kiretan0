@@ -51,6 +51,9 @@
                             <constraint firstItem="VHD-32-czx" firstAttribute="top" secondItem="Mha-Y7-KWl" secondAttribute="bottom" constant="25" id="wDg-ZH-WHF"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="newAnonymousUserButton" destination="C9Z-Zi-Q1i" id="jHm-X4-a5z"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uO4-7H-mFP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

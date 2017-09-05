@@ -30,6 +30,8 @@ import RxSwift
 public class MainViewController: UIViewController {
     public var viewModel: MainViewModel?
 
+    @IBOutlet private weak var signOutButton: UIButton!
+    
     private var _disposeBag: DisposeBag?
 
     public override func viewDidLoad() {
@@ -40,11 +42,14 @@ public class MainViewController: UIViewController {
     private func bindViewModel() {
         _disposeBag = nil
 
-//        guard let viewModel = viewModel else { return }
-        guard viewModel != nil else { return }
+        guard let viewModel = viewModel else { return }
         
         let disposeBag = DisposeBag()
 
+        signOutButton.rx.tap
+            .bind(to: viewModel.onSignOut)
+            .disposed(by: disposeBag)
+        
         _disposeBag = disposeBag
     }
 }

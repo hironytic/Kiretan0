@@ -27,6 +27,8 @@ import Foundation
 import RxSwift
 
 public protocol MainViewModel: ViewModel {
+    // FIXME: Temporary Implementation
+    var onSignOut: AnyObserver<Void> { get }
 }
 
 public protocol MainViewModelLocator {
@@ -39,11 +41,17 @@ extension DefaultLocator: MainViewModelLocator {
 }
 
 public class DefaultMainViewModel: MainViewModel {
-    public typealias Locator = NullLocator
+    public typealias Locator = UserAccountStoreLocator
+
+    public let onSignOut: AnyObserver<Void>
     
     private let _locator: Locator
+    private let _onSignOut = ActionObserver<Void>()
     
     public init(locator: Locator) {
         _locator = locator
+        
+        onSignOut = _onSignOut.asObserver()
+        _onSignOut.handler = { [weak self] in self?._locator.resolveUserAccountStore().signOut() }
     }
 }
