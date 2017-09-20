@@ -25,7 +25,7 @@
 
 import Foundation
 import RxSwift
-import Firebase
+import FirebaseAuth
 
 public protocol UserAccountStore {
     var currentUser: Observable<UserAccount?> { get }

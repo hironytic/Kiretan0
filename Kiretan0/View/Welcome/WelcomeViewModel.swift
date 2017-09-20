@@ -52,7 +52,7 @@ public class DefaultWelcomeViewModel: WelcomeViewModel {
         
         onNewAnonymousUser = _onNewAnonymousUser.asObserver()
         
-        _onNewAnonymousUser.handler = { [weak self] in self?.handleNewAnonymousUser() }
+        _onNewAnonymousUser.handler = { [weak self] _ in self?.handleNewAnonymousUser() }
     }
     
     private func handleNewAnonymousUser() {

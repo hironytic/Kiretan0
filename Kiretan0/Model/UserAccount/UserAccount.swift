@@ -24,7 +24,7 @@
 //
 
 import Foundation
-import Firebase
+import FirebaseAuth
 
 public struct UserAccount {
     public let displayName: String?

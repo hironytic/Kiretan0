@@ -52,6 +52,6 @@ public class DefaultMainViewModel: MainViewModel {
         _locator = locator
         
         onSignOut = _onSignOut.asObserver()
-        _onSignOut.handler = { [weak self] in self?._locator.resolveUserAccountStore().signOut() }
+        _onSignOut.handler = { [weak self] _ in self?._locator.resolveUserAccountStore().signOut() }
     }
 }
