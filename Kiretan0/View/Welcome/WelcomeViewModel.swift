@@ -30,25 +30,26 @@ public protocol WelcomeViewModel: ViewModel {
     var onNewAnonymousUser: AnyObserver<Void> { get }
 }
 
-public protocol WelcomeViewModelLocator {
+public protocol WelcomeViewModelResolver {
     func resolveWelcomeViewModel() -> WelcomeViewModel
 }
-extension DefaultLocator: WelcomeViewModelLocator {
+
+extension DefaultResolver: WelcomeViewModelResolver {
     public func resolveWelcomeViewModel() -> WelcomeViewModel {
-        return DefaultWelcomeViewModel(locator: self)
+        return DefaultWelcomeViewModel(resolver: self)
     }
 }
 
 public class DefaultWelcomeViewModel: WelcomeViewModel {
-    public typealias Locator = UserAccountStoreLocator
+    public typealias Resolver = UserAccountStoreResolver
 
     public let onNewAnonymousUser: AnyObserver<Void>
     
-    private let _locator: Locator
+    private let _resolver: Resolver
     private let _onNewAnonymousUser = ActionObserver<Void>()
     
-    public init(locator: Locator) {
-        _locator = locator
+    public init(resolver: Resolver) {
+        _resolver = resolver
         
         onNewAnonymousUser = _onNewAnonymousUser.asObserver()
         
@@ -56,6 +57,6 @@ public class DefaultWelcomeViewModel: WelcomeViewModel {
     }
     
     private func handleNewAnonymousUser() {
-        _locator.resolveUserAccountStore().signInAnonymously()
+        _resolver.resolveUserAccountStore().signInAnonymously()
     }
 }

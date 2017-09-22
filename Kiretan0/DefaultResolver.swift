@@ -1,5 +1,5 @@
 //
-// DefaultLocator.swift
+// DefaultResolver.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -25,7 +25,7 @@
 
 import Foundation
 
-public class DefaultLocator: NullLocator {
-    public lazy var userAccountStore: UserAccountStore = DefaultUserAccountStore(locator: self)
-    public lazy var errorStore: ErrorStore = DefaultErrorStore(locator: self)
+public class DefaultResolver: NullResolver {
+    public lazy var userAccountStore: UserAccountStore = DefaultUserAccountStore(resolver: self)
+    public lazy var errorStore: ErrorStore = DefaultErrorStore(resolver: self)
 }

@@ -37,18 +37,18 @@ public protocol RootViewModel: ViewModel {
 }
 
 public class DefaultRootViewModel: RootViewModel {
-    public typealias Locator = UserAccountStoreLocator
+    public typealias Resolver = UserAccountStoreResolver
     
     public let scene: Observable<RootScene>
 
-    private let _locator: Locator
+    private let _resolver: Resolver
     private var _disposeBag: DisposeBag? = DisposeBag()
     private let _scene: Observable<RootScene>
     
-    public init(locator: Locator) {
-        _locator = locator
+    public init(resolver: Resolver) {
+        _resolver = resolver
         
-        let userStore = _locator.resolveUserAccountStore()
+        let userStore = _resolver.resolveUserAccountStore()
         _scene = userStore.currentUser
             .map { (userAccount) -> RootScene in
                 if userAccount == nil {

@@ -31,27 +31,28 @@ public protocol MainViewModel: ViewModel {
     var onSignOut: AnyObserver<Void> { get }
 }
 
-public protocol MainViewModelLocator {
+public protocol MainViewModelResolver {
     func resolveMainViewModel() -> MainViewModel
 }
-extension DefaultLocator: MainViewModelLocator {
+
+extension DefaultResolver: MainViewModelResolver {
     public func resolveMainViewModel() -> MainViewModel {
-        return DefaultMainViewModel(locator: self)
+        return DefaultMainViewModel(resolver: self)
     }
 }
 
 public class DefaultMainViewModel: MainViewModel {
-    public typealias Locator = UserAccountStoreLocator
+    public typealias Resolver = UserAccountStoreResolver
 
     public let onSignOut: AnyObserver<Void>
     
-    private let _locator: Locator
+    private let _resolver: Resolver
     private let _onSignOut = ActionObserver<Void>()
     
-    public init(locator: Locator) {
-        _locator = locator
+    public init(resolver: Resolver) {
+        _resolver = resolver
         
         onSignOut = _onSignOut.asObserver()
-        _onSignOut.handler = { [weak self] _ in self?._locator.resolveUserAccountStore().signOut() }
+        _onSignOut.handler = { [weak self] _ in self?._resolver.resolveUserAccountStore().signOut() }
     }
 }

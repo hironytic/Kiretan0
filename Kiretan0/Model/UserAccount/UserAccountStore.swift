@@ -34,24 +34,25 @@ public protocol UserAccountStore {
     func signOut()
 }
 
-public protocol UserAccountStoreLocator {
+public protocol UserAccountStoreResolver {
     func resolveUserAccountStore() -> UserAccountStore
 }
-extension DefaultLocator: UserAccountStoreLocator {
+
+extension DefaultResolver: UserAccountStoreResolver {
     public func resolveUserAccountStore() -> UserAccountStore {
         return userAccountStore
     }
 }
 
 public class DefaultUserAccountStore: UserAccountStore {
-    public typealias Locator = ErrorStoreLocator
+    public typealias Resolver = ErrorStoreResolver
 
     public let currentUser: Observable<UserAccount?>
     
-    private let _locator: Locator
+    private let _resolver: Resolver
     
-    public init(locator: Locator) {
-        _locator = locator
+    public init(resolver: Resolver) {
+        _resolver = resolver
         
         currentUser =
             Observable.create({ (observer) -> Disposable in
@@ -73,7 +74,7 @@ public class DefaultUserAccountStore: UserAccountStore {
         do {
             try Auth.auth().signOut()
         } catch let error {
-            _locator.resolveErrorStore().post(error: error)
+            _resolver.resolveErrorStore().post(error: error)
         }
     }
 }

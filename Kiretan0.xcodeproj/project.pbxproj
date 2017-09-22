@@ -16,7 +16,7 @@
 		505263941F4B02EE00113180 /* Kiretan0Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263931F4B02EE00113180 /* Kiretan0Tests.swift */; };
 		505263A11F4B155900113180 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 505263A01F4B155900113180 /* GoogleService-Info.plist */; };
 		505263AB1F4EF7F300113180 /* ActionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A31F4EF7F300113180 /* ActionObserver.swift */; };
-		505263AC1F4EF7F300113180 /* DefaultLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A41F4EF7F300113180 /* DefaultLocator.swift */; };
+		505263AC1F4EF7F300113180 /* DefaultResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A41F4EF7F300113180 /* DefaultResolver.swift */; };
 		505263AD1F4EF7F300113180 /* DismissingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A61F4EF7F300113180 /* DismissingMessage.swift */; };
 		505263AE1F4EF7F300113180 /* TransitionMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A71F4EF7F300113180 /* TransitionMessage.swift */; };
 		505263AF1F4EF7F300113180 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A81F4EF7F300113180 /* Message.swift */; };
@@ -32,7 +32,7 @@
 		505263CB1F4F153700113180 /* WelcomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263CA1F4F153700113180 /* WelcomeViewModel.swift */; };
 		505263F51F52B84000113180 /* UserAccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263F41F52B84000113180 /* UserAccountStore.swift */; };
 		505263F71F56E05500113180 /* UserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263F61F56E05500113180 /* UserAccount.swift */; };
-		505263F91F56E74A00113180 /* NullLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263F81F56E74A00113180 /* NullLocator.swift */; };
+		505263F91F56E74A00113180 /* NullResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263F81F56E74A00113180 /* NullResolver.swift */; };
 		505263FC1F56FBF400113180 /* Root.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 505263FB1F56FBF400113180 /* Root.storyboard */; };
 		505263FE1F56FC1300113180 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263FD1F56FC1300113180 /* RootViewController.swift */; };
 		505264001F56FC5B00113180 /* RootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263FF1F56FC5B00113180 /* RootViewModel.swift */; };
@@ -64,7 +64,7 @@
 		505263951F4B02EE00113180 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		505263A01F4B155900113180 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		505263A31F4EF7F300113180 /* ActionObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionObserver.swift; sourceTree = "<group>"; };
-		505263A41F4EF7F300113180 /* DefaultLocator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultLocator.swift; sourceTree = "<group>"; };
+		505263A41F4EF7F300113180 /* DefaultResolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultResolver.swift; sourceTree = "<group>"; };
 		505263A61F4EF7F300113180 /* DismissingMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissingMessage.swift; sourceTree = "<group>"; };
 		505263A71F4EF7F300113180 /* TransitionMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransitionMessage.swift; sourceTree = "<group>"; };
 		505263A81F4EF7F300113180 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Message.swift; path = Kiretan0/AppFramework/Message/Message.swift; sourceTree = SOURCE_ROOT; };
@@ -80,7 +80,7 @@
 		505263CA1F4F153700113180 /* WelcomeViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeViewModel.swift; sourceTree = "<group>"; };
 		505263F41F52B84000113180 /* UserAccountStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAccountStore.swift; sourceTree = "<group>"; };
 		505263F61F56E05500113180 /* UserAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAccount.swift; sourceTree = "<group>"; };
-		505263F81F56E74A00113180 /* NullLocator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NullLocator.swift; sourceTree = "<group>"; };
+		505263F81F56E74A00113180 /* NullResolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NullResolver.swift; sourceTree = "<group>"; };
 		505263FB1F56FBF400113180 /* Root.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Root.storyboard; sourceTree = "<group>"; };
 		505263FD1F56FC1300113180 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		505263FF1F56FC5B00113180 /* RootViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
@@ -152,7 +152,7 @@
 				505263F21F52B7FE00113180 /* Model */,
 				505263A21F4EF7F300113180 /* AppFramework */,
 				5052637E1F4B02EE00113180 /* AppDelegate.swift */,
-				505263A41F4EF7F300113180 /* DefaultLocator.swift */,
+				505263A41F4EF7F300113180 /* DefaultResolver.swift */,
 				505263851F4B02EE00113180 /* Assets.xcassets */,
 				505263871F4B02EE00113180 /* LaunchScreen.storyboard */,
 				5052638A1F4B02EE00113180 /* Info.plist */,
@@ -178,7 +178,7 @@
 				505263BF1F4F0A2F00113180 /* Transitionable.swift */,
 				505263B91F4F092700113180 /* ViewControllerCreatable.swift */,
 				505263AA1F4EF7F300113180 /* ViewModel.swift */,
-				505263F81F56E74A00113180 /* NullLocator.swift */,
+				505263F81F56E74A00113180 /* NullResolver.swift */,
 			);
 			path = AppFramework;
 			sourceTree = "<group>";
@@ -521,12 +521,12 @@
 				505263B11F4EF7F300113180 /* ViewModel.swift in Sources */,
 				505264001F56FC5B00113180 /* RootViewModel.swift in Sources */,
 				505263CB1F4F153700113180 /* WelcomeViewModel.swift in Sources */,
-				505263AC1F4EF7F300113180 /* DefaultLocator.swift in Sources */,
+				505263AC1F4EF7F300113180 /* DefaultResolver.swift in Sources */,
 				505263F71F56E05500113180 /* UserAccount.swift in Sources */,
 				505263C41F4F0F4C00113180 /* MainViewModel.swift in Sources */,
 				505263F51F52B84000113180 /* UserAccountStore.swift in Sources */,
 				505263AE1F4EF7F300113180 /* TransitionMessage.swift in Sources */,
-				505263F91F56E74A00113180 /* NullLocator.swift in Sources */,
+				505263F91F56E74A00113180 /* NullResolver.swift in Sources */,
 				505263C91F4F150900113180 /* WelcomeViewController.swift in Sources */,
 				505263B01F4EF7F300113180 /* MessageSlot.swift in Sources */,
 				505263811F4B02EE00113180 /* MainViewController.swift in Sources */,

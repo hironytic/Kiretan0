@@ -1,5 +1,5 @@
 //
-// NullLocator.swift
+// NullResolver.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -25,5 +25,5 @@
 
 import Foundation
 
-public protocol NullLocator {
+public protocol NullResolver {
 }

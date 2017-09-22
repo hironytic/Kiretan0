@@ -28,16 +28,16 @@ import RxCocoa
 import RxSwift
 
 public class RootViewController: UIViewController {
-    private let locator: DefaultLocator
+    private let resolver: DefaultResolver
     private let viewModel: RootViewModel
     private var currentViewController: UIViewController? = nil
 
     private var _disposeBag: DisposeBag?
 
     public required init?(coder aDecoder: NSCoder) {
-        let locator = DefaultLocator()
-        self.locator = locator
-        viewModel = DefaultRootViewModel(locator: locator)
+        let resolver = DefaultResolver()
+        self.resolver = resolver
+        viewModel = DefaultRootViewModel(resolver: resolver)
 
         super.init(coder: aDecoder)
     }
@@ -70,12 +70,12 @@ public class RootViewController: UIViewController {
         let nextViewController: UIViewController
         switch scene {
         case .welcome:
-            let welcomeViewModel = locator.resolveWelcomeViewModel()
+            let welcomeViewModel = resolver.resolveWelcomeViewModel()
             guard let vcCreator = welcomeViewModel as? ViewControllerCreatable else { return }
             nextViewController = vcCreator.createViewController()
             
         case .main:
-            let mainViewModel = locator.resolveMainViewModel()
+            let mainViewModel = resolver.resolveMainViewModel()
             guard let vcCreator = mainViewModel as? ViewControllerCreatable else { return }
             nextViewController = vcCreator.createViewController()
         }

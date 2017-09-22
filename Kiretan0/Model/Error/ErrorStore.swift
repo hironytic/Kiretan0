@@ -32,25 +32,26 @@ public protocol ErrorStore {
     func post(error: Error)
 }
 
-public protocol ErrorStoreLocator {
+public protocol ErrorStoreResolver {
     func resolveErrorStore() -> ErrorStore
 }
-extension DefaultLocator: ErrorStoreLocator {
+
+extension DefaultResolver: ErrorStoreResolver {
     public func resolveErrorStore() -> ErrorStore {
         return errorStore
     }
 }
 
 public class DefaultErrorStore: ErrorStore {
-    public typealias Locator = NullLocator
+    public typealias Resolver = NullResolver
 
     public let error: Observable<Error>
     
-    private let _locator: Locator
+    private let _resolver: Resolver
     private let _errorSubject = PublishSubject<Error>()
     
-    public init(locator: Locator) {
-        _locator = locator
+    public init(resolver: Resolver) {
+        _resolver = resolver
         error = _errorSubject.asObservable()
     }
     
