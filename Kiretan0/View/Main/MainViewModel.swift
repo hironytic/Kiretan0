@@ -42,17 +42,28 @@ extension DefaultResolver: MainViewModelResolver {
 }
 
 public class DefaultMainViewModel: MainViewModel {
-    public typealias Resolver = UserAccountStoreResolver
+    public typealias Resolver = UserAccountRepositoryResolver
 
     public let onSignOut: AnyObserver<Void>
     
     private let _resolver: Resolver
+    private let _disposeBag = DisposeBag()
     private let _onSignOut = ActionObserver<Void>()
     
     public init(resolver: Resolver) {
         _resolver = resolver
         
         onSignOut = _onSignOut.asObserver()
-        _onSignOut.handler = { [weak self] _ in self?._resolver.resolveUserAccountStore().signOut() }
+        _onSignOut.handler = { [weak self] _ in self?.handleSignOut() }
+    }
+    
+    private func handleSignOut() {
+        let userAccountRepository = _resolver.resolveUserAccountRepository()
+        userAccountRepository.signOut()
+            .subscribe(onCompleted: {
+            
+            }, onError: { (error) in
+            })
+            .disposed(by: _disposeBag)
     }
 }

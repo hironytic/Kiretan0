@@ -1,5 +1,5 @@
 //
-// UserAccountStore.swift
+// UserAccountRepository.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -27,25 +27,25 @@ import Foundation
 import RxSwift
 import FirebaseAuth
 
-public protocol UserAccountStore {
+public protocol UserAccountRepository {
     var currentUser: Observable<UserAccount?> { get }
     
-    func signInAnonymously()
-    func signOut()
+    func signInAnonymously() -> Completable
+    func signOut() -> Completable
 }
 
-public protocol UserAccountStoreResolver {
-    func resolveUserAccountStore() -> UserAccountStore
+public protocol UserAccountRepositoryResolver {
+    func resolveUserAccountRepository() -> UserAccountRepository
 }
 
-extension DefaultResolver: UserAccountStoreResolver {
-    public func resolveUserAccountStore() -> UserAccountStore {
-        return userAccountStore
+extension DefaultResolver: UserAccountRepositoryResolver {
+    public func resolveUserAccountRepository() -> UserAccountRepository {
+        return userAccountRepository
     }
 }
 
-public class DefaultUserAccountStore: UserAccountStore {
-    public typealias Resolver = ErrorStoreResolver
+public class DefaultUserAccountRepository: UserAccountRepository {
+    public typealias Resolver = NullResolver
 
     public let currentUser: Observable<UserAccount?>
     
@@ -66,15 +66,28 @@ public class DefaultUserAccountStore: UserAccountStore {
             .shareReplayLatestWhileConnected()
     }
     
-    public func signInAnonymously() {
-        Auth.auth().signInAnonymously()
+    public func signInAnonymously() -> Completable {
+        return Completable.create { (observer) -> Disposable in
+            Auth.auth().signInAnonymously(completion: { (user, error) in
+                if let error = error {
+                    observer(.error(error))
+                } else {
+                    observer(.completed)
+                }
+            })
+            return Disposables.create()
+        }
     }
     
-    public func signOut() {
-        do {
-            try Auth.auth().signOut()
-        } catch let error {
-            _resolver.resolveErrorStore().post(error: error)
-        }
+    public func signOut() -> Completable {
+        return Completable.create(subscribe: { (observer) -> Disposable in
+            do {
+                try Auth.auth().signOut()
+                observer(.completed)
+            } catch let error {
+                observer(.error(error))
+            }
+            return Disposables.create()
+        })
     }
 }

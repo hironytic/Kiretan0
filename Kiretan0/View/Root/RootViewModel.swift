@@ -47,7 +47,7 @@ extension DefaultResolver: RootViewModelResolver {
 }
 
 public class DefaultRootViewModel: RootViewModel {
-    public typealias Resolver = UserAccountStoreResolver
+    public typealias Resolver = UserAccountRepositoryResolver
     
     public let scene: Observable<RootScene>
 
@@ -58,7 +58,7 @@ public class DefaultRootViewModel: RootViewModel {
     public init(resolver: Resolver) {
         _resolver = resolver
         
-        let userStore = _resolver.resolveUserAccountStore()
+        let userStore = _resolver.resolveUserAccountRepository()
         _scene = userStore.currentUser
             .map { (userAccount) -> RootScene in
                 if userAccount == nil {

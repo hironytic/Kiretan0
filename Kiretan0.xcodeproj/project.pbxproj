@@ -30,13 +30,12 @@
 		505263C71F4F14A300113180 /* Welcome.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 505263C61F4F14A300113180 /* Welcome.storyboard */; };
 		505263C91F4F150900113180 /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263C81F4F150900113180 /* WelcomeViewController.swift */; };
 		505263CB1F4F153700113180 /* WelcomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263CA1F4F153700113180 /* WelcomeViewModel.swift */; };
-		505263F51F52B84000113180 /* UserAccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263F41F52B84000113180 /* UserAccountStore.swift */; };
+		505263F51F52B84000113180 /* UserAccountRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263F41F52B84000113180 /* UserAccountRepository.swift */; };
 		505263F71F56E05500113180 /* UserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263F61F56E05500113180 /* UserAccount.swift */; };
 		505263F91F56E74A00113180 /* NullResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263F81F56E74A00113180 /* NullResolver.swift */; };
 		505263FC1F56FBF400113180 /* Root.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 505263FB1F56FBF400113180 /* Root.storyboard */; };
 		505263FE1F56FC1300113180 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263FD1F56FC1300113180 /* RootViewController.swift */; };
 		505264001F56FC5B00113180 /* RootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263FF1F56FC5B00113180 /* RootViewModel.swift */; };
-		505E4CE81F5ED1130029AA61 /* ErrorStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505E4CE71F5ED1130029AA61 /* ErrorStore.swift */; };
 		B8CF05BD73E585ACE10CEEAF /* Pods_Kiretan0Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D5514D7F7DF8D3775DE2A23 /* Pods_Kiretan0Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -78,13 +77,12 @@
 		505263C61F4F14A300113180 /* Welcome.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Welcome.storyboard; sourceTree = "<group>"; };
 		505263C81F4F150900113180 /* WelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
 		505263CA1F4F153700113180 /* WelcomeViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeViewModel.swift; sourceTree = "<group>"; };
-		505263F41F52B84000113180 /* UserAccountStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAccountStore.swift; sourceTree = "<group>"; };
+		505263F41F52B84000113180 /* UserAccountRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAccountRepository.swift; sourceTree = "<group>"; };
 		505263F61F56E05500113180 /* UserAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAccount.swift; sourceTree = "<group>"; };
 		505263F81F56E74A00113180 /* NullResolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NullResolver.swift; sourceTree = "<group>"; };
 		505263FB1F56FBF400113180 /* Root.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Root.storyboard; sourceTree = "<group>"; };
 		505263FD1F56FC1300113180 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		505263FF1F56FC5B00113180 /* RootViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
-		505E4CE71F5ED1130029AA61 /* ErrorStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorStore.swift; sourceTree = "<group>"; };
 		814DE02FC637B398D9A08055 /* Pods-Kiretan0Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kiretan0Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kiretan0Tests/Pods-Kiretan0Tests.release.xcconfig"; sourceTree = "<group>"; };
 		8D5514D7F7DF8D3775DE2A23 /* Pods_Kiretan0Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Kiretan0Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CF2917EE1153BEF1E256A5E /* Pods-Kiretan0.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kiretan0.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kiretan0/Pods-Kiretan0.debug.xcconfig"; sourceTree = "<group>"; };
@@ -227,7 +225,6 @@
 		505263F21F52B7FE00113180 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				505E4CE61F5ED0FE0029AA61 /* Error */,
 				505263F31F52B81000113180 /* UserAccount */,
 			);
 			path = Model;
@@ -237,7 +234,7 @@
 			isa = PBXGroup;
 			children = (
 				505263F61F56E05500113180 /* UserAccount.swift */,
-				505263F41F52B84000113180 /* UserAccountStore.swift */,
+				505263F41F52B84000113180 /* UserAccountRepository.swift */,
 			);
 			path = UserAccount;
 			sourceTree = "<group>";
@@ -250,14 +247,6 @@
 				505263FF1F56FC5B00113180 /* RootViewModel.swift */,
 			);
 			path = Root;
-			sourceTree = "<group>";
-		};
-		505E4CE61F5ED0FE0029AA61 /* Error */ = {
-			isa = PBXGroup;
-			children = (
-				505E4CE71F5ED1130029AA61 /* ErrorStore.swift */,
-			);
-			path = Error;
 			sourceTree = "<group>";
 		};
 		7FE24AFD56E00FB772473CAE /* Pods */ = {
@@ -516,7 +505,6 @@
 			files = (
 				505263BB1F4F092700113180 /* ViewControllerCreatable.swift in Sources */,
 				505263AD1F4EF7F300113180 /* DismissingMessage.swift in Sources */,
-				505E4CE81F5ED1130029AA61 /* ErrorStore.swift in Sources */,
 				505263FE1F56FC1300113180 /* RootViewController.swift in Sources */,
 				505263B11F4EF7F300113180 /* ViewModel.swift in Sources */,
 				505264001F56FC5B00113180 /* RootViewModel.swift in Sources */,
@@ -524,7 +512,7 @@
 				505263AC1F4EF7F300113180 /* DefaultResolver.swift in Sources */,
 				505263F71F56E05500113180 /* UserAccount.swift in Sources */,
 				505263C41F4F0F4C00113180 /* MainViewModel.swift in Sources */,
-				505263F51F52B84000113180 /* UserAccountStore.swift in Sources */,
+				505263F51F52B84000113180 /* UserAccountRepository.swift in Sources */,
 				505263AE1F4EF7F300113180 /* TransitionMessage.swift in Sources */,
 				505263F91F56E74A00113180 /* NullResolver.swift in Sources */,
 				505263C91F4F150900113180 /* WelcomeViewController.swift in Sources */,

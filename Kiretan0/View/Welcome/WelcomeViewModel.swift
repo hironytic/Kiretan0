@@ -41,11 +41,12 @@ extension DefaultResolver: WelcomeViewModelResolver {
 }
 
 public class DefaultWelcomeViewModel: WelcomeViewModel {
-    public typealias Resolver = UserAccountStoreResolver
+    public typealias Resolver = UserAccountRepositoryResolver
 
     public let onNewAnonymousUser: AnyObserver<Void>
     
     private let _resolver: Resolver
+    private let _disposeBag = DisposeBag()
     private let _onNewAnonymousUser = ActionObserver<Void>()
     
     public init(resolver: Resolver) {
@@ -57,6 +58,13 @@ public class DefaultWelcomeViewModel: WelcomeViewModel {
     }
     
     private func handleNewAnonymousUser() {
-        _resolver.resolveUserAccountStore().signInAnonymously()
+        let userAccountRepository = _resolver.resolveUserAccountRepository()
+        userAccountRepository.signInAnonymously()
+            .subscribe(onCompleted: {
+                // TODO
+            }, onError: { (error) in
+                // TODO
+            })
+            .disposed(by: _disposeBag)
     }
 }
