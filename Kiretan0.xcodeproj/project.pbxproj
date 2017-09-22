@@ -36,6 +36,12 @@
 		505263FC1F56FBF400113180 /* Root.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 505263FB1F56FBF400113180 /* Root.storyboard */; };
 		505263FE1F56FC1300113180 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263FD1F56FC1300113180 /* RootViewController.swift */; };
 		505264001F56FC5B00113180 /* RootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263FF1F56FC5B00113180 /* RootViewModel.swift */; };
+		509720831F7507B900C623A5 /* RootViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509720821F7507B900C623A5 /* RootViewModelTests.swift */; };
+		509720841F750CA500C623A5 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B21F4EF9C500113180 /* RxCocoa.framework */; };
+		509720851F750CA800C623A5 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B31F4EF9C500113180 /* RxSwift.framework */; };
+		5097208A1F750E7500C623A5 /* MockUserAccountRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509720891F750E7500C623A5 /* MockUserAccountRepository.swift */; };
+		5097208C1F750FF900C623A5 /* FulfillObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5097208B1F750FF900C623A5 /* FulfillObserver.swift */; };
+		5097208F1F7516B700C623A5 /* WelcomeViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5097208E1F7516B700C623A5 /* WelcomeViewModelTests.swift */; };
 		B8CF05BD73E585ACE10CEEAF /* Pods_Kiretan0Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D5514D7F7DF8D3775DE2A23 /* Pods_Kiretan0Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -83,6 +89,10 @@
 		505263FB1F56FBF400113180 /* Root.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Root.storyboard; sourceTree = "<group>"; };
 		505263FD1F56FC1300113180 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		505263FF1F56FC5B00113180 /* RootViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
+		509720821F7507B900C623A5 /* RootViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModelTests.swift; sourceTree = "<group>"; };
+		509720891F750E7500C623A5 /* MockUserAccountRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserAccountRepository.swift; sourceTree = "<group>"; };
+		5097208B1F750FF900C623A5 /* FulfillObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FulfillObserver.swift; sourceTree = "<group>"; };
+		5097208E1F7516B700C623A5 /* WelcomeViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewModelTests.swift; sourceTree = "<group>"; };
 		814DE02FC637B398D9A08055 /* Pods-Kiretan0Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kiretan0Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kiretan0Tests/Pods-Kiretan0Tests.release.xcconfig"; sourceTree = "<group>"; };
 		8D5514D7F7DF8D3775DE2A23 /* Pods_Kiretan0Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Kiretan0Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CF2917EE1153BEF1E256A5E /* Pods-Kiretan0.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kiretan0.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kiretan0/Pods-Kiretan0.debug.xcconfig"; sourceTree = "<group>"; };
@@ -106,6 +116,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B8CF05BD73E585ACE10CEEAF /* Pods_Kiretan0Tests.framework in Frameworks */,
+				509720841F750CA500C623A5 /* RxCocoa.framework in Frameworks */,
+				509720851F750CA800C623A5 /* RxSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -162,6 +174,9 @@
 		505263921F4B02EE00113180 /* Kiretan0Tests */ = {
 			isa = PBXGroup;
 			children = (
+				509720801F75077200C623A5 /* View */,
+				509720861F750E3B00C623A5 /* Mock */,
+				5097208B1F750FF900C623A5 /* FulfillObserver.swift */,
 				505263931F4B02EE00113180 /* Kiretan0Tests.swift */,
 				505263951F4B02EE00113180 /* Info.plist */,
 			);
@@ -247,6 +262,55 @@
 				505263FF1F56FC5B00113180 /* RootViewModel.swift */,
 			);
 			path = Root;
+			sourceTree = "<group>";
+		};
+		509720801F75077200C623A5 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				509720811F75077B00C623A5 /* Root */,
+				5097208D1F75169200C623A5 /* Welcome */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		509720811F75077B00C623A5 /* Root */ = {
+			isa = PBXGroup;
+			children = (
+				509720821F7507B900C623A5 /* RootViewModelTests.swift */,
+			);
+			path = Root;
+			sourceTree = "<group>";
+		};
+		509720861F750E3B00C623A5 /* Mock */ = {
+			isa = PBXGroup;
+			children = (
+				509720871F750E6400C623A5 /* Model */,
+			);
+			path = Mock;
+			sourceTree = "<group>";
+		};
+		509720871F750E6400C623A5 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				509720881F750E6900C623A5 /* UserAccount */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		509720881F750E6900C623A5 /* UserAccount */ = {
+			isa = PBXGroup;
+			children = (
+				509720891F750E7500C623A5 /* MockUserAccountRepository.swift */,
+			);
+			path = UserAccount;
+			sourceTree = "<group>";
+		};
+		5097208D1F75169200C623A5 /* Welcome */ = {
+			isa = PBXGroup;
+			children = (
+				5097208E1F7516B700C623A5 /* WelcomeViewModelTests.swift */,
+			);
+			path = Welcome;
 			sourceTree = "<group>";
 		};
 		7FE24AFD56E00FB772473CAE /* Pods */ = {
@@ -529,7 +593,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				509720831F7507B900C623A5 /* RootViewModelTests.swift in Sources */,
 				505263941F4B02EE00113180 /* Kiretan0Tests.swift in Sources */,
+				5097208C1F750FF900C623A5 /* FulfillObserver.swift in Sources */,
+				5097208A1F750E7500C623A5 /* MockUserAccountRepository.swift in Sources */,
+				5097208F1F7516B700C623A5 /* WelcomeViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -713,6 +781,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = EPZSBGGQZS;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = Kiretan0Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hironytic.Kiretan0Tests;
@@ -729,6 +801,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = EPZSBGGQZS;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = Kiretan0Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hironytic.Kiretan0Tests;
