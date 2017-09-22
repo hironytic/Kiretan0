@@ -36,6 +36,16 @@ public protocol RootViewModel: ViewModel {
     var scene: Observable<RootScene> { get }
 }
 
+public protocol RootViewModelResolver {
+    func resolveRootViewModel() -> RootViewModel
+}
+
+extension DefaultResolver: RootViewModelResolver {
+    public func resolveRootViewModel() -> RootViewModel {
+        return DefaultRootViewModel(resolver: self)
+    }
+}
+
 public class DefaultRootViewModel: RootViewModel {
     public typealias Resolver = UserAccountStoreResolver
     

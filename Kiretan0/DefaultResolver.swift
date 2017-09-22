@@ -29,3 +29,5 @@ public class DefaultResolver: NullResolver {
     public lazy var userAccountStore: UserAccountStore = DefaultUserAccountStore(resolver: self)
     public lazy var errorStore: ErrorStore = DefaultErrorStore(resolver: self)
 }
+
+public let defaultResolver = DefaultResolver()
