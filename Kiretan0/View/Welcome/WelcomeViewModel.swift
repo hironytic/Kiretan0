@@ -27,6 +27,8 @@ import Foundation
 import RxSwift
 
 public protocol WelcomeViewModel: ViewModel {
+    var newAnonymousUserEnabled: Observable<Bool> { get }
+    
     var onNewAnonymousUser: AnyObserver<Void> { get }
 }
 
@@ -43,14 +45,23 @@ extension DefaultResolver: WelcomeViewModelResolver {
 public class DefaultWelcomeViewModel: WelcomeViewModel {
     public typealias Resolver = UserAccountRepositoryResolver
 
+    public let newAnonymousUserEnabled: Observable<Bool>
     public let onNewAnonymousUser: AnyObserver<Void>
     
     private let _resolver: Resolver
     private let _disposeBag = DisposeBag()
+    private let _processing = Variable<Bool>(false)
     private let _onNewAnonymousUser = ActionObserver<Void>()
     
     public init(resolver: Resolver) {
         _resolver = resolver
+        
+        let buttonsDisabled = _processing
+            .asObservable()
+            .map { !$0 }
+            .asDriver(onErrorJustReturn: false)
+            .asObservable()
+        newAnonymousUserEnabled = buttonsDisabled
         
         onNewAnonymousUser = _onNewAnonymousUser.asObserver()
         
@@ -59,10 +70,12 @@ public class DefaultWelcomeViewModel: WelcomeViewModel {
     
     private func handleNewAnonymousUser() {
         let userAccountRepository = _resolver.resolveUserAccountRepository()
+        _processing.value = true
         userAccountRepository.signInAnonymously()
             .subscribe(onCompleted: {
-                // TODO
+                self._processing.value = false
             }, onError: { (error) in
+                self._processing.value = false
                 // TODO
             })
             .disposed(by: _disposeBag)

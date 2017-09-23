@@ -31,8 +31,8 @@ class MockUserAccountRepository: UserAccountRepository {
     let currentUser: Observable<UserAccount?>
     
     let mockCurrentUser = Variable<UserAccount?>(nil)
-    var mockSignInAnonymously: (PrimitiveSequenceType.CompletableObserver) -> Void = { _ in }
-    var mockSignOut: (PrimitiveSequenceType.CompletableObserver) -> Void = { _ in }
+    var mockSignInAnonymously: (@escaping PrimitiveSequenceType.CompletableObserver) -> Void = { _ in }
+    var mockSignOut: (@escaping PrimitiveSequenceType.CompletableObserver) -> Void = { _ in }
     
     init() {
         currentUser = mockCurrentUser.asObservable()

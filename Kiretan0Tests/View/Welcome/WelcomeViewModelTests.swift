@@ -60,14 +60,28 @@ class WelcomeViewModelTests: XCTestCase {
     }
 
     func testSignInAnonymousThenSucceed() {
-        let expect = expectation(description: "signInAnonymously should be called")
+        var signInObserver: PrimitiveSequenceType.CompletableObserver!
+        let expect1 = expectation(description: "signInAnonymously should be called")
         resolver.mockUserAccountRepository.mockSignInAnonymously = { observer in
-            expect.fulfill()
-            observer(.completed)
+            expect1.fulfill()
+            signInObserver = observer
         }
+        
+        let newAnonymousUserEnabledObserver = FulfillObserver(expectation(description: "newAnonymousUser button should be disabled")) { (isEnabled: Bool) in
+            return !isEnabled
+        }
+        viewModel.newAnonymousUserEnabled
+            .bind(to: newAnonymousUserEnabledObserver)
+            .disposed(by: disposeBag)
 
         viewModel.onNewAnonymousUser.onNext(())
-        waitForExpectations(timeout: 3.0)
+        self.waitForExpectations(timeout: 3.0)
+
+        newAnonymousUserEnabledObserver.reset(self.expectation(description: "newAnonymousUser button should be enabled again")) { (isEnabled: Bool) in
+            return isEnabled
+        }
+        signInObserver(.completed)
+        self.waitForExpectations(timeout: 3.0)
     }
     
     func testSignInAnonymousThenFailed() {

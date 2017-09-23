@@ -45,6 +45,10 @@ public class WelcomeViewController: UIViewController {
         
         let disposeBag = DisposeBag()
         
+        viewModel.newAnonymousUserEnabled
+            .bind(to: newAnonymousUserButton.rx.isEnabled)
+            .disposed(by: disposeBag)
+        
         newAnonymousUserButton.rx.tap
             .bind(to: viewModel.onNewAnonymousUser)
             .disposed(by: disposeBag)
