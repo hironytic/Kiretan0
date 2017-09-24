@@ -42,6 +42,12 @@
 		5097208A1F750E7500C623A5 /* MockUserAccountRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509720891F750E7500C623A5 /* MockUserAccountRepository.swift */; };
 		5097208C1F750FF900C623A5 /* FulfillObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5097208B1F750FF900C623A5 /* FulfillObserver.swift */; };
 		5097208F1F7516B700C623A5 /* WelcomeViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5097208E1F7516B700C623A5 /* WelcomeViewModelTests.swift */; };
+		5097209A1F7726AA00C623A5 /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509720991F7726AA00C623A5 /* Team.swift */; };
+		5097209C1F7736D600C623A5 /* TeamMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5097209B1F7736D600C623A5 /* TeamMember.swift */; };
+		5097209E1F7737C200C623A5 /* MemberTeam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5097209D1F7737C200C623A5 /* MemberTeam.swift */; };
+		509720A01F77383B00C623A5 /* TeamRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5097209F1F77383B00C623A5 /* TeamRepository.swift */; };
+		509720A41F77485C00C623A5 /* CollectionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509720A31F77485C00C623A5 /* CollectionEvent.swift */; };
+		509720A61F77510B00C623A5 /* DatabaseEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509720A51F77510B00C623A5 /* DatabaseEntity.swift */; };
 		B8CF05BD73E585ACE10CEEAF /* Pods_Kiretan0Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D5514D7F7DF8D3775DE2A23 /* Pods_Kiretan0Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -93,6 +99,12 @@
 		509720891F750E7500C623A5 /* MockUserAccountRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserAccountRepository.swift; sourceTree = "<group>"; };
 		5097208B1F750FF900C623A5 /* FulfillObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FulfillObserver.swift; sourceTree = "<group>"; };
 		5097208E1F7516B700C623A5 /* WelcomeViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewModelTests.swift; sourceTree = "<group>"; };
+		509720991F7726AA00C623A5 /* Team.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Team.swift; sourceTree = "<group>"; };
+		5097209B1F7736D600C623A5 /* TeamMember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamMember.swift; sourceTree = "<group>"; };
+		5097209D1F7737C200C623A5 /* MemberTeam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberTeam.swift; sourceTree = "<group>"; };
+		5097209F1F77383B00C623A5 /* TeamRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamRepository.swift; sourceTree = "<group>"; };
+		509720A31F77485C00C623A5 /* CollectionEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionEvent.swift; sourceTree = "<group>"; };
+		509720A51F77510B00C623A5 /* DatabaseEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseEntity.swift; sourceTree = "<group>"; };
 		814DE02FC637B398D9A08055 /* Pods-Kiretan0Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kiretan0Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kiretan0Tests/Pods-Kiretan0Tests.release.xcconfig"; sourceTree = "<group>"; };
 		8D5514D7F7DF8D3775DE2A23 /* Pods_Kiretan0Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Kiretan0Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CF2917EE1153BEF1E256A5E /* Pods-Kiretan0.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kiretan0.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kiretan0/Pods-Kiretan0.debug.xcconfig"; sourceTree = "<group>"; };
@@ -186,12 +198,12 @@
 		505263A21F4EF7F300113180 /* AppFramework */ = {
 			isa = PBXGroup;
 			children = (
-				505263A31F4EF7F300113180 /* ActionObserver.swift */,
 				505263A51F4EF7F300113180 /* Message */,
+				505263A31F4EF7F300113180 /* ActionObserver.swift */,
+				505263F81F56E74A00113180 /* NullResolver.swift */,
 				505263BF1F4F0A2F00113180 /* Transitionable.swift */,
 				505263B91F4F092700113180 /* ViewControllerCreatable.swift */,
 				505263AA1F4EF7F300113180 /* ViewModel.swift */,
-				505263F81F56E74A00113180 /* NullResolver.swift */,
 			);
 			path = AppFramework;
 			sourceTree = "<group>";
@@ -240,7 +252,10 @@
 		505263F21F52B7FE00113180 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				509720901F77236300C623A5 /* Team */,
 				505263F31F52B81000113180 /* UserAccount */,
+				509720A31F77485C00C623A5 /* CollectionEvent.swift */,
+				509720A51F77510B00C623A5 /* DatabaseEntity.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -311,6 +326,17 @@
 				5097208E1F7516B700C623A5 /* WelcomeViewModelTests.swift */,
 			);
 			path = Welcome;
+			sourceTree = "<group>";
+		};
+		509720901F77236300C623A5 /* Team */ = {
+			isa = PBXGroup;
+			children = (
+				5097209D1F7737C200C623A5 /* MemberTeam.swift */,
+				509720991F7726AA00C623A5 /* Team.swift */,
+				5097209B1F7736D600C623A5 /* TeamMember.swift */,
+				5097209F1F77383B00C623A5 /* TeamRepository.swift */,
+			);
+			path = Team;
 			sourceTree = "<group>";
 		};
 		7FE24AFD56E00FB772473CAE /* Pods */ = {
@@ -571,12 +597,17 @@
 				505263AD1F4EF7F300113180 /* DismissingMessage.swift in Sources */,
 				505263FE1F56FC1300113180 /* RootViewController.swift in Sources */,
 				505263B11F4EF7F300113180 /* ViewModel.swift in Sources */,
+				509720A61F77510B00C623A5 /* DatabaseEntity.swift in Sources */,
 				505264001F56FC5B00113180 /* RootViewModel.swift in Sources */,
 				505263CB1F4F153700113180 /* WelcomeViewModel.swift in Sources */,
 				505263AC1F4EF7F300113180 /* DefaultResolver.swift in Sources */,
 				505263F71F56E05500113180 /* UserAccount.swift in Sources */,
+				5097209E1F7737C200C623A5 /* MemberTeam.swift in Sources */,
+				5097209A1F7726AA00C623A5 /* Team.swift in Sources */,
+				509720A01F77383B00C623A5 /* TeamRepository.swift in Sources */,
 				505263C41F4F0F4C00113180 /* MainViewModel.swift in Sources */,
 				505263F51F52B84000113180 /* UserAccountRepository.swift in Sources */,
+				5097209C1F7736D600C623A5 /* TeamMember.swift in Sources */,
 				505263AE1F4EF7F300113180 /* TransitionMessage.swift in Sources */,
 				505263F91F56E74A00113180 /* NullResolver.swift in Sources */,
 				505263C91F4F150900113180 /* WelcomeViewController.swift in Sources */,
@@ -585,6 +616,7 @@
 				5052637F1F4B02EE00113180 /* AppDelegate.swift in Sources */,
 				505263C01F4F0A2F00113180 /* Transitionable.swift in Sources */,
 				505263AB1F4EF7F300113180 /* ActionObserver.swift in Sources */,
+				509720A41F77485C00C623A5 /* CollectionEvent.swift in Sources */,
 				505263AF1F4EF7F300113180 /* Message.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

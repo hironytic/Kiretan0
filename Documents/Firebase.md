@@ -4,7 +4,16 @@
 
 ```json
 {
-  "team_users": {
+  "teams": {
+    "team_id_foo": {
+      "name": "Jackson's"
+    },
+    "team_id_bar": {
+      "name": "Mark and his friends"
+    }
+  },
+
+  "team_members": {
     "team_id_foo": {
       "user_id_x": "Tom",
       "user_id_y": "Jessy"
@@ -17,7 +26,7 @@
     }
   },
 
-  "user_teams": {
+  "member_teams": {
     "user_id_x": {
       "team_id_foo": "Team Foo"
     },
