@@ -25,12 +25,19 @@
 
 import Foundation
 import FirebaseDatabase
+import FirebaseAuth
 import RxSwift
+
+public enum TeamRepositoryError: Error {
+    case notAuthenticated
+}
 
 public protocol TeamRepository {
     func team(for teamID: String) -> Observable<Team?>
     func members(in teamID: String) -> Observable<CollectionEvent<TeamMember>>
     func teams(of memberID: String) -> Observable<CollectionEvent<MemberTeam>>
+    
+    func createTeam(name: String) -> Single<String>
 }
 
 public protocol TeamRepositoryResolver {
@@ -65,5 +72,33 @@ public class DefaultTeamRepository: TeamRepository {
     public func teams(of memberID: String) -> Observable<CollectionEvent<MemberTeam>> {
         let memberTeamsRef = Database.database().reference().child("member_teams").child(memberID)
         return memberTeamsRef.createChildCollectionObservable()
+    }
+    
+    public func createTeam(name: String) -> Single<String> {
+        return Single.create { observer -> Disposable in
+            guard let currentUser = Auth.auth().currentUser else {
+                observer(.error(TeamRepositoryError.notAuthenticated))
+                return Disposables.create()
+            }
+            let rootRef = Database.database().reference()
+            let teamID = rootRef.child("teams").childByAutoId().key
+            let memberID = currentUser.uid
+            let memberName = currentUser.displayName ?? "no name"
+            let team = ["name": name]
+            
+            let childUpdates: [String: Any] = [
+                "/teams/\(teamID)": team,
+                "/team_members/\(teamID)/\(memberID)": memberName,
+                "/member_teams/\(memberID)/\(teamID)": name,
+            ]
+            rootRef.updateChildValues(childUpdates) { (error, ref) in
+                if let error = error {
+                    observer(.error(error))
+                } else {
+                    observer(.success(teamID))
+                }
+            }
+            return Disposables.create()
+        }
     }
 }

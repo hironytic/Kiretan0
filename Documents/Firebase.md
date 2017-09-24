@@ -6,10 +6,13 @@
 {
   "teams": {
     "team_id_foo": {
-      "name": "Jackson's"
+      "name": "Team Foo"
     },
     "team_id_bar": {
-      "name": "Mark and his friends"
+      "name": "Barbarians"
+    },
+    "team_id_baz": {
+      "name": "In my house"
     }
   },
 
