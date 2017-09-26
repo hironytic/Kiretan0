@@ -30,6 +30,7 @@ import RxSwift
 
 public enum TeamRepositoryError: Error {
     case notAuthenticated
+    case teamNotFound
 }
 
 public protocol TeamRepository {
@@ -38,6 +39,8 @@ public protocol TeamRepository {
     func teams(of memberID: String) -> Observable<CollectionEvent<MemberTeam>>
     
     func createTeam(name: String) -> Single<String>
+    func join(to teamID: String) -> Completable
+    func leave(from teamID: String) -> Completable
 }
 
 public protocol TeamRepositoryResolver {
@@ -75,7 +78,7 @@ public class DefaultTeamRepository: TeamRepository {
     }
     
     public func createTeam(name: String) -> Single<String> {
-        return Single.create { observer -> Disposable in
+        return Single.create { observer in
             guard let currentUser = Auth.auth().currentUser else {
                 observer(.error(TeamRepositoryError.notAuthenticated))
                 return Disposables.create()
@@ -83,7 +86,7 @@ public class DefaultTeamRepository: TeamRepository {
             let rootRef = Database.database().reference()
             let teamID = rootRef.child("teams").childByAutoId().key
             let memberID = currentUser.uid
-            let memberName = currentUser.displayName ?? "no name"
+            let memberName = currentUser.displayName ?? "no name"   // FIXME:
             let team = ["name": name]
             
             let childUpdates: [String: Any] = [
@@ -96,6 +99,63 @@ public class DefaultTeamRepository: TeamRepository {
                     observer(.error(error))
                 } else {
                     observer(.success(teamID))
+                }
+            }
+            return Disposables.create()
+        }
+    }
+    
+    public func join(to teamID: String) -> Completable {
+        guard let currentUser = Auth.auth().currentUser else {
+            return Completable.error(TeamRepositoryError.notAuthenticated)
+        }
+
+        let memberID = currentUser.uid
+        let memberName = currentUser.displayName ?? "no name"   // FIXME:
+        
+        return team(for: teamID)
+            .take(1)
+            .flatMap { team -> Observable<Never> in
+                guard let team = team else { return Observable.error(TeamRepositoryError.teamNotFound) }
+                return Observable.create { observer in
+                    let rootRef = Database.database().reference()
+
+                    let childUpdates: [String: Any] = [
+                        "/team_members/\(teamID)/\(memberID)": memberName,
+                        "/member_teams/\(memberID)/\(teamID)": team.name,
+                        ]
+                    rootRef.updateChildValues(childUpdates) { (error, ref) in
+                        if let error = error {
+                            observer.onError(error)
+                        } else {
+                            observer.onCompleted()
+                        }
+                    }
+                    return Disposables.create()
+                }
+            }
+            .asCompletable()
+    }
+    
+    public func leave(from teamID: String) -> Completable {
+        guard let currentUser = Auth.auth().currentUser else {
+            return Completable.error(TeamRepositoryError.notAuthenticated)
+        }
+
+        let memberID = currentUser.uid
+
+        return Completable.create { observer in
+            let rootRef = Database.database().reference()
+            
+            let childUpdates: [String: Any] = [
+                "/team_members/\(teamID)/\(memberID)": NSNull(),
+                "/member_teams/\(memberID)/\(teamID)": NSNull(),
+                ]
+            rootRef.updateChildValues(childUpdates) { (error, ref) in
+                if let error = error {
+                    observer(.error(error))
+                } else {
+                    observer(.completed)
                 }
             }
             return Disposables.create()
