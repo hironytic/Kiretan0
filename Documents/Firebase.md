@@ -18,27 +18,35 @@
 
   "team_members": {
     "team_id_foo": {
-      "user_id_x": "Tom",
-      "user_id_y": "Jessy"
+      "user_id_x": {
+        "name": "Tom"
+      },
+      "user_id_y": {
+        "name": "Jessy"
+      }
     },
     "team_id_bar": {
-      "user_id_z": "Mark"
+      "user_id_z": {
+        "name": "Mark"
+      }
     },
     "team_id_baz": {
-      "user_id_z": "Mark"
+      "user_id_z": {
+        "name": "Mark"
+      }
     }
   },
 
   "member_teams": {
     "user_id_x": {
-      "team_id_foo": "Team Foo"
+      "team_id_foo": true
     },
     "user_id_y": {
-      "team_id_foo": "Team Foo"
+      "team_id_foo": true
     },
     "user_id_z": {
-      "team_id_bar": "Barbarians",
-      "team_id_baz": "In my house"
+      "team_id_bar": true,
+      "team_id_baz": true
     }
   },
 

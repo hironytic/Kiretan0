@@ -28,7 +28,10 @@ import FirebaseDatabase
 import RxSwift
 
 public protocol DatabaseEntity {
-    init(snapshot: DataSnapshot) throws
+    init(key: String, value: Any) throws
+    
+    var key: String { get }
+    var value: Any { get }
 }
 
 public extension DatabaseReference {
@@ -39,7 +42,7 @@ public extension DatabaseReference {
                     observer.onNext(nil)
                 } else {
                     do {
-                        let entity = try Entity.init(snapshot: snapshot)
+                        let entity = try Entity.init(key: snapshot.key, value: snapshot.value!)
                         observer.onNext(entity)
                     } catch (let error) {
                         observer.onError(error)
@@ -56,7 +59,7 @@ public extension DatabaseReference {
         return Observable.create { observer in
             let addedHandle = self.observe(.childAdded) { (snapshot, prevKey) in
                 do {
-                    let entity = try Entity.init(snapshot: snapshot)
+                    let entity = try Entity.init(key: snapshot.key, value: snapshot.value!)
                     observer.onNext(.added(entity, prevKey))
                 } catch (let error) {
                     observer.onError(error)
@@ -64,7 +67,7 @@ public extension DatabaseReference {
             }
             let removedHandle = self.observe(.childRemoved) { snapshot in
                 do {
-                    let entity = try Entity.init(snapshot: snapshot)
+                    let entity = try Entity.init(key: snapshot.key, value: snapshot.value!)
                     observer.onNext(.removed(entity))
                 } catch (let error) {
                     observer.onError(error)
@@ -72,7 +75,7 @@ public extension DatabaseReference {
             }
             let changedHandle = self.observe(.childChanged) { snapshot in
                 do {
-                    let entity = try Entity.init(snapshot: snapshot)
+                    let entity = try Entity.init(key: snapshot.key, value: snapshot.value!)
                     observer.onNext(.changed(entity))
                 } catch (let error) {
                     observer.onError(error)

@@ -34,14 +34,22 @@ public struct MemberTeam: DatabaseEntity {
     public let teamID: String
     public let name: String
     
-    public init(teamID: String, name: String) {
+    public init(teamID: String = "", name: String) {
         self.teamID = teamID
         self.name = name
     }
     
-    public init(snapshot: DataSnapshot) throws {
-        guard let name = snapshot.value as? String else { throw MemberTeamError.invalidDataStructure }
+    public init(key: String, value: Any) throws {
+        guard let name = value as? String else { throw MemberTeamError.invalidDataStructure }
         
-        self.init(teamID: snapshot.key, name: name)
+        self.init(teamID: key, name: name)
+    }
+    
+    public var key: String {
+        return teamID
+    }
+    
+    public var value: Any {
+        return name
     }
 }

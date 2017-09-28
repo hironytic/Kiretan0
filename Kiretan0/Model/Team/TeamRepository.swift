@@ -39,10 +39,11 @@ public protocol TeamRepository {
     func members(in teamID: String) -> Observable<CollectionEvent<TeamMember>>
     func teams(of memberID: String) -> Observable<CollectionEvent<MemberTeam>>
     
-    func createTeam(named name: String, by memberName: String) -> Single<String>
-    func join(to teamID: String, as memberName: String) -> Completable
+    func createTeam(_ team: Team, by member: TeamMember) -> Single<String>
+    func join(to teamID: String, as member: TeamMember) -> Completable
     func leave(from teamID: String) -> Completable
-    func changeMemberName(_ name: String, in teamID: String) -> Completable
+    func updateMember(_ member: TeamMember, in teamID: String) -> Completable
+    func updateTeam(_ team: Team) -> Completable
 }
 
 public protocol TeamRepositoryResolver {
@@ -79,7 +80,7 @@ public class DefaultTeamRepository: TeamRepository {
         return memberTeamsRef.createChildCollectionObservable()
     }
     
-    public func createTeam(named name: String, by memberName: String) -> Single<String> {
+    public func createTeam(_ team: Team, by member: TeamMember) -> Single<String> {
         return Single.create { observer in
             guard let currentUser = Auth.auth().currentUser else {
                 observer(.error(TeamRepositoryError.notAuthenticated))
@@ -88,12 +89,11 @@ public class DefaultTeamRepository: TeamRepository {
             let rootRef = Database.database().reference()
             let teamID = rootRef.child("teams").childByAutoId().key
             let memberID = currentUser.uid
-            let team = ["name": name]
             
             let childUpdates: [String: Any] = [
-                "/teams/\(teamID)": team,
-                "/team_members/\(teamID)/\(memberID)": memberName,
-                "/member_teams/\(memberID)/\(teamID)": name,
+                "/teams/\(teamID)": team.value,
+                "/team_members/\(teamID)/\(memberID)": member.value,
+                "/member_teams/\(memberID)/\(teamID)": true,
             ]
             rootRef.updateChildValues(childUpdates) { (error, ref) in
                 if let error = error {
@@ -106,7 +106,7 @@ public class DefaultTeamRepository: TeamRepository {
         }
     }
     
-    public func join(to teamID: String, as memberName: String) -> Completable {
+    public func join(to teamID: String, as member: TeamMember) -> Completable {
         guard let currentUser = Auth.auth().currentUser else {
             return Completable.error(TeamRepositoryError.notAuthenticated)
         }
@@ -115,13 +115,13 @@ public class DefaultTeamRepository: TeamRepository {
         return team(for: teamID)
             .take(1)
             .flatMap { team -> Observable<Never> in
-                guard let team = team else { return Observable.error(TeamRepositoryError.teamNotFound) }
+                guard team != nil else { return Observable.error(TeamRepositoryError.teamNotFound) }
                 return Observable.create { observer in
                     let rootRef = Database.database().reference()
 
                     let childUpdates: [String: Any] = [
-                        "/team_members/\(teamID)/\(memberID)": memberName,
-                        "/member_teams/\(memberID)/\(teamID)": team.name,
+                        "/team_members/\(teamID)/\(memberID)": member.value,
+                        "/member_teams/\(memberID)/\(teamID)": true,
                         ]
                     rootRef.updateChildValues(childUpdates) { (error, ref) in
                         if let error = error {
@@ -160,7 +160,7 @@ public class DefaultTeamRepository: TeamRepository {
         }
     }
     
-    public func changeMemberName(_ memberName: String, in teamID: String) -> Completable {
+    public func updateMember(_ member: TeamMember, in teamID: String) -> Completable {
         guard let currentUser = Auth.auth().currentUser else {
             return Completable.error(TeamRepositoryError.notAuthenticated)
         }
@@ -172,7 +172,7 @@ public class DefaultTeamRepository: TeamRepository {
                 if !snapshot.exists() {
                     observer(.error(TeamRepositoryError.notInTeam))
                 } else {
-                    memberRef.setValue(memberName) { (error, _) in
+                    memberRef.setValue(member.value) { (error, _) in
                         if let error = error {
                             observer(.error(error))
                         } else {
@@ -185,5 +185,29 @@ public class DefaultTeamRepository: TeamRepository {
             })
             return Disposables.create()
         }
+    }
+    
+    public func updateTeam(_ newTeam: Team) -> Completable {
+        guard Auth.auth().currentUser != nil else {
+            return Completable.error(TeamRepositoryError.notAuthenticated)
+        }
+
+        return team(for: newTeam.teamID)
+            .take(1)
+            .flatMap { team -> Observable<Never> in
+                guard team != nil else { return Observable.error(TeamRepositoryError.teamNotFound) }
+                return Observable.create { observer in
+                    let teamRef = Database.database().reference().child("teams").child(newTeam.teamID)
+                    teamRef.setValue(newTeam.value) { (error, _) in
+                        if let error = error {
+                            observer.onError(error)
+                        } else {
+                            observer.onCompleted()
+                        }
+                    }
+                    return Disposables.create()
+                }
+            }
+            .asCompletable()
     }
 }

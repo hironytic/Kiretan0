@@ -24,7 +24,6 @@
 //
 
 import Foundation
-import FirebaseDatabase
 
 public enum TeamMemberError: Error {
     case invalidDataStructure
@@ -34,14 +33,23 @@ public struct TeamMember: DatabaseEntity {
     public let memberID: String
     public let name: String
     
-    public init(memberID: String, name: String) {
+    public init(memberID: String = "", name: String) {
         self.memberID = memberID
         self.name = name
     }
     
-    public init(snapshot: DataSnapshot) throws {
-        guard let name = snapshot.value as? String else { throw TeamMemberError.invalidDataStructure }
+    public init(key: String, value: Any) throws {
+        guard let value = value as? [String: Any] else { throw TeamMemberError.invalidDataStructure }
+        guard let name = (value["name"] ?? "") as? String else { throw TeamMemberError.invalidDataStructure }
         
-        self.init(memberID: snapshot.key, name: name)
+        self.init(memberID: key, name: name)
+    }
+    
+    public var key: String {
+        return memberID
+    }
+    
+    public var value: Any {
+        return ["name": name]
     }
 }
