@@ -34,7 +34,7 @@ public protocol DatabaseEntity {
     var value: Any { get }
 }
 
-public extension DatabaseReference {
+public extension DatabaseQuery {
     func createObservable<Entity: DatabaseEntity>() -> Observable<Entity?> {
         return Observable.create { observer in
             let handle = self.observe(.value) { snapshot in
