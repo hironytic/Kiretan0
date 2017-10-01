@@ -81,10 +81,20 @@ public extension DatabaseQuery {
                     observer.onError(error)
                 }
             }
+            let movedHandle = self.observe(.childMoved) { (snapshot, prevKey) in
+                do {
+                    let entity = try Entity.init(key: snapshot.key, value: snapshot.value!)
+                    observer.onNext(.moved(entity, prevKey))
+                } catch (let error) {
+                    observer.onError(error)
+                }
+            }
+            
             return Disposables.create {
                 self.removeObserver(withHandle: addedHandle)
                 self.removeObserver(withHandle: removedHandle)
                 self.removeObserver(withHandle: changedHandle)
+                self.removeObserver(withHandle: movedHandle)
             }
         }
     }

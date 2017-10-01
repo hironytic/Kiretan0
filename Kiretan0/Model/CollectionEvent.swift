@@ -31,5 +31,6 @@ public enum CollectionEvent<Entity> {
     case added(Entity, String?)
     case removed(Entity)
     case changed(Entity)
+    case moved(Entity, String?)
 }
 
