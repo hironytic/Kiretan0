@@ -30,7 +30,7 @@ public enum ItemError: Error {
     case invalidDataStructure
 }
 
-public struct Item: DatabaseEntity {
+public struct Item: Entity {
     public let itemID: String
     public let name: String
     public let isInsufficient: Bool
@@ -43,20 +43,19 @@ public struct Item: DatabaseEntity {
         self.lastChange = lastChange
     }
     
-    public init(key: String, value: Any) throws {
-        guard let value = value as? [String: Any] else { throw ItemError.invalidDataStructure }
-        guard let name = (value["name"] ?? "") as? String else { throw ItemError.invalidDataStructure }
-        guard let isInsufficient = (value["insufficient"] ?? false) as? Bool else { throw ItemError.invalidDataStructure }
-        guard let lastChange = (value["last_change"] ?? 0) as? Int64 else { throw ItemError.invalidDataStructure }
+    public init(documentID: String, data: [String: Any]) throws {
+        guard let name = (data["name"] ?? "") as? String else { throw ItemError.invalidDataStructure }
+        guard let isInsufficient = (data["insufficient"] ?? false) as? Bool else { throw ItemError.invalidDataStructure }
+        guard let lastChange = (data["last_change"] ?? 0) as? Int64 else { throw ItemError.invalidDataStructure }
         
-        self.init(itemID: key, name: name, isInsufficient: isInsufficient, lastChange: lastChange)
+        self.init(itemID: documentID, name: name, isInsufficient: isInsufficient, lastChange: lastChange)
     }
     
-    public var key: String {
+    public var documentID: String {
         return itemID
     }
     
-    public var value: Any {
+    public var data: [String: Any] {
         return [
             "name": name,
             "insufficient": isInsufficient,

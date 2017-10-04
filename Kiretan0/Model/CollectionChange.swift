@@ -1,5 +1,5 @@
 //
-// TeamMember.swift
+// CollectionChange.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -25,30 +25,9 @@
 
 import Foundation
 
-public enum TeamMemberError: Error {
-    case invalidDataStructure
-}
-
-public struct TeamMember: Entity {
-    public let memberID: String
-    public let name: String
-    
-    public init(memberID: String = "", name: String) {
-        self.memberID = memberID
-        self.name = name
-    }
-    
-    public init(documentID: String, data: [String: Any]) throws {
-        guard let name = (data["name"] ?? "") as? String else { throw TeamMemberError.invalidDataStructure }
-        
-        self.init(memberID: documentID, name: name)
-    }
-    
-    public var documentID: String {
-        return memberID
-    }
-    
-    public var data: [String: Any] {
-        return ["name": name]
-    }
+public struct CollectionChange<Entity> {
+    public let result: [Entity]
+    public let deletions: [Int]
+    public let insertions: [Int]
+    public let modifications: [Int]
 }

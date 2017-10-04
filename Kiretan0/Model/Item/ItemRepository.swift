@@ -29,11 +29,11 @@ import FirebaseDatabase
 import RxSwift
 
 public protocol ItemRepository {
-    func items(in teamID: String) -> Observable<CollectionEvent<Item>>
-    
-    func createItem(_ item: Item, in teamID: String) -> Single<String>
-    func updateItem(_ item: Item, in teamID: String) -> Completable
-    func removeItem(_ itemID: String, in teamID: String) -> Completable
+//    func items(in teamID: String) -> Observable<CollectionEvent<Item>>
+//
+//    func createItem(_ item: Item, in teamID: String) -> Single<String>
+//    func updateItem(_ item: Item, in teamID: String) -> Completable
+//    func removeItem(_ itemID: String, in teamID: String) -> Completable
 }
 
 public protocol ItemRepositoryResolver {
@@ -55,62 +55,62 @@ public class DefaultItemRepository: ItemRepository {
         _resolver = resolver
     }
     
-    public func items(in teamID: String) -> Observable<CollectionEvent<Item>> {
-        let itemsRef = Database.database().reference().child("items").child(teamID)
-        let query = itemsRef.queryOrdered(byChild: "last_change")
-        return query.createChildCollectionObservable()
-    }
-
-    public func createItem(_ item: Item, in teamID: String) -> Single<String> {
-        guard Auth.auth().currentUser != nil else {
-            return Single.error(TeamRepositoryError.notAuthenticated)
-        }
-        return Single.create { observer in
-            let itemsRef = Database.database().reference().child("items").child(teamID)
-            let itemID = itemsRef.childByAutoId().key
-            
-            itemsRef.child(itemID).setValue(item.value) { (error, _) in
-                if let error = error {
-                    observer(.error(error))
-                } else {
-                    observer(.success(itemID))
-                }
-            }
-            return Disposables.create()
-        }
-    }
-
-    public func updateItem(_ item: Item, in teamID: String) -> Completable {
-        guard Auth.auth().currentUser != nil else {
-            return Completable.error(TeamRepositoryError.notAuthenticated)
-        }
-        return Completable.create { observer in
-            let itemRef = Database.database().reference().child("items").child(teamID).child(item.itemID)
-            itemRef.setValue(item.value) { (error, _) in
-                if let error = error {
-                    observer(.error(error))
-                } else {
-                    observer(.completed)
-                }
-            }
-            return Disposables.create()
-        }
-    }
-    
-    public func removeItem(_ itemID: String, in teamID: String) -> Completable {
-        guard Auth.auth().currentUser != nil else {
-            return Completable.error(TeamRepositoryError.notAuthenticated)
-        }
-        return Completable.create { observer in
-            let itemRef = Database.database().reference().child("items").child(teamID).child(itemID)
-            itemRef.removeValue { (error, _) in
-                if let error = error {
-                    observer(.error(error))
-                } else {
-                    observer(.completed)
-                }
-            }
-            return Disposables.create()
-        }
-    }
+//    public func items(in teamID: String) -> Observable<CollectionEvent<Item>> {
+//        let itemsRef = Database.database().reference().child("items").child(teamID)
+//        let query = itemsRef.queryOrdered(byChild: "last_change")
+//        return query.createChildCollectionObservable()
+//    }
+//
+//    public func createItem(_ item: Item, in teamID: String) -> Single<String> {
+//        guard Auth.auth().currentUser != nil else {
+//            return Single.error(TeamRepositoryError.notAuthenticated)
+//        }
+//        return Single.create { observer in
+//            let itemsRef = Database.database().reference().child("items").child(teamID)
+//            let itemID = itemsRef.childByAutoId().key
+//
+//            itemsRef.child(itemID).setValue(item.value) { (error, _) in
+//                if let error = error {
+//                    observer(.error(error))
+//                } else {
+//                    observer(.success(itemID))
+//                }
+//            }
+//            return Disposables.create()
+//        }
+//    }
+//
+//    public func updateItem(_ item: Item, in teamID: String) -> Completable {
+//        guard Auth.auth().currentUser != nil else {
+//            return Completable.error(TeamRepositoryError.notAuthenticated)
+//        }
+//        return Completable.create { observer in
+//            let itemRef = Database.database().reference().child("items").child(teamID).child(item.itemID)
+//            itemRef.setValue(item.value) { (error, _) in
+//                if let error = error {
+//                    observer(.error(error))
+//                } else {
+//                    observer(.completed)
+//                }
+//            }
+//            return Disposables.create()
+//        }
+//    }
+//
+//    public func removeItem(_ itemID: String, in teamID: String) -> Completable {
+//        guard Auth.auth().currentUser != nil else {
+//            return Completable.error(TeamRepositoryError.notAuthenticated)
+//        }
+//        return Completable.create { observer in
+//            let itemRef = Database.database().reference().child("items").child(teamID).child(itemID)
+//            itemRef.removeValue { (error, _) in
+//                if let error = error {
+//                    observer(.error(error))
+//                } else {
+//                    observer(.completed)
+//                }
+//            }
+//            return Disposables.create()
+//        }
+//    }
 }

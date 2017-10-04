@@ -30,7 +30,7 @@ public enum MemberTeamError: Error {
     case invalidDataStructure
 }
 
-public struct MemberTeam: DatabaseEntity {
+public struct MemberTeam: Entity {
     public let teamID: String
     public let name: String
     
@@ -39,17 +39,17 @@ public struct MemberTeam: DatabaseEntity {
         self.name = name
     }
     
-    public init(key: String, value: Any) throws {
-        guard let name = value as? String else { throw MemberTeamError.invalidDataStructure }
+    public init(documentID: String, data: [String: Any]) throws {
+        guard let name = (data["name"] ?? "") as? String else { throw MemberTeamError.invalidDataStructure }
         
-        self.init(teamID: key, name: name)
+        self.init(teamID: documentID, name: name)
     }
     
-    public var key: String {
+    public var documentID: String {
         return teamID
     }
     
-    public var value: Any {
-        return name
+    public var data: [String: Any] {
+        return ["name": name]
     }
 }

@@ -1,5 +1,5 @@
 //
-// CollectionEvent.swift
+// Entity.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -24,13 +24,10 @@
 //
 
 import Foundation
-import FirebaseDatabase
-import RxSwift
 
-public enum CollectionEvent<Entity> {
-    case added(Entity, String?)
-    case removed(Entity)
-    case changed(Entity)
-    case moved(Entity, String?)
+public protocol Entity {
+    init(documentID: String, data: [String : Any]) throws
+    
+    var documentID: String { get }
+    var data: [String : Any] { get }
 }
-
