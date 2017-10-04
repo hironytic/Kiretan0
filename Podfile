@@ -9,8 +9,8 @@ target 'Kiretan0' do
   pod 'Firebase/Core'
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
-  pod 'Firestore', :podspec => 'https://storage.googleapis.com/firebase-preview-drop/ios/firestore/0.6.3/Firestore.podspec.json'
-
+  pod 'Firebase/Firestore'
+  
   target 'Kiretan0Tests' do
     inherit! :search_paths
     # Pods for testing
