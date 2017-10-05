@@ -25,7 +25,6 @@
 
 import Foundation
 import FirebaseAuth
-import FirebaseFirestore
 import RxSwift
 
 public enum TeamRepositoryError: Error {
@@ -57,7 +56,7 @@ extension DefaultResolver: TeamRepositoryResolver {
 }
 
 public class DefaultTeamRepository: TeamRepository {
-    public typealias Resolver = NullResolver
+    public typealias Resolver = DataStoreResolver
 
     private let _resolver: Resolver
     
@@ -66,54 +65,15 @@ public class DefaultTeamRepository: TeamRepository {
     }
     
     public func team(for teamID: String) -> Observable<Team?> {
-        return Observable.create { observer in
-            let teamRef = Firestore.firestore().collection("team").document(teamID)
-            let listener = teamRef.addSnapshotListener { (documentSnapshot, error) in
-                if let error = error {
-                    observer.onError(error)
-                } else {
-                    let dSnapshot = documentSnapshot!
-                    if dSnapshot.exists {
-                        do {
-                            let entity = try Team(documentID: dSnapshot.documentID, data: dSnapshot.data())
-                            observer.onNext(entity)
-                        } catch let error {
-                            observer.onError(error)
-                        }
-                    } else {
-                        observer.onNext(nil)
-                    }
-                }
-            }
-            return Disposables.create {
-                listener.remove()
-            }
-        }
+        let dataStore = _resolver.resolveDataStore()
+        let teamPath = dataStore.collection("team").document(teamID)
+        return dataStore.observeDocument(at: teamPath)
     }
     
     public func members(in teamID: String) -> Observable<CollectionChange<TeamMember>> {
-        return Observable.create { observer in
-            let teamMemberRef = Firestore.firestore().collection("team").document(teamID).collection("member")
-            let listener = teamMemberRef.addSnapshotListener{ (querySnapshot, error) in
-                if let error = error {
-                    observer.onError(error)
-                } else {
-                    do {
-                        let qSnapshot = querySnapshot!
-                        let result = try qSnapshot.documents.map { try TeamMember(documentID: $0.documentID, data: $0.data()) }
-                        let deletions = qSnapshot.documentChanges.filter({ $0.type == .removed }).map({ Int($0.oldIndex) })
-                        let modifications = qSnapshot.documentChanges.filter({ $0.type == .modified }).map({ Int($0.oldIndex) })
-                        let insertions = qSnapshot.documentChanges.filter({ $0.type == .added }).map({ Int($0.newIndex) })
-                        observer.onNext(CollectionChange(result: result, deletions: deletions, insertions: insertions, modifications: modifications))
-                    } catch let error {
-                        observer.onError(error)
-                    }
-                }
-            }
-            return Disposables.create {
-                listener.remove()
-            }
-        }
+        let dataStore = _resolver.resolveDataStore()
+        let teamMemberPath = dataStore.collection("team").document(teamID).collection("member")
+        return dataStore.observeCollection(matches: teamMemberPath)
     }
 
 //    public func teams(of memberID: String) -> Observable<CollectionEvent<MemberTeam>> {
@@ -122,36 +82,24 @@ public class DefaultTeamRepository: TeamRepository {
 //    }
 //
     public func createTeam(_ team: Team, by member: TeamMember) -> Single<String> {
-        return Single.create { observer in
-            guard let currentUser = Auth.auth().currentUser else {
-                observer(.error(TeamRepositoryError.notAuthenticated))
-                return Disposables.create()
-            }
-            
-            let db = Firestore.firestore()
-            let batch = db.batch()
-            
-            let teamRef = db.collection("team").document()
-            let teamID = teamRef.documentID
-            batch.setData(team.data, forDocument: teamRef)
-            
-            let memberID = currentUser.uid
-            let memberRef = teamRef.collection("member").document(memberID)
-            batch.setData(member.data, forDocument: memberRef)
-            
-            let reverseRef = db.collection("member_team").document(memberID)
-            batch.setData([teamID: true], forDocument: reverseRef, options: SetOptions.merge())
-            
-            batch.commit { error in
-                if let error = error {
-                    observer(.error(error))
-                } else {
-                    observer(.success(teamID))
-                }
-            }
-            
-            return Disposables.create()
+        guard let currentUser = Auth.auth().currentUser else {
+            return Single.error(TeamRepositoryError.notAuthenticated)
         }
+        
+        let memberID = currentUser.uid
+        var teamID: String = ""
+        let dataStore = _resolver.resolveDataStore()
+        return dataStore.write { writer in
+            let teamPath = dataStore.collection("team").document()
+            teamID = teamPath.documentID
+            writer.setDocumentData(team.data, at: teamPath)
+            
+            let memberPath = teamPath.collection("member").document(memberID)
+            writer.setDocumentData(member.data, at: memberPath)
+            
+            let reversePath = dataStore.collection("member_team").document(memberID)
+            writer.mergeDocumentData([teamID: true], at: reversePath)
+        }.andThen(Single.just(teamID))
     }
 
 //    public func join(to teamID: String, as member: TeamMember) -> Completable {
