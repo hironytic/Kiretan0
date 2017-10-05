@@ -54,16 +54,16 @@
     }
   },
   "[C] member_team": {
-    "[D] user_id_x": [
-      "team_id_foo"
-    ],
-    "[D] user_id_y": [
-      "team_id_foo"
-    ],
-    "[D] user_id_z": [
-      "team_id_bar",
-      "team_id_baz"
-    ]
+    "[D] user_id_x": {
+      "team_id_foo": true
+    },
+    "[D] user_id_y": {
+      "team_id_foo": true
+    },
+    "[D] user_id_z": {
+      "team_id_bar": true,
+      "team_id_baz": true
+    }
   }
 }
 ```

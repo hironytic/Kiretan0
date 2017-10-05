@@ -39,7 +39,7 @@ public protocol TeamRepository {
     func members(in teamID: String) -> Observable<CollectionChange<TeamMember>>
 //    func teams(of memberID: String) -> Observable<CollectionEvent<MemberTeam>>
 //    
-//    func createTeam(_ team: Team, by member: TeamMember) -> Single<String>
+    func createTeam(_ team: Team, by member: TeamMember) -> Single<String>
 //    func join(to teamID: String, as member: TeamMember) -> Completable
 //    func leave(from teamID: String) -> Completable
 //    func updateMember(_ member: TeamMember, in teamID: String) -> Completable
@@ -121,32 +121,39 @@ public class DefaultTeamRepository: TeamRepository {
 //        return memberTeamsRef.createChildCollectionObservable()
 //    }
 //
-//    public func createTeam(_ team: Team, by member: TeamMember) -> Single<String> {
-//        return Single.create { observer in
-//            guard let currentUser = Auth.auth().currentUser else {
-//                observer(.error(TeamRepositoryError.notAuthenticated))
-//                return Disposables.create()
-//            }
-//            let rootRef = Database.database().reference()
-//            let teamID = rootRef.child("teams").childByAutoId().key
-//            let memberID = currentUser.uid
-//
-//            let childUpdates: [String: Any] = [
-//                "/teams/\(teamID)": team.value,
-//                "/team_members/\(teamID)/\(memberID)": member.value,
-//                "/member_teams/\(memberID)/\(teamID)": true,
-//            ]
-//            rootRef.updateChildValues(childUpdates) { (error, ref) in
-//                if let error = error {
-//                    observer(.error(error))
-//                } else {
-//                    observer(.success(teamID))
-//                }
-//            }
-//            return Disposables.create()
-//        }
-//    }
-//
+    public func createTeam(_ team: Team, by member: TeamMember) -> Single<String> {
+        return Single.create { observer in
+            guard let currentUser = Auth.auth().currentUser else {
+                observer(.error(TeamRepositoryError.notAuthenticated))
+                return Disposables.create()
+            }
+            
+            let db = Firestore.firestore()
+            let batch = db.batch()
+            
+            let teamRef = db.collection("team").document()
+            let teamID = teamRef.documentID
+            batch.setData(team.data, forDocument: teamRef)
+            
+            let memberID = currentUser.uid
+            let memberRef = teamRef.collection("member").document(memberID)
+            batch.setData(member.data, forDocument: memberRef)
+            
+            let reverseRef = db.collection("member_team").document(memberID)
+            batch.setData([teamID: true], forDocument: reverseRef, options: SetOptions.merge())
+            
+            batch.commit { error in
+                if let error = error {
+                    observer(.error(error))
+                } else {
+                    observer(.success(teamID))
+                }
+            }
+            
+            return Disposables.create()
+        }
+    }
+
 //    public func join(to teamID: String, as member: TeamMember) -> Completable {
 //        guard let currentUser = Auth.auth().currentUser else {
 //            return Completable.error(TeamRepositoryError.notAuthenticated)
