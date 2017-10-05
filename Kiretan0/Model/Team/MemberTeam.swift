@@ -31,25 +31,26 @@ public enum MemberTeamError: Error {
 }
 
 public struct MemberTeam: Entity {
-    public let teamID: String
-    public let name: String
+    public let memberID: String
+    public let teamIDList: [String]
     
-    public init(teamID: String = "", name: String) {
-        self.teamID = teamID
-        self.name = name
+    public init(memberID: String = "", teamIDList: [String]) {
+        self.memberID = memberID
+        self.teamIDList = teamIDList
     }
     
     public init(documentID: String, data: [String: Any]) throws {
-        guard let name = (data["name"] ?? "") as? String else { throw MemberTeamError.invalidDataStructure }
-        
-        self.init(teamID: documentID, name: name)
+        let teamIDList = data.keys.sorted()
+        self.init(memberID: documentID, teamIDList: teamIDList)
     }
     
     public var documentID: String {
-        return teamID
+        return memberID
     }
     
     public var data: [String: Any] {
-        return ["name": name]
+        return teamIDList.reduce(into: [:]) { (acc, teamID) in
+            acc[teamID] = true
+        }
     }
 }

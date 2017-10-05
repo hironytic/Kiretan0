@@ -36,8 +36,8 @@ public enum TeamRepositoryError: Error {
 public protocol TeamRepository {
     func team(for teamID: String) -> Observable<Team?>
     func members(in teamID: String) -> Observable<CollectionChange<TeamMember>>
-//    func teams(of memberID: String) -> Observable<CollectionEvent<MemberTeam>>
-//    
+    func teamList(of memberID: String) -> Observable<MemberTeam>
+
     func createTeam(_ team: Team, by member: TeamMember) -> Single<String>
 //    func join(to teamID: String, as member: TeamMember) -> Completable
 //    func leave(from teamID: String) -> Completable
@@ -76,11 +76,20 @@ public class DefaultTeamRepository: TeamRepository {
         return dataStore.observeCollection(matches: teamMemberPath)
     }
 
-//    public func teams(of memberID: String) -> Observable<CollectionEvent<MemberTeam>> {
-//        let memberTeamsRef = Database.database().reference().child("member_teams").child(memberID)
-//        return memberTeamsRef.createChildCollectionObservable()
-//    }
-//
+    public func teamList(of memberID: String) -> Observable<MemberTeam> {
+        let dataStore = _resolver.resolveDataStore()
+        let memberTeamPath = dataStore.collection("member_team").document(memberID)
+        return dataStore
+            .observeDocument(at: memberTeamPath)
+            .map { (memberTeam: MemberTeam?) in
+                if let memberTeam = memberTeam {
+                    return memberTeam
+                } else {
+                    return MemberTeam(memberID: memberID, teamIDList: [])
+                }
+            }
+    }
+
     public func createTeam(_ team: Team, by member: TeamMember) -> Single<String> {
         guard let currentUser = Auth.auth().currentUser else {
             return Single.error(TeamRepositoryError.notAuthenticated)
