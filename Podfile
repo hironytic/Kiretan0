@@ -8,7 +8,6 @@ target 'Kiretan0' do
   # Pods for Kiretan0
   pod 'Firebase/Core'
   pod 'Firebase/Auth'
-  pod 'Firebase/Database'
   pod 'Firebase/Firestore'
   
   target 'Kiretan0Tests' do
