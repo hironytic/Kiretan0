@@ -81,11 +81,11 @@ public class DefaultDataStore: DataStore {
     }
     
     public var deletePlaceholder: Any {
-        return FieldValue.delete
+        return FieldValue.delete()
     }
     
     public var serverTimestampPlaceholder: Any {
-        return FieldValue.serverTimestamp
+        return FieldValue.serverTimestamp()
     }
 
     public func collection(_ collectionID: String) -> CollectionPath {
