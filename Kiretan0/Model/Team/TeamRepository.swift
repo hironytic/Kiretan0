@@ -28,7 +28,6 @@ import FirebaseAuth
 import RxSwift
 
 public enum TeamRepositoryError: Error {
-    case notAuthenticated
     case teamNotFound
     case notInTeam
 }
@@ -39,8 +38,8 @@ public protocol TeamRepository {
     func teamList(of memberID: String) -> Observable<MemberTeam>
 
     func createTeam(_ team: Team, by member: TeamMember) -> Single<String>
-//    func join(to teamID: String, as member: TeamMember) -> Completable
-//    func leave(from teamID: String) -> Completable
+    func join(to teamID: String, as member: TeamMember) -> Completable
+    func leave(from teamID: String, as memberID: String) -> Completable
 //    func updateMember(_ member: TeamMember, in teamID: String) -> Completable
 //    func updateTeam(_ team: Team) -> Completable
 }
@@ -66,18 +65,30 @@ public class DefaultTeamRepository: TeamRepository {
     
     public func team(for teamID: String) -> Observable<Team?> {
         let dataStore = _resolver.resolveDataStore()
+        return team(for: teamID, dataStore: dataStore)
+    }
+    
+    private func team(for teamID: String, dataStore: DataStore) -> Observable<Team?> {
         let teamPath = dataStore.collection("team").document(teamID)
         return dataStore.observeDocument(at: teamPath)
     }
     
     public func members(in teamID: String) -> Observable<CollectionChange<TeamMember>> {
         let dataStore = _resolver.resolveDataStore()
+        return members(in: teamID, dataStore: dataStore)
+    }
+    
+    private func members(in teamID: String, dataStore: DataStore) -> Observable<CollectionChange<TeamMember>> {
         let teamMemberPath = dataStore.collection("team").document(teamID).collection("member")
         return dataStore.observeCollection(matches: teamMemberPath)
     }
 
     public func teamList(of memberID: String) -> Observable<MemberTeam> {
         let dataStore = _resolver.resolveDataStore()
+        return teamList(of: memberID, dataStore: dataStore)
+    }
+    
+    private func teamList(of memberID: String, dataStore: DataStore) -> Observable<MemberTeam> {
         let memberTeamPath = dataStore.collection("member_team").document(memberID)
         return dataStore
             .observeDocument(at: memberTeamPath)
@@ -91,11 +102,6 @@ public class DefaultTeamRepository: TeamRepository {
     }
 
     public func createTeam(_ team: Team, by member: TeamMember) -> Single<String> {
-        guard let currentUser = Auth.auth().currentUser else {
-            return Single.error(TeamRepositoryError.notAuthenticated)
-        }
-        
-        let memberID = currentUser.uid
         var teamID: String = ""
         let dataStore = _resolver.resolveDataStore()
         return dataStore.write { writer in
@@ -103,67 +109,45 @@ public class DefaultTeamRepository: TeamRepository {
             teamID = teamPath.documentID
             writer.setDocumentData(team.data, at: teamPath)
             
-            let memberPath = teamPath.collection("member").document(memberID)
+            let memberPath = teamPath.collection("member").document(member.memberID)
             writer.setDocumentData(member.data, at: memberPath)
             
-            let reversePath = dataStore.collection("member_team").document(memberID)
+            let reversePath = dataStore.collection("member_team").document(member.memberID)
             writer.mergeDocumentData([teamID: true], at: reversePath)
         }.andThen(Single.just(teamID))
     }
 
-//    public func join(to teamID: String, as member: TeamMember) -> Completable {
-//        guard let currentUser = Auth.auth().currentUser else {
-//            return Completable.error(TeamRepositoryError.notAuthenticated)
-//        }
-//        let memberID = currentUser.uid
-//
-//        return team(for: teamID)
-//            .take(1)
-//            .flatMap { team -> Observable<Never> in
-//                guard team != nil else { return Observable.error(TeamRepositoryError.teamNotFound) }
-//                return Observable.create { observer in
-//                    let rootRef = Database.database().reference()
-//
-//                    let childUpdates: [String: Any] = [
-//                        "/team_members/\(teamID)/\(memberID)": member.value,
-//                        "/member_teams/\(memberID)/\(teamID)": true,
-//                        ]
-//                    rootRef.updateChildValues(childUpdates) { (error, ref) in
-//                        if let error = error {
-//                            observer.onError(error)
-//                        } else {
-//                            observer.onCompleted()
-//                        }
-//                    }
-//                    return Disposables.create()
-//                }
-//            }
-//            .asCompletable()
-//    }
-//
-//    public func leave(from teamID: String) -> Completable {
-//        guard let currentUser = Auth.auth().currentUser else {
-//            return Completable.error(TeamRepositoryError.notAuthenticated)
-//        }
-//        let memberID = currentUser.uid
-//
-//        return Completable.create { observer in
-//            let rootRef = Database.database().reference()
-//
-//            let childUpdates: [String: Any] = [
-//                "/team_members/\(teamID)/\(memberID)": NSNull(),
-//                "/member_teams/\(memberID)/\(teamID)": NSNull(),
-//                ]
-//            rootRef.updateChildValues(childUpdates) { (error, ref) in
-//                if let error = error {
-//                    observer(.error(error))
-//                } else {
-//                    observer(.completed)
-//                }
-//            }
-//            return Disposables.create()
-//        }
-//    }
+    public func join(to teamID: String, as member: TeamMember) -> Completable {
+        let dataStore = self._resolver.resolveDataStore()
+        return team(for: teamID, dataStore: dataStore)
+            .take(1)
+            .flatMap { team -> Observable<Never> in
+                guard team != nil else { return Observable.error(TeamRepositoryError.teamNotFound) }
+                return dataStore.write { writer in
+                    let teamPath = dataStore.collection("team").document(teamID)
+                    let memberPath = teamPath.collection("member").document(member.memberID)
+                    writer.setDocumentData(member.data, at: memberPath)
+
+                    let reversePath = dataStore.collection("member_team").document(member.memberID)
+                    writer.mergeDocumentData([teamID: true], at: reversePath)
+                }.asObservable()
+            }
+            .asCompletable()
+    }
+
+    public func leave(from teamID: String, as memberID: String) -> Completable {
+        let dataStore = self._resolver.resolveDataStore()
+
+        return dataStore.write { writer in
+            let teamPath = dataStore.collection("team").document()
+            let teamMemberPath = teamPath.collection("member").document(memberID)
+            writer.deleteDocument(at: teamMemberPath)
+
+            let reversePath = dataStore.collection("member_team").document(memberID)
+            writer.updateDocumentData([teamID: dataStore.deletePlaceholder], at: reversePath)
+        }
+    }
+
 //
 //    public func updateMember(_ member: TeamMember, in teamID: String) -> Completable {
 //        guard let currentUser = Auth.auth().currentUser else {

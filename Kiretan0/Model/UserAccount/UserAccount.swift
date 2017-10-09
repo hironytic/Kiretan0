@@ -27,15 +27,15 @@ import Foundation
 import FirebaseAuth
 
 public struct UserAccount {
-    public let displayName: String?
+    public let userID: String
     public let isAnonymous: Bool
     
-    public init(displayName: String?, isAnonymous: Bool) {
-        self.displayName = displayName
+    public init(userID: String = "", isAnonymous: Bool) {
+        self.userID = userID
         self.isAnonymous = isAnonymous
     }
 
     public init(user: User) {
-        self.init(displayName: user.displayName, isAnonymous: user.isAnonymous)
+        self.init(userID: user.uid, isAnonymous: user.isAnonymous)
     }
 }
