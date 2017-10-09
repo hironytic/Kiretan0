@@ -53,31 +53,26 @@ public class DefaultTeamRepository: TeamRepository {
     public typealias Resolver = DataStoreResolver
 
     private let _resolver: Resolver
+    private let _dataStore: DataStore
     
     public init(resolver: Resolver) {
         _resolver = resolver
+        _dataStore = _resolver.resolveDataStore()
     }
     
     public func team(for teamID: String) -> Observable<Team?> {
-        let dataStore = _resolver.resolveDataStore()
-        let teamPath = dataStore.collection("team").document(teamID)
-        return dataStore.observeDocument(at: teamPath)
+        let teamPath = _dataStore.collection("team").document(teamID)
+        return _dataStore.observeDocument(at: teamPath)
     }
     
     public func members(in teamID: String) -> Observable<CollectionChange<TeamMember>> {
-        let dataStore = _resolver.resolveDataStore()
-        let teamMemberPath = dataStore.collection("team").document(teamID).collection("member")
-        return dataStore.observeCollection(matches: teamMemberPath)
+        let teamMemberPath = _dataStore.collection("team").document(teamID).collection("member")
+        return _dataStore.observeCollection(matches: teamMemberPath)
     }
 
     public func teamList(of memberID: String) -> Observable<MemberTeam> {
-        let dataStore = _resolver.resolveDataStore()
-        return teamList(of: memberID, dataStore: dataStore)
-    }
-    
-    private func teamList(of memberID: String, dataStore: DataStore) -> Observable<MemberTeam> {
-        let memberTeamPath = dataStore.collection("member_team").document(memberID)
-        return dataStore
+        let memberTeamPath = _dataStore.collection("member_team").document(memberID)
+        return _dataStore
             .observeDocument(at: memberTeamPath)
             .map { (memberTeam: MemberTeam?) in
                 if let memberTeam = memberTeam {
@@ -90,57 +85,52 @@ public class DefaultTeamRepository: TeamRepository {
 
     public func createTeam(_ team: Team, by member: TeamMember) -> Single<String> {
         var teamID: String = ""
-        let dataStore = _resolver.resolveDataStore()
-        return dataStore.write { writer in
-            let teamPath = dataStore.collection("team").document()
+        return _dataStore.write { writer in
+            let teamPath = _dataStore.collection("team").document()
             teamID = teamPath.documentID
             writer.setDocumentData(team.data, at: teamPath)
             
             let memberPath = teamPath.collection("member").document(member.memberID)
             writer.setDocumentData(member.data, at: memberPath)
             
-            let reversePath = dataStore.collection("member_team").document(member.memberID)
+            let reversePath = _dataStore.collection("member_team").document(member.memberID)
             writer.mergeDocumentData([teamID: true], at: reversePath)
         }.andThen(Single.just(teamID))
     }
 
     public func join(to teamID: String, as member: TeamMember) -> Completable {
-        let dataStore = self._resolver.resolveDataStore()
-        return dataStore.write { writer in
-            let teamPath = dataStore.collection("team").document(teamID)
+        return _dataStore.write { writer in
+            let teamPath = _dataStore.collection("team").document(teamID)
             let memberPath = teamPath.collection("member").document(member.memberID)
             writer.setDocumentData(member.data, at: memberPath)
             
-            let reversePath = dataStore.collection("member_team").document(member.memberID)
+            let reversePath = _dataStore.collection("member_team").document(member.memberID)
             writer.mergeDocumentData([teamID: true], at: reversePath)
         }
     }
 
     public func leave(from teamID: String, as memberID: String) -> Completable {
-        let dataStore = self._resolver.resolveDataStore()
-        return dataStore.write { writer in
-            let teamPath = dataStore.collection("team").document()
+        return _dataStore.write { writer in
+            let teamPath = _dataStore.collection("team").document()
             let teamMemberPath = teamPath.collection("member").document(memberID)
             writer.deleteDocument(at: teamMemberPath)
 
-            let reversePath = dataStore.collection("member_team").document(memberID)
-            writer.updateDocumentData([teamID: dataStore.deletePlaceholder], at: reversePath)
+            let reversePath = _dataStore.collection("member_team").document(memberID)
+            writer.updateDocumentData([teamID: _dataStore.deletePlaceholder], at: reversePath)
         }
     }
 
     public func updateMember(_ member: TeamMember, in teamID: String) -> Completable {
-        let dataStore = self._resolver.resolveDataStore()
-        return dataStore.write { writer in
-            let teamPath = dataStore.collection("team").document(teamID)
+        return _dataStore.write { writer in
+            let teamPath = _dataStore.collection("team").document(teamID)
             let teamMemberPath = teamPath.collection("member").document(member.memberID)
             writer.updateDocumentData(member.data, at: teamMemberPath)
         }
     }
 
     public func updateTeam(_ team: Team) -> Completable {
-        let dataStore = self._resolver.resolveDataStore()
-        return dataStore.write { writer in
-            let teamPath = dataStore.collection("team").document(team.teamID)
+        return _dataStore.write { writer in
+            let teamPath = _dataStore.collection("team").document(team.teamID)
             writer.updateDocumentData(team.data, at: teamPath)
         }
     }

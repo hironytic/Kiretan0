@@ -24,7 +24,6 @@
 //
 
 import Foundation
-import FirebaseDatabase
 
 public enum MemberTeamError: Error {
     case invalidDataStructure

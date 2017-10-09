@@ -24,7 +24,6 @@
 //
 
 import Foundation
-import FirebaseDatabase
 
 public enum ItemError: Error {
     case invalidDataStructure
@@ -59,7 +58,7 @@ public struct Item: Entity {
         return [
             "name": name,
             "insufficient": isInsufficient,
-            "last_change": ServerValue.timestamp(),
+            "last_change": lastChange,
         ]
     }
 }
