@@ -40,7 +40,14 @@ public protocol DataStore {
 }
 
 public protocol DataStoreQuery {
+    func whereField(_ field: String, isEqualTo value: Any) -> DataStoreQuery
+    func whereField(_ field: String, isLessThan value: Any) -> DataStoreQuery
+    func whereField(_ field: String, isLessThanOrEqualTo value: Any) -> DataStoreQuery
+    func whereField(_ field: String, isGreaterThan value: Any) -> DataStoreQuery
+    func whereField(_ field: String, isGreaterThanOrEqualTo value: Any) -> DataStoreQuery
     
+    func order(by field: String) -> DataStoreQuery
+    func order(by field: String, descending: Bool) -> DataStoreQuery
 }
 
 public protocol CollectionPath: DataStoreQuery {
@@ -164,6 +171,34 @@ private class DefaultDataStoreQuery: DataStoreQuery {
     
     public init(_ query: Query) {
         self.query = query
+    }
+    
+    public func whereField(_ field: String, isEqualTo value: Any) -> DataStoreQuery {
+        return DefaultDataStoreQuery(query.whereField(field, isEqualTo: value))
+    }
+    
+    public func whereField(_ field: String, isLessThan value: Any) -> DataStoreQuery {
+        return DefaultDataStoreQuery(query.whereField(field, isLessThan: value))
+    }
+    
+    public func whereField(_ field: String, isLessThanOrEqualTo value: Any) -> DataStoreQuery {
+        return DefaultDataStoreQuery(query.whereField(field, isLessThanOrEqualTo: value))
+    }
+    
+    public func whereField(_ field: String, isGreaterThan value: Any) -> DataStoreQuery {
+        return DefaultDataStoreQuery(query.whereField(field, isGreaterThan: value))
+    }
+    
+    public func whereField(_ field: String, isGreaterThanOrEqualTo value: Any) -> DataStoreQuery {
+        return DefaultDataStoreQuery(query.whereField(field, isGreaterThanOrEqualTo: value))
+    }
+    
+    public func order(by field: String) -> DataStoreQuery {
+        return DefaultDataStoreQuery(query.order(by: field))
+    }
+    
+    public func order(by field: String, descending: Bool) -> DataStoreQuery {
+        return DefaultDataStoreQuery(query.order(by: field, descending: descending))
     }
 }
 

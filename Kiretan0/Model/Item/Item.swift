@@ -33,9 +33,9 @@ public struct Item: Entity {
     public let itemID: String
     public let name: String
     public let isInsufficient: Bool
-    public let lastChange: Int64
+    public let lastChange: Date
     
-    public init(itemID: String = "", name: String, isInsufficient: Bool, lastChange: Int64 = 0) {
+    public init(itemID: String = "", name: String, isInsufficient: Bool, lastChange: Date = Date(timeIntervalSince1970: 0)) {
         self.itemID = itemID
         self.name = name
         self.isInsufficient = isInsufficient
@@ -45,7 +45,7 @@ public struct Item: Entity {
     public init(documentID: String, data: [String: Any]) throws {
         guard let name = (data["name"] ?? "") as? String else { throw ItemError.invalidDataStructure }
         guard let isInsufficient = (data["insufficient"] ?? false) as? Bool else { throw ItemError.invalidDataStructure }
-        guard let lastChange = (data["last_change"] ?? 0) as? Int64 else { throw ItemError.invalidDataStructure }
+        guard let lastChange = (data["last_change"] ?? 0) as? Date else { throw ItemError.invalidDataStructure }
         
         self.init(itemID: documentID, name: name, isInsufficient: isInsufficient, lastChange: lastChange)
     }

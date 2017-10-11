@@ -27,7 +27,7 @@ import Foundation
 import RxSwift
 
 public protocol ItemRepository {
-    func items(in teamID: String) -> Observable<CollectionChange<Item>>
+    func items(in teamID: String, insufficient: Bool) -> Observable<CollectionChange<Item>>
     
     func createItem(_ item: Item, in teamID: String) -> Single<String>
     func updateItem(_ item: Item, in teamID: String) -> Completable
@@ -55,9 +55,12 @@ public class DefaultItemRepository: ItemRepository {
         _dataStore = _resolver.resolveDataStore()
     }
     
-    public func items(in teamID: String) -> Observable<CollectionChange<Item>> {
+    public func items(in teamID: String, insufficient: Bool) -> Observable<CollectionChange<Item>> {
         let itemPath = _dataStore.collection("team").document(teamID).collection("item")
-        return _dataStore.observeCollection(matches: itemPath)
+        let itemQuery = itemPath
+            .whereField("insufficient", isEqualTo: insufficient)
+            .order(by: "last_change", descending: true)
+        return _dataStore.observeCollection(matches: itemQuery)
     }
     
     private func updateLastChange(_ data: [String: Any]) -> [String: Any] {
