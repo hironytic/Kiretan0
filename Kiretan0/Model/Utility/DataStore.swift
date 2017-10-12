@@ -36,7 +36,7 @@ public protocol DataStore {
     func observeDocument<E: Entity>(at documentPath: DocumentPath) -> Observable<E?>
     func observeCollection<E: Entity>(matches query: DataStoreQuery) -> Observable<CollectionChange<E>>
     
-    func write(block: (DocumentWriter) -> Void) -> Completable
+    func write(block: @escaping (DocumentWriter) throws -> Void) -> Completable
 }
 
 public protocol DataStoreQuery {
@@ -148,11 +148,15 @@ public class DefaultDataStore: DataStore {
         }
     }
     
-    public func write(block: (DocumentWriter) -> Void) -> Completable {
-        let batch = Firestore.firestore().batch()
-        let writer = DefaultDocumentWriter(batch)
-        block(writer)
+    public func write(block: @escaping (DocumentWriter) throws -> Void) -> Completable {
         return Completable.create { observer in
+            let batch = Firestore.firestore().batch()
+            let writer = DefaultDocumentWriter(batch)
+            do {
+                try block(writer)
+            } catch let error {
+                observer(.error(error))
+            }
             batch.commit { error in
                 if let error = error {
                     observer(.error(error))

@@ -73,14 +73,14 @@ public class DefaultItemRepository: ItemRepository {
         let itemPath = _dataStore.collection("team").document(teamID).collection("item").document()
         let itemID = itemPath.documentID
         return _dataStore.write { writer in
-            writer.setDocumentData(updateLastChange(item.data), at: itemPath)
+            writer.setDocumentData(self.updateLastChange(item.data), at: itemPath)
         }.andThen(Single.just(itemID))
     }
     
     public func updateItem(_ item: Item, in teamID: String) -> Completable {
         let itemPath = _dataStore.collection("team").document(teamID).collection("item").document(item.itemID)
         return _dataStore.write { writer in
-            writer.updateDocumentData(updateLastChange(item.data), at: itemPath)
+            writer.updateDocumentData(self.updateLastChange(item.data), at: itemPath)
         }
     }
 

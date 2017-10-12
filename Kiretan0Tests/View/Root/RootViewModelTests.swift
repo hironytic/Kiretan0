@@ -84,7 +84,7 @@ class RootViewModelTests: XCTestCase {
             .bind(to: fulfillObserver)
             .disposed(by: disposeBag)
 
-        resolver.mockUserAccountRepository.mockCurrentUser.value = UserAccount(displayName: "mock user", isAnonymous: true)
+        resolver.mockUserAccountRepository.mockCurrentUser.value = UserAccount(userID: "mock_user", isAnonymous: true)
         
         waitForExpectations(timeout: 3.0)
     }

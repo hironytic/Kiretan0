@@ -86,43 +86,43 @@ public class DefaultTeamRepository: TeamRepository {
     public func createTeam(_ team: Team, by member: TeamMember) -> Single<String> {
         var teamID: String = ""
         return _dataStore.write { writer in
-            let teamPath = _dataStore.collection("team").document()
+            let teamPath = self._dataStore.collection("team").document()
             teamID = teamPath.documentID
             writer.setDocumentData(team.data, at: teamPath)
             
             let memberPath = teamPath.collection("member").document(member.memberID)
             writer.setDocumentData(member.data, at: memberPath)
             
-            let reversePath = _dataStore.collection("member_team").document(member.memberID)
+            let reversePath = self._dataStore.collection("member_team").document(member.memberID)
             writer.mergeDocumentData([teamID: true], at: reversePath)
         }.andThen(Single.just(teamID))
     }
 
     public func join(to teamID: String, as member: TeamMember) -> Completable {
         return _dataStore.write { writer in
-            let teamPath = _dataStore.collection("team").document(teamID)
+            let teamPath = self._dataStore.collection("team").document(teamID)
             let memberPath = teamPath.collection("member").document(member.memberID)
             writer.setDocumentData(member.data, at: memberPath)
             
-            let reversePath = _dataStore.collection("member_team").document(member.memberID)
+            let reversePath = self._dataStore.collection("member_team").document(member.memberID)
             writer.mergeDocumentData([teamID: true], at: reversePath)
         }
     }
 
     public func leave(from teamID: String, as memberID: String) -> Completable {
         return _dataStore.write { writer in
-            let teamPath = _dataStore.collection("team").document()
+            let teamPath = self._dataStore.collection("team").document()
             let teamMemberPath = teamPath.collection("member").document(memberID)
             writer.deleteDocument(at: teamMemberPath)
 
-            let reversePath = _dataStore.collection("member_team").document(memberID)
-            writer.updateDocumentData([teamID: _dataStore.deletePlaceholder], at: reversePath)
+            let reversePath = self._dataStore.collection("member_team").document(memberID)
+            writer.updateDocumentData([teamID: self._dataStore.deletePlaceholder], at: reversePath)
         }
     }
 
     public func updateMember(_ member: TeamMember, in teamID: String) -> Completable {
         return _dataStore.write { writer in
-            let teamPath = _dataStore.collection("team").document(teamID)
+            let teamPath = self._dataStore.collection("team").document(teamID)
             let teamMemberPath = teamPath.collection("member").document(member.memberID)
             writer.updateDocumentData(member.data, at: teamMemberPath)
         }
@@ -130,7 +130,7 @@ public class DefaultTeamRepository: TeamRepository {
 
     public func updateTeam(_ team: Team) -> Completable {
         return _dataStore.write { writer in
-            let teamPath = _dataStore.collection("team").document(team.teamID)
+            let teamPath = self._dataStore.collection("team").document(team.teamID)
             writer.updateDocumentData(team.data, at: teamPath)
         }
     }
