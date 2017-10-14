@@ -1,5 +1,5 @@
 //
-// FulfillObserver.swift
+// EventuallyObserver.swift
 // Kiretan0Tests
 //
 // Copyright (c) 2016, 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -26,7 +26,7 @@
 import XCTest
 import RxSwift
 
-public class FulfillObserver<Element>: ObserverType {
+public class EventuallyObserver<Element>: ObserverType {
     public typealias E = Element
     private var expectation: XCTestExpectation
     private var nextChecker: (Element) -> Bool

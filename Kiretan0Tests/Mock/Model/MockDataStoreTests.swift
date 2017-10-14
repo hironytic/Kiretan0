@@ -83,7 +83,7 @@ class MockDataStoreTests: XCTestCase {
         let docObservable: Observable<MockDocument?> = dataStore.observeDocument(at: docPath)
         
         let expectDocument = expectation(description: "Existing document should be retrieved")
-        let observer = FulfillObserver(expectDocument) { (doc: MockDocument?) in
+        let observer = EventuallyObserver(expectDocument) { (doc: MockDocument?) in
             guard let doc = doc else { return false }
             guard doc.documentID == "document1" else { return false }
             guard (doc.data["string"] as? String ?? "") == "Foo" else { return false }
@@ -99,7 +99,7 @@ class MockDataStoreTests: XCTestCase {
         let docObservable: Observable<MockDocument?> = dataStore.observeDocument(at: docPath)
         
         let expectNil = expectation(description: "Nil should be retrieved instead of the entity")
-        let observer = FulfillObserver(expectNil) { (doc: MockDocument?) in
+        let observer = EventuallyObserver(expectNil) { (doc: MockDocument?) in
             return doc == nil
         }
         
@@ -112,7 +112,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: collectionPath)
         
         let expectCollection = expectation(description: "Documents should be retrieved")
-        let observer = FulfillObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
+        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
             let documents = change.result
             guard documents.count == 3 else { return false }
             guard documents[0].documentID == "document1" else { return false }
@@ -132,7 +132,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
         let expectCollection = expectation(description: "A document should be retrieved")
-        let observer = FulfillObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
+        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
             let documents = change.result
             guard documents.count == 1 else { return false }
             guard documents[0].documentID == "document2" else { return false }
@@ -152,7 +152,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
         let expectCollection = expectation(description: "Two documents should be retrieved")
-        let observer = FulfillObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
+        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
             let documents = change.result
             guard documents.count == 2 else { return false }
             guard documents[0].documentID == "document1" else { return false }
@@ -173,7 +173,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
         let expectCollection = expectation(description: "Two documents should be retrieved")
-        let observer = FulfillObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
+        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
             let documents = change.result
             guard documents.count == 2 else { return false }
             guard documents[0].documentID == "document2" else { return false }
@@ -194,7 +194,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
         let expectCollection = expectation(description: "No documents should be retrieved")
-        let observer = FulfillObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
+        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
             let documents = change.result
             guard documents.count == 0 else { return false }
             guard change.insertions.isEmpty else { return false }
@@ -213,7 +213,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
         let expectCollection = expectation(description: "A document should be retrieved")
-        let observer = FulfillObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
+        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
             let documents = change.result
             guard documents.count == 1 else { return false }
             guard documents[0].documentID == "document2" else { return false }
@@ -233,7 +233,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
         let expectCollection = expectation(description: "A document should be retrieved")
-        let observer = FulfillObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
+        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
             let documents = change.result
             guard documents.count == 1 else { return false }
             guard documents[0].documentID == "document2" else { return false }
@@ -254,7 +254,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
         let expectCollection = expectation(description: "Three documents should be retrieved")
-        let observer = FulfillObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
+        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
             let documents = change.result
             guard documents.count == 3 else { return false }
             guard documents[0].documentID == "document3" else { return false }
@@ -277,7 +277,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
         let expectCollection = expectation(description: "Three documents should be retrieved")
-        let observer = FulfillObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
+        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
             let documents = change.result
             guard documents.count == 3 else { return false }
             guard documents[0].documentID == "document2" else { return false }
@@ -300,7 +300,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
         let expectCollection = expectation(description: "Three documents should be retrieved")
-        let observer = FulfillObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
+        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
             let documents = change.result
             guard documents.count == 3 else { return false }
             guard documents[0].documentID == "document2" else { return false }
@@ -322,7 +322,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
         let expectCollection = expectation(description: "Three documents should be retrieved")
-        let collectionObserver = FulfillObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
+        let collectionObserver = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
             let documents = change.result
             guard documents.count == 3 else { return false }
             guard documents[0].documentID == "document3" else { return false }
@@ -373,7 +373,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
         let expectCollection = expectation(description: "Three documents should be retrieved")
-        let collectionObserver = FulfillObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
+        let collectionObserver = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
             let documents = change.result
             guard documents.count == 3 else { return false }
             guard documents[0].documentID == "document3" else { return false }

@@ -67,7 +67,7 @@ class WelcomeViewModelTests: XCTestCase {
             signInObserver = observer
         }
         
-        let newAnonymousUserEnabledObserver = FulfillObserver(expectation(description: "newAnonymousUser button should be disabled")) { (isEnabled: Bool) in
+        let newAnonymousUserEnabledObserver = EventuallyObserver(expectation(description: "newAnonymousUser button should be disabled")) { (isEnabled: Bool) in
             return !isEnabled
         }
         viewModel.newAnonymousUserEnabled
