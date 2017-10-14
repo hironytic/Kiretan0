@@ -48,6 +48,7 @@
 		509720A01F77383B00C623A5 /* TeamRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5097209F1F77383B00C623A5 /* TeamRepository.swift */; };
 		509720A61F77510B00C623A5 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509720A51F77510B00C623A5 /* Entity.swift */; };
 		50AD756C1F8F92ED003917E6 /* MockDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AD756B1F8F92ED003917E6 /* MockDataStore.swift */; };
+		50AD75711F91827D003917E6 /* MockDataStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AD75701F91827D003917E6 /* MockDataStoreTests.swift */; };
 		50B395171F7F486600355F89 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B395161F7F486600355F89 /* Item.swift */; };
 		50B395191F7F4F7A00355F89 /* ItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B395181F7F4F7A00355F89 /* ItemRepository.swift */; };
 		50B3951B1F8597B300355F89 /* CollectionChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B3951A1F8597B300355F89 /* CollectionChange.swift */; };
@@ -110,6 +111,7 @@
 		5097209F1F77383B00C623A5 /* TeamRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamRepository.swift; sourceTree = "<group>"; };
 		509720A51F77510B00C623A5 /* Entity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
 		50AD756B1F8F92ED003917E6 /* MockDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataStore.swift; sourceTree = "<group>"; };
+		50AD75701F91827D003917E6 /* MockDataStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataStoreTests.swift; sourceTree = "<group>"; };
 		50B395161F7F486600355F89 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		50B395181F7F4F7A00355F89 /* ItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRepository.swift; sourceTree = "<group>"; };
 		50B3951A1F8597B300355F89 /* CollectionChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionChange.swift; sourceTree = "<group>"; };
@@ -321,6 +323,7 @@
 			children = (
 				509720881F750E6900C623A5 /* UserAccount */,
 				50AD756B1F8F92ED003917E6 /* MockDataStore.swift */,
+				50AD75701F91827D003917E6 /* MockDataStoreTests.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -692,6 +695,7 @@
 				509720831F7507B900C623A5 /* RootViewModelTests.swift in Sources */,
 				50AD756C1F8F92ED003917E6 /* MockDataStore.swift in Sources */,
 				505263941F4B02EE00113180 /* Kiretan0Tests.swift in Sources */,
+				50AD75711F91827D003917E6 /* MockDataStoreTests.swift in Sources */,
 				5097208C1F750FF900C623A5 /* FulfillObserver.swift in Sources */,
 				5097208A1F750E7500C623A5 /* MockUserAccountRepository.swift in Sources */,
 				5097208F1F7516B700C623A5 /* WelcomeViewModelTests.swift in Sources */,
