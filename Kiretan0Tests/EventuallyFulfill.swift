@@ -1,5 +1,5 @@
 //
-// EventuallyObserver.swift
+// EventuallyFulfill.swift
 // Kiretan0Tests
 //
 // Copyright (c) 2016, 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -27,7 +27,7 @@ import XCTest
 import RxSwift
 
 /// An observer that fulfills specified expectation when the condition matches eventually.
-public class Eventually<Element>: ObserverType {
+public class EventuallyFulfill<Element>: ObserverType {
     public typealias E = Element
     private var expectation: XCTestExpectation
     private var nextChecker: (Element) -> Bool

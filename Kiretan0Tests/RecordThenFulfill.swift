@@ -1,5 +1,5 @@
 //
-// Recording.swift
+// RecordThenFulfill.swift
 // Kiretan0Tests
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -27,7 +27,7 @@ import XCTest
 import RxSwift
 
 /// An observer that fulfills specified expectation after it records events specified times.
-public class Recording<Element>: ObserverType {
+public class RecordThenFulfill<Element>: ObserverType {
     public typealias E = Element
     private var expectation: XCTestExpectation
     private var currentCount: Int

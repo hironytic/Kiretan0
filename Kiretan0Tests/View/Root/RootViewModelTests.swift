@@ -62,7 +62,7 @@ class RootViewModelTests: XCTestCase {
     func testSceneChangedToWelcomeWhenUserNotAuthenticated() {
         resolver.mockUserAccountRepository.mockCurrentUser.value = nil
         
-        let observer = Eventually(expectation(description: "Scene should be changed to 'welcome'")) { (scene: RootScene) in
+        let observer = EventuallyFulfill(expectation(description: "Scene should be changed to 'welcome'")) { (scene: RootScene) in
             return scene == .welcome
         }
         
@@ -76,7 +76,7 @@ class RootViewModelTests: XCTestCase {
     func testSceneChangedToMainWhenUserAuthenticated() {
         resolver.mockUserAccountRepository.mockCurrentUser.value = nil
         
-        let observer = Eventually(expectation(description: "Scene should be changed to 'welcome'")) { (scene: RootScene) in
+        let observer = EventuallyFulfill(expectation(description: "Scene should be changed to 'welcome'")) { (scene: RootScene) in
             return scene == .main
         }
         

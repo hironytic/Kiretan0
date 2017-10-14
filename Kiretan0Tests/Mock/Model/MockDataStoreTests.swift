@@ -83,7 +83,7 @@ class MockDataStoreTests: XCTestCase {
         let docObservable: Observable<MockDocument?> = dataStore.observeDocument(at: docPath)
         
         let expectEvents = expectation(description: "One event should be occured")
-        let observer = Recording<MockDocument?>(expectEvents, count: 1)
+        let observer = RecordThenFulfill<MockDocument?>(expectEvents, count: 1)
         docObservable.subscribe(observer).disposed(by: disposeBag)
         wait(for: [expectEvents], timeout: 3.0)
 
@@ -99,7 +99,7 @@ class MockDataStoreTests: XCTestCase {
         let docObservable: Observable<MockDocument?> = dataStore.observeDocument(at: docPath)
         
         let expectEvents = expectation(description: "One event should be occured")
-        let observer = Recording<MockDocument?>(expectEvents, count: 1)
+        let observer = RecordThenFulfill<MockDocument?>(expectEvents, count: 1)
         docObservable.subscribe(observer).disposed(by: disposeBag)
         wait(for: [expectEvents], timeout: 3.0)
 
@@ -112,7 +112,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: collectionPath)
 
         let expectEvents = expectation(description: "One event should be occured")
-        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
+        let observer = RecordThenFulfill<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
         wait(for: [expectEvents], timeout: 3.0)
 
@@ -132,7 +132,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
 
         let expectEvents = expectation(description: "One event should be occured")
-        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
+        let observer = RecordThenFulfill<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
         wait(for: [expectEvents], timeout: 3.0)
         
@@ -152,7 +152,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
         let expectEvents = expectation(description: "One event should be occured")
-        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
+        let observer = RecordThenFulfill<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
         wait(for: [expectEvents], timeout: 3.0)
         
@@ -173,7 +173,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
         let expectEvents = expectation(description: "One event should be occured")
-        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
+        let observer = RecordThenFulfill<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
         wait(for: [expectEvents], timeout: 3.0)
         
@@ -194,7 +194,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
         let expectEvents = expectation(description: "One event should be occured")
-        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
+        let observer = RecordThenFulfill<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
         wait(for: [expectEvents], timeout: 3.0)
         
@@ -213,7 +213,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
         let expectEvents = expectation(description: "One event should be occured")
-        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
+        let observer = RecordThenFulfill<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
         wait(for: [expectEvents], timeout: 3.0)
         
@@ -233,7 +233,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
 
         let expectEvents = expectation(description: "One event should be occured")
-        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
+        let observer = RecordThenFulfill<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
         wait(for: [expectEvents], timeout: 3.0)
         
@@ -253,7 +253,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
 
         let expectEvents = expectation(description: "One event should be occured")
-        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
+        let observer = RecordThenFulfill<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
         wait(for: [expectEvents], timeout: 3.0)
         
@@ -275,7 +275,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
         let expectEvents = expectation(description: "One event should be occured")
-        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
+        let observer = RecordThenFulfill<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
         wait(for: [expectEvents], timeout: 3.0)
         
@@ -297,7 +297,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
         let expectEvents = expectation(description: "One event should be occured")
-        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
+        let observer = RecordThenFulfill<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
         wait(for: [expectEvents], timeout: 3.0)
         
@@ -319,7 +319,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
 
         let expectEvents = expectation(description: "One event should be occured")
-        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
+        let observer = RecordThenFulfill<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
         wait(for: [expectEvents], timeout: 3.0)
         
@@ -371,7 +371,7 @@ class MockDataStoreTests: XCTestCase {
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
 
         let expectEvents = expectation(description: "One event should be occured")
-        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
+        let observer = RecordThenFulfill<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
         wait(for: [expectEvents], timeout: 3.0)
 
