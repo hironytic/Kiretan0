@@ -82,68 +82,68 @@ class MockDataStoreTests: XCTestCase {
         let docPath = dataStore.collection("collection1").document("document1")
         let docObservable: Observable<MockDocument?> = dataStore.observeDocument(at: docPath)
         
-        let expectDocument = expectation(description: "Existing document should be retrieved")
-        let observer = EventuallyObserver(expectDocument) { (doc: MockDocument?) in
-            guard let doc = doc else { return false }
-            guard doc.documentID == "document1" else { return false }
-            guard (doc.data["string"] as? String ?? "") == "Foo" else { return false }
-            return true
-        }
-        
+        let expectEvents = expectation(description: "One event should be occured")
+        let observer = Recording<MockDocument?>(expectEvents, count: 1)
         docObservable.subscribe(observer).disposed(by: disposeBag)
-        wait(for: [expectDocument], timeout: 3.0)
+        wait(for: [expectEvents], timeout: 3.0)
+
+        guard case let .next(optDoc) = observer.events[0] else { XCTFail("Event 0 should be `next`"); return }
+        guard let doc = optDoc else { XCTFail("Existing document should be retrieved"); return }
+
+        XCTAssertEqual(doc.documentID, "document1")
+        XCTAssertEqual(doc.data["string"] as? String ?? "", "Foo")
     }
     
     func testObserveNonExistingDocument() {
         let docPath = dataStore.collection("collection1").document("document0")
         let docObservable: Observable<MockDocument?> = dataStore.observeDocument(at: docPath)
         
-        let expectNil = expectation(description: "Nil should be retrieved instead of the entity")
-        let observer = EventuallyObserver(expectNil) { (doc: MockDocument?) in
-            return doc == nil
-        }
-        
+        let expectEvents = expectation(description: "One event should be occured")
+        let observer = Recording<MockDocument?>(expectEvents, count: 1)
         docObservable.subscribe(observer).disposed(by: disposeBag)
-        wait(for: [expectNil], timeout: 3.0)
+        wait(for: [expectEvents], timeout: 3.0)
+
+        guard case let .next(optDoc) = observer.events[0] else { XCTFail("Event 0 should be `next`"); return }
+        XCTAssertNil(optDoc)
     }
     
     func testObserveCollection() {
         let collectionPath = dataStore.collection("collection1")
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: collectionPath)
-        
-        let expectCollection = expectation(description: "Documents should be retrieved")
-        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
-            let documents = change.result
-            guard documents.count == 3 else { return false }
-            guard documents[0].documentID == "document1" else { return false }
-            guard change.insertions == [0, 1, 2] else { return false }
-            guard change.deletions.isEmpty else { return false }
-            guard change.modifications.isEmpty else { return false }
-            return true
-        }
-        
+
+        let expectEvents = expectation(description: "One event should be occured")
+        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
-        wait(for: [expectCollection], timeout: 3.0)
+        wait(for: [expectEvents], timeout: 3.0)
+
+        guard case let .next(change) = observer.events[0] else { XCTFail("Event 0 should be `next`"); return }
+
+        let documents = change.result
+        XCTAssertEqual(documents.count, 3)
+        XCTAssertEqual(documents[0].documentID, "document1")
+        XCTAssertEqual(change.insertions, [0, 1, 2])
+        XCTAssertTrue(change.deletions.isEmpty)
+        XCTAssertTrue(change.modifications.isEmpty)
     }
     
     func testObserveQueryEqualTo() {
         let collectionPath = dataStore.collection("collection1")
         let query = collectionPath.whereField("int", isEqualTo: 80)
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
-        
-        let expectCollection = expectation(description: "A document should be retrieved")
-        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
-            let documents = change.result
-            guard documents.count == 1 else { return false }
-            guard documents[0].documentID == "document2" else { return false }
-            guard change.insertions == [0] else { return false }
-            guard change.deletions.isEmpty else { return false }
-            guard change.modifications.isEmpty else { return false }
-            return true
-        }
 
+        let expectEvents = expectation(description: "One event should be occured")
+        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
-        wait(for: [expectCollection], timeout: 3.0)
+        wait(for: [expectEvents], timeout: 3.0)
+        
+        guard case let .next(change) = observer.events[0] else { XCTFail("Event 0 should be `next`"); return }
+        
+        let documents = change.result
+        XCTAssertEqual(documents.count, 1)
+        XCTAssertEqual(documents[0].documentID, "document2")
+        XCTAssertEqual(change.insertions, [0])
+        XCTAssertTrue(change.deletions.isEmpty)
+        XCTAssertTrue(change.modifications.isEmpty)
     }
     
     func testObserveQueryLessThan() {
@@ -151,20 +151,20 @@ class MockDataStoreTests: XCTestCase {
         let query = collectionPath.whereField("int", isLessThan: 80)
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
-        let expectCollection = expectation(description: "Two documents should be retrieved")
-        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
-            let documents = change.result
-            guard documents.count == 2 else { return false }
-            guard documents[0].documentID == "document1" else { return false }
-            guard documents[1].documentID == "document3" else { return false }
-            guard change.insertions == [0, 1] else { return false }
-            guard change.deletions.isEmpty else { return false }
-            guard change.modifications.isEmpty else { return false }
-            return true
-        }
-        
+        let expectEvents = expectation(description: "One event should be occured")
+        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
-        wait(for: [expectCollection], timeout: 3.0)
+        wait(for: [expectEvents], timeout: 3.0)
+        
+        guard case let .next(change) = observer.events[0] else { XCTFail("Event 0 should be `next`"); return }
+        
+        let documents = change.result
+        XCTAssertEqual(documents.count, 2)
+        XCTAssertEqual(documents[0].documentID, "document1")
+        XCTAssertEqual(documents[1].documentID, "document3")
+        XCTAssertEqual(change.insertions, [0, 1])
+        XCTAssertTrue(change.deletions.isEmpty)
+        XCTAssertTrue(change.modifications.isEmpty)
     }
 
     func testObserveQueryLessThanOrEqualTo() {
@@ -172,20 +172,20 @@ class MockDataStoreTests: XCTestCase {
         let query = collectionPath.whereField("string", isLessThanOrEqualTo: "Baz")
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
-        let expectCollection = expectation(description: "Two documents should be retrieved")
-        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
-            let documents = change.result
-            guard documents.count == 2 else { return false }
-            guard documents[0].documentID == "document2" else { return false }
-            guard documents[1].documentID == "document3" else { return false }
-            guard change.insertions == [0, 1] else { return false }
-            guard change.deletions.isEmpty else { return false }
-            guard change.modifications.isEmpty else { return false }
-            return true
-        }
-        
+        let expectEvents = expectation(description: "One event should be occured")
+        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
-        wait(for: [expectCollection], timeout: 3.0)
+        wait(for: [expectEvents], timeout: 3.0)
+        
+        guard case let .next(change) = observer.events[0] else { XCTFail("Event 0 should be `next`"); return }
+        
+        let documents = change.result
+        XCTAssertEqual(documents.count, 2)
+        XCTAssertEqual(documents[0].documentID, "document2")
+        XCTAssertEqual(documents[1].documentID, "document3")
+        XCTAssertEqual(change.insertions, [0, 1])
+        XCTAssertTrue(change.deletions.isEmpty)
+        XCTAssertTrue(change.modifications.isEmpty)
     }
 
     func testObserveQueryGreaterThan() {
@@ -193,18 +193,18 @@ class MockDataStoreTests: XCTestCase {
         let query = collectionPath.whereField("int", isGreaterThan: 80)
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
-        let expectCollection = expectation(description: "No documents should be retrieved")
-        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
-            let documents = change.result
-            guard documents.count == 0 else { return false }
-            guard change.insertions.isEmpty else { return false }
-            guard change.deletions.isEmpty else { return false }
-            guard change.modifications.isEmpty else { return false }
-            return true
-        }
-        
+        let expectEvents = expectation(description: "One event should be occured")
+        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
-        wait(for: [expectCollection], timeout: 3.0)
+        wait(for: [expectEvents], timeout: 3.0)
+        
+        guard case let .next(change) = observer.events[0] else { XCTFail("Event 0 should be `next`"); return }
+        
+        let documents = change.result
+        XCTAssertEqual(documents.count, 0)
+        XCTAssertTrue(change.insertions.isEmpty)
+        XCTAssertTrue(change.deletions.isEmpty)
+        XCTAssertTrue(change.modifications.isEmpty)
     }
 
     func testObserveQueryGreaterThanOrEqualTo() {
@@ -212,145 +212,131 @@ class MockDataStoreTests: XCTestCase {
         let query = collectionPath.whereField("int", isGreaterThanOrEqualTo: 80)
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
-        let expectCollection = expectation(description: "A document should be retrieved")
-        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
-            let documents = change.result
-            guard documents.count == 1 else { return false }
-            guard documents[0].documentID == "document2" else { return false }
-            guard change.insertions == [0] else { return false }
-            guard change.deletions.isEmpty else { return false }
-            guard change.modifications.isEmpty else { return false }
-            return true
-        }
-        
+        let expectEvents = expectation(description: "One event should be occured")
+        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
-        wait(for: [expectCollection], timeout: 3.0)
+        wait(for: [expectEvents], timeout: 3.0)
+        
+        guard case let .next(change) = observer.events[0] else { XCTFail("Event 0 should be `next`"); return }
+        
+        let documents = change.result
+        XCTAssertEqual(documents.count, 1)
+        XCTAssertEqual(documents[0].documentID, "document2")
+        XCTAssertEqual(change.insertions, [0])
+        XCTAssertTrue(change.deletions.isEmpty)
+        XCTAssertTrue(change.modifications.isEmpty)
     }
 
     func testObserveComplexQuery() {
         let collectionPath = dataStore.collection("collection1")
         let query = collectionPath.whereField("int", isGreaterThan: 30).whereField("string", isLessThan: "Car")
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
-        
-        let expectCollection = expectation(description: "A document should be retrieved")
-        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
-            let documents = change.result
-            guard documents.count == 1 else { return false }
-            guard documents[0].documentID == "document2" else { return false }
-            guard change.insertions == [0] else { return false }
-            guard change.deletions.isEmpty else { return false }
-            guard change.modifications.isEmpty else { return false }
-            return true
-        }
-        
+
+        let expectEvents = expectation(description: "One event should be occured")
+        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
-        wait(for: [expectCollection], timeout: 3.0)
+        wait(for: [expectEvents], timeout: 3.0)
+        
+        guard case let .next(change) = observer.events[0] else { XCTFail("Event 0 should be `next`"); return }
+        
+        let documents = change.result
+        XCTAssertEqual(documents.count, 1)
+        XCTAssertEqual(documents[0].documentID, "document2")
+        XCTAssertEqual(change.insertions, [0])
+        XCTAssertTrue(change.deletions.isEmpty)
+        XCTAssertTrue(change.modifications.isEmpty)
     }
     
     func testObserveOrderAscending() {
         let collectionPath = dataStore.collection("collection1")
         let query = collectionPath.order(by: "int")
-
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
-        
-        let expectCollection = expectation(description: "Three documents should be retrieved")
-        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
-            let documents = change.result
-            guard documents.count == 3 else { return false }
-            guard documents[0].documentID == "document3" else { return false }
-            guard documents[1].documentID == "document1" else { return false }
-            guard documents[2].documentID == "document2" else { return false }
-            guard change.insertions == [0, 1, 2] else { return false }
-            guard change.deletions.isEmpty else { return false }
-            guard change.modifications.isEmpty else { return false }
-            return true
-        }
-        
+
+        let expectEvents = expectation(description: "One event should be occured")
+        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
-        wait(for: [expectCollection], timeout: 3.0)
+        wait(for: [expectEvents], timeout: 3.0)
+        
+        guard case let .next(change) = observer.events[0] else { XCTFail("Event 0 should be `next`"); return }
+        
+        let documents = change.result
+        XCTAssertEqual(documents.count, 3)
+        XCTAssertEqual(documents[0].documentID, "document3")
+        XCTAssertEqual(documents[1].documentID, "document1")
+        XCTAssertEqual(documents[2].documentID, "document2")
+        XCTAssertEqual(change.insertions, [0, 1, 2])
+        XCTAssertTrue(change.deletions.isEmpty)
+        XCTAssertTrue(change.modifications.isEmpty)
     }
 
     func testObserveOrderDescending() {
         let collectionPath = dataStore.collection("collection1")
         let query = collectionPath.order(by: "int", descending: true)
-        
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
-        let expectCollection = expectation(description: "Three documents should be retrieved")
-        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
-            let documents = change.result
-            guard documents.count == 3 else { return false }
-            guard documents[0].documentID == "document2" else { return false }
-            guard documents[1].documentID == "document1" else { return false }
-            guard documents[2].documentID == "document3" else { return false }
-            guard change.insertions == [0, 1, 2] else { return false }
-            guard change.deletions.isEmpty else { return false }
-            guard change.modifications.isEmpty else { return false }
-            return true
-        }
-        
+        let expectEvents = expectation(description: "One event should be occured")
+        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
-        wait(for: [expectCollection], timeout: 3.0)
+        wait(for: [expectEvents], timeout: 3.0)
+        
+        guard case let .next(change) = observer.events[0] else { XCTFail("Event 0 should be `next`"); return }
+        
+        let documents = change.result
+        XCTAssertEqual(documents.count, 3)
+        XCTAssertEqual(documents[0].documentID, "document2")
+        XCTAssertEqual(documents[1].documentID, "document1")
+        XCTAssertEqual(documents[2].documentID, "document3")
+        XCTAssertEqual(change.insertions, [0, 1, 2])
+        XCTAssertTrue(change.deletions.isEmpty)
+        XCTAssertTrue(change.modifications.isEmpty)
     }
     
     func testObserveMultipleOrder() {
         let collectionPath = dataStore.collection("collection1")
         let query = collectionPath.order(by: "bool", descending: true).order(by: "int", descending: false)
-        
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
         
-        let expectCollection = expectation(description: "Three documents should be retrieved")
-        let observer = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
-            let documents = change.result
-            guard documents.count == 3 else { return false }
-            guard documents[0].documentID == "document2" else { return false }
-            guard documents[1].documentID == "document3" else { return false }
-            guard documents[2].documentID == "document1" else { return false }
-            guard change.insertions == [0, 1, 2] else { return false }
-            guard change.deletions.isEmpty else { return false }
-            guard change.modifications.isEmpty else { return false }
-            return true
-        }
-        
+        let expectEvents = expectation(description: "One event should be occured")
+        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
         collectionObservable.subscribe(observer).disposed(by: disposeBag)
-        wait(for: [expectCollection], timeout: 3.0)
+        wait(for: [expectEvents], timeout: 3.0)
+        
+        guard case let .next(change) = observer.events[0] else { XCTFail("Event 0 should be `next`"); return }
+        
+        let documents = change.result
+        XCTAssertEqual(documents.count, 3)
+        XCTAssertEqual(documents[0].documentID, "document2")
+        XCTAssertEqual(documents[1].documentID, "document3")
+        XCTAssertEqual(documents[2].documentID, "document1")
+        XCTAssertEqual(change.insertions, [0, 1, 2])
+        XCTAssertTrue(change.deletions.isEmpty)
+        XCTAssertTrue(change.modifications.isEmpty)
     }
     
     func testAddDocument() {
         let collectionPath = dataStore.collection("collection1")
         let query = collectionPath.order(by: "int")
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
+
+        let expectEvents = expectation(description: "One event should be occured")
+        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
+        collectionObservable.subscribe(observer).disposed(by: disposeBag)
+        wait(for: [expectEvents], timeout: 3.0)
         
-        let expectCollection = expectation(description: "Three documents should be retrieved")
-        let collectionObserver = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
-            let documents = change.result
-            guard documents.count == 3 else { return false }
-            guard documents[0].documentID == "document3" else { return false }
-            guard documents[1].documentID == "document1" else { return false }
-            guard documents[2].documentID == "document2" else { return false }
-            guard change.insertions == [0, 1, 2] else { return false }
-            guard change.deletions.isEmpty else { return false }
-            guard change.modifications.isEmpty else { return false }
-            return true
-        }
+        guard case let .next(change1) = observer.events[0] else { XCTFail("Event 0 should be `next`"); return }
         
-        collectionObservable.subscribe(collectionObserver).disposed(by: disposeBag)
-        wait(for: [expectCollection], timeout: 3.0)
+        let documents1 = change1.result
+        XCTAssertEqual(documents1.count, 3)
+        XCTAssertEqual(documents1[0].documentID, "document3")
+        XCTAssertEqual(documents1[1].documentID, "document1")
+        XCTAssertEqual(documents1[2].documentID, "document2")
+        XCTAssertEqual(change1.insertions, [0, 1, 2])
+        XCTAssertTrue(change1.deletions.isEmpty)
+        XCTAssertTrue(change1.modifications.isEmpty)
 
         let expectWriting = expectation(description: "Writing result should be success")
         let expectCollectionChange = expectation(description: "Collection should be changed")
-        collectionObserver.reset(expectCollectionChange) { (change: CollectionChange<MockDocument>) in
-            let documents = change.result
-            guard documents.count == 4 else { return false }
-            guard documents[0].documentID == "document3" else { return false }
-            guard documents[1].documentID == "newDocument" else { return false }
-            guard documents[2].documentID == "document1" else { return false }
-            guard documents[3].documentID == "document2" else { return false }
-            guard change.insertions == [1] else { return false }
-            guard change.deletions.isEmpty else { return false }
-            guard change.modifications.isEmpty else { return false }
-            return true
-        }
+        observer.reset(expectCollectionChange, count: 1)
         
         dataStore
             .write { writer in
@@ -365,41 +351,45 @@ class MockDataStoreTests: XCTestCase {
             .disposed(by: disposeBag)
         
         wait(for: [expectWriting, expectCollectionChange], timeout: 3.0)
+        
+        guard case let .next(change2) = observer.events[0] else { XCTFail("Event 0 should be `next`"); return }
+        
+        let documents2 = change2.result
+        XCTAssertEqual(documents2.count, 4)
+        XCTAssertEqual(documents2[0].documentID, "document3")
+        XCTAssertEqual(documents2[1].documentID, "newDocument")
+        XCTAssertEqual(documents2[2].documentID, "document1")
+        XCTAssertEqual(documents2[3].documentID, "document2")
+        XCTAssertEqual(change2.insertions, [1])
+        XCTAssertTrue(change2.deletions.isEmpty)
+        XCTAssertTrue(change2.modifications.isEmpty)
     }
 
     func testDeleteDocument() {
         let collectionPath = dataStore.collection("collection1")
         let query = collectionPath.order(by: "int")
         let collectionObservable: Observable<CollectionChange<MockDocument>> = dataStore.observeCollection(matches: query)
-        
-        let expectCollection = expectation(description: "Three documents should be retrieved")
-        let collectionObserver = EventuallyObserver(expectCollection) { (change: CollectionChange<MockDocument>) in
-            let documents = change.result
-            guard documents.count == 3 else { return false }
-            guard documents[0].documentID == "document3" else { return false }
-            guard documents[1].documentID == "document1" else { return false }
-            guard documents[2].documentID == "document2" else { return false }
-            guard change.insertions == [0, 1, 2] else { return false }
-            guard change.deletions.isEmpty else { return false }
-            guard change.modifications.isEmpty else { return false }
-            return true
-        }
-        
-        collectionObservable.subscribe(collectionObserver).disposed(by: disposeBag)
-        wait(for: [expectCollection], timeout: 3.0)
 
+        let expectEvents = expectation(description: "One event should be occured")
+        let observer = Recording<CollectionChange<MockDocument>>(expectEvents, count: 1)
+        collectionObservable.subscribe(observer).disposed(by: disposeBag)
+        wait(for: [expectEvents], timeout: 3.0)
+
+        guard case let .next(change1) = observer.events[0] else { XCTFail("Event 0 should be `next`"); return }
+        
+        let documents1 = change1.result
+        XCTAssertEqual(documents1.count, 3)
+        XCTAssertEqual(documents1[0].documentID, "document3")
+        XCTAssertEqual(documents1[1].documentID, "document1")
+        XCTAssertEqual(documents1[2].documentID, "document2")
+        XCTAssertEqual(change1.insertions, [0, 1, 2])
+        XCTAssertTrue(change1.deletions.isEmpty)
+        XCTAssertTrue(change1.modifications.isEmpty)
+        
         let expectWriting = expectation(description: "Writing result should be success")
         let expectCollectionChange = expectation(description: "Collection should be changed")
-        collectionObserver.reset(expectCollectionChange) { (change: CollectionChange<MockDocument>) in
-            let documents = change.result
-            guard documents.count == 1 else { return false }
-            guard documents[0].documentID == "document1" else { return false }
-            guard change.insertions.isEmpty else { return false }
-            guard change.deletions == [0, 2] else { return false }
-            guard change.modifications.isEmpty else { return false }
-            return true
-        }
-        
+        observer.reset(expectCollectionChange, count: 1)
+
         dataStore
             .write { writer in
                 writer.deleteDocument(at: collectionPath.document("document2"))
@@ -413,5 +403,14 @@ class MockDataStoreTests: XCTestCase {
             .disposed(by: disposeBag)
         
         wait(for: [expectWriting, expectCollectionChange], timeout: 3.0)
+
+        guard case let .next(change2) = observer.events[0] else { XCTFail("Event 0 should be `next`"); return }
+        
+        let documents2 = change2.result
+        XCTAssertEqual(documents2.count, 1)
+        XCTAssertEqual(documents2[0].documentID, "document1")
+        XCTAssertTrue(change2.insertions.isEmpty)
+        XCTAssertEqual(change2.deletions, [0, 2])
+        XCTAssertTrue(change2.modifications.isEmpty)
     }
 }

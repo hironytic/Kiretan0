@@ -26,7 +26,8 @@
 import XCTest
 import RxSwift
 
-public class EventuallyObserver<Element>: ObserverType {
+/// An observer that fulfills specified expectation when the condition matches eventually.
+public class Eventually<Element>: ObserverType {
     public typealias E = Element
     private var expectation: XCTestExpectation
     private var nextChecker: (Element) -> Bool

@@ -40,7 +40,7 @@
 		509720841F750CA500C623A5 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B21F4EF9C500113180 /* RxCocoa.framework */; };
 		509720851F750CA800C623A5 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B31F4EF9C500113180 /* RxSwift.framework */; };
 		5097208A1F750E7500C623A5 /* MockUserAccountRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509720891F750E7500C623A5 /* MockUserAccountRepository.swift */; };
-		5097208C1F750FF900C623A5 /* EventuallyObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5097208B1F750FF900C623A5 /* EventuallyObserver.swift */; };
+		5097208C1F750FF900C623A5 /* Eventually.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5097208B1F750FF900C623A5 /* Eventually.swift */; };
 		5097208F1F7516B700C623A5 /* WelcomeViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5097208E1F7516B700C623A5 /* WelcomeViewModelTests.swift */; };
 		5097209A1F7726AA00C623A5 /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509720991F7726AA00C623A5 /* Team.swift */; };
 		5097209C1F7736D600C623A5 /* TeamMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5097209B1F7736D600C623A5 /* TeamMember.swift */; };
@@ -53,6 +53,7 @@
 		50B395191F7F4F7A00355F89 /* ItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B395181F7F4F7A00355F89 /* ItemRepository.swift */; };
 		50B3951B1F8597B300355F89 /* CollectionChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B3951A1F8597B300355F89 /* CollectionChange.swift */; };
 		50B3951F1F867B5500355F89 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B3951E1F867B5500355F89 /* DataStore.swift */; };
+		50EDC1151F9238C500E5F4FF /* Recording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EDC1141F9238C500E5F4FF /* Recording.swift */; };
 		8604AA1E1F90780A00021D99 /* Diffitic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8604AA1D1F90780A00021D99 /* Diffitic.framework */; };
 		B8CF05BD73E585ACE10CEEAF /* Pods_Kiretan0Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D5514D7F7DF8D3775DE2A23 /* Pods_Kiretan0Tests.framework */; };
 /* End PBXBuildFile section */
@@ -103,7 +104,7 @@
 		505263FF1F56FC5B00113180 /* RootViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
 		509720821F7507B900C623A5 /* RootViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModelTests.swift; sourceTree = "<group>"; };
 		509720891F750E7500C623A5 /* MockUserAccountRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserAccountRepository.swift; sourceTree = "<group>"; };
-		5097208B1F750FF900C623A5 /* EventuallyObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventuallyObserver.swift; sourceTree = "<group>"; };
+		5097208B1F750FF900C623A5 /* Eventually.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Eventually.swift; sourceTree = "<group>"; };
 		5097208E1F7516B700C623A5 /* WelcomeViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewModelTests.swift; sourceTree = "<group>"; };
 		509720991F7726AA00C623A5 /* Team.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Team.swift; sourceTree = "<group>"; };
 		5097209B1F7736D600C623A5 /* TeamMember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamMember.swift; sourceTree = "<group>"; };
@@ -116,6 +117,7 @@
 		50B395181F7F4F7A00355F89 /* ItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRepository.swift; sourceTree = "<group>"; };
 		50B3951A1F8597B300355F89 /* CollectionChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionChange.swift; sourceTree = "<group>"; };
 		50B3951E1F867B5500355F89 /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
+		50EDC1141F9238C500E5F4FF /* Recording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recording.swift; sourceTree = "<group>"; };
 		814DE02FC637B398D9A08055 /* Pods-Kiretan0Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kiretan0Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kiretan0Tests/Pods-Kiretan0Tests.release.xcconfig"; sourceTree = "<group>"; };
 		8604AA1D1F90780A00021D99 /* Diffitic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Diffitic.framework; path = Carthage/Build/iOS/Diffitic.framework; sourceTree = "<group>"; };
 		8D5514D7F7DF8D3775DE2A23 /* Pods_Kiretan0Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Kiretan0Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -202,7 +204,8 @@
 			children = (
 				509720801F75077200C623A5 /* View */,
 				509720861F750E3B00C623A5 /* Mock */,
-				5097208B1F750FF900C623A5 /* EventuallyObserver.swift */,
+				5097208B1F750FF900C623A5 /* Eventually.swift */,
+				50EDC1141F9238C500E5F4FF /* Recording.swift */,
 				505263931F4B02EE00113180 /* Kiretan0Tests.swift */,
 				505263951F4B02EE00113180 /* Info.plist */,
 			);
@@ -694,9 +697,10 @@
 			files = (
 				509720831F7507B900C623A5 /* RootViewModelTests.swift in Sources */,
 				50AD756C1F8F92ED003917E6 /* MockDataStore.swift in Sources */,
+				50EDC1151F9238C500E5F4FF /* Recording.swift in Sources */,
 				505263941F4B02EE00113180 /* Kiretan0Tests.swift in Sources */,
 				50AD75711F91827D003917E6 /* MockDataStoreTests.swift in Sources */,
-				5097208C1F750FF900C623A5 /* EventuallyObserver.swift in Sources */,
+				5097208C1F750FF900C623A5 /* Eventually.swift in Sources */,
 				5097208A1F750E7500C623A5 /* MockUserAccountRepository.swift in Sources */,
 				5097208F1F7516B700C623A5 /* WelcomeViewModelTests.swift in Sources */,
 			);
