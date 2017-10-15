@@ -500,18 +500,24 @@ private enum MockDocumentWritingAction {
     case delete(documentID: String)
 }
 
+private struct MockDocumentWritingExecution {
+    let actions: [MockDocumentWritingAction]
+    let observer: PrimitiveSequenceType.CompletableObserver
+}
+
 private class MockResultCollection {
     private let collectionPathString: String
-    private let actionSubject = PublishSubject<([MockDocumentWritingAction], PrimitiveSequenceType.CompletableObserver)>()
+    private let executionSubject = PublishSubject<MockDocumentWritingExecution>()
     public let result: Observable<[String: [String: Any]]>
     private let disposeBag = DisposeBag()
     
     public init(collectionPathString: String, initialDocuments: [String: [String: Any]]) {
         self.collectionPathString = collectionPathString
-        result = actionSubject
-            .scan(initialDocuments) { (prevAcc, actionsAndObserver) -> [String: [String: Any]] in
+        result = executionSubject
+            .scan(initialDocuments) { (prevAcc, execution) -> [String: [String: Any]] in
                 var acc = prevAcc
-                let (actions, observer) = actionsAndObserver
+                let actions = execution.actions
+                let observer = execution.observer
                 var error: Error? = nil
                 loop: for action in actions {
                     switch action {
@@ -545,7 +551,6 @@ private class MockResultCollection {
                 }
             }
             .startWith(initialDocuments)
-            .do(onDispose: { print("Disposed") })
             .share(replay: 1, scope: .whileConnected)
 
         // subscribing result by myself so that it handles actions even if no one observe the result.
@@ -554,7 +559,7 @@ private class MockResultCollection {
     
     public func executeActions(_ actions: [MockDocumentWritingAction]) -> Completable {
         return Completable.create { observer in
-            self.actionSubject.onNext((actions, observer))
+            self.executionSubject.onNext(MockDocumentWritingExecution(actions: actions, observer: observer))
             return Disposables.create()
         }
     }
