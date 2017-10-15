@@ -35,7 +35,7 @@ public enum MockDataStoreError: Error {
 public class MockDataStore: DataStore {
     private var result: [String: MockResultCollection]
     
-    public init(initialCollections: [String: [String: [String:Any]]]) {
+    public init(initialCollections: [String: [String: [String: Any]]]) {
         result = [:]
         for collection in initialCollections {
             result[collection.key] = MockResultCollection(collectionPathString: collection.key,
@@ -95,24 +95,27 @@ public class MockDataStore: DataStore {
                 insertions.append(contentsOf: nextIndex ..< nextIndex + nextCount)
                 deletions.append(contentsOf: prevIndex ..< prevIndex + prevCount)
             case .identical:
-                break   // FIXME:
+                for offset in 0 ..< prevCount {
+                    let prevData = prev[prevIndex + offset].data
+                    let nextData = next[nextIndex + offset].data
+                    if (!isSameData(prevData, nextData)) {
+                        modifications.append(prevIndex + offset)
+                    }
+                }
             }
         }
         return CollectionChange(result: next, deletions: deletions, insertions: insertions, modifications: modifications)
     }
     
     public func write(block: @escaping (DocumentWriter) throws -> Void) -> Completable {
+        let writer = MockDocumentWriter(dataStore: self)
         return Completable.create { observer in
-            let writer = MockDocumentWriter(dataStore: self)
             do {
                 try block(writer)
             } catch let error {
                 observer(.error(error))
             }
-            writer.execute()
-            observer(.completed)
-            
-            return Disposables.create()
+            return writer.execute().subscribe(observer)
         }
     }
     
@@ -185,7 +188,7 @@ private func compareValues(_ value1: Any, _ value2: Any) -> ComparisonResult {
         case is Double:
             return 5
         default:
-            return 100
+            return -1
         }
     }
 
@@ -258,7 +261,16 @@ private func compareValues(_ value1: Any, _ value2: Any) -> ComparisonResult {
             return .orderedSame
         }
     }
-    
+}
+
+private func isSameData(_ data1: [String: Any], _ data2: [String: Any]) -> Bool {
+    for pair in data1 {
+        guard let data2Value = data2[pair.key] else { return false }
+        if compareValues(pair.value, data2Value) != .orderedSame {
+            return false
+        }
+    }
+    return true
 }
 
 private enum FilterOperator {
@@ -471,11 +483,13 @@ private class MockDocumentWriter: DocumentWriter {
                      for: documentPath.basePath)
     }
 
-    public func execute() {
-        for (collectionPathString, actions) in actionsForCollection {
+    public func execute() -> Completable {
+        let completables = actionsForCollection.map { (pair: (key: String, value: [MockDocumentWritingAction])) -> Completable in
+            let (collectionPathString, actions) = pair
             let resultCollection = dataStore.resultCollection(for: collectionPathString)
-            resultCollection.executeActions(actions)
+            return resultCollection.executeActions(actions)
         }
+        return Completable.concat(completables)
     }
 }
 
@@ -488,15 +502,18 @@ private enum MockDocumentWritingAction {
 
 private class MockResultCollection {
     private let collectionPathString: String
-    private let actionSubject = PublishSubject<[MockDocumentWritingAction]>()
+    private let actionSubject = PublishSubject<([MockDocumentWritingAction], PrimitiveSequenceType.CompletableObserver)>()
     public let result: Observable<[String: [String: Any]]>
+    private let disposeBag = DisposeBag()
     
     public init(collectionPathString: String, initialDocuments: [String: [String: Any]]) {
         self.collectionPathString = collectionPathString
         result = actionSubject
-            .scan(initialDocuments) { (acc, actions) -> [String: [String: Any]] in
-                var acc = acc
-                for action in actions {
+            .scan(initialDocuments) { (prevAcc, actionsAndObserver) -> [String: [String: Any]] in
+                var acc = prevAcc
+                let (actions, observer) = actionsAndObserver
+                var error: Error? = nil
+                loop: for action in actions {
                     switch action {
                     case .set(let documentID, let data):
                         acc[documentID] = data
@@ -505,7 +522,8 @@ private class MockResultCollection {
                             let merged = old.merging(fields) { (_, new) in new }
                             acc[documentID] = merged
                         } else {
-                            throw MockDataStoreError.documentNotFound(documentPathString: "\(collectionPathString)/\(documentID)")
+                            error = MockDataStoreError.documentNotFound(documentPathString: "\(collectionPathString)/\(documentID)")
+                            break loop
                         }
                     case .merge(let documentID, let fields):
                         if let old = acc[documentID] {
@@ -518,14 +536,27 @@ private class MockResultCollection {
                         acc.removeValue(forKey: documentID)
                     }
                 }
-                return acc
+                if let error = error {
+                    observer(.error(error))
+                    return prevAcc
+                } else {
+                    observer(.completed)
+                    return acc
+                }
             }
             .startWith(initialDocuments)
-            .share(replay: 1, scope: .forever)
+            .do(onDispose: { print("Disposed") })
+            .share(replay: 1, scope: .whileConnected)
+
+        // subscribing result by myself so that it handles actions even if no one observe the result.
+        result.subscribe().disposed(by: disposeBag)
     }
     
-    public func executeActions(_ actions: [MockDocumentWritingAction]) {
-        actionSubject.onNext(actions)
+    public func executeActions(_ actions: [MockDocumentWritingAction]) -> Completable {
+        return Completable.create { observer in
+            self.actionSubject.onNext((actions, observer))
+            return Disposables.create()
+        }
     }
 }
 
