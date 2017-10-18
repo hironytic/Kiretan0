@@ -30,6 +30,7 @@ import Diffitic
 
 public enum MockDataStoreError: Error {
     case documentNotFound(documentPathString: String)
+    case deletePlaceholderCannotBeUsed(keys: Set<String>)
 }
 
 public class MockDataStore: DataStore {
@@ -224,6 +225,7 @@ private func compareValues(_ value1: Any, _ value2: Any) -> ComparisonResult {
             } else {
                 return .orderedSame
             }
+            
         case is Bool:
             let v1 = value1 as! Bool
             let v2 = value2 as! Bool
@@ -267,6 +269,11 @@ private func isSameData(_ data1: [String: Any], _ data2: [String: Any]) -> Bool 
     for pair in data1 {
         guard let data2Value = data2[pair.key] else { return false }
         if compareValues(pair.value, data2Value) != .orderedSame {
+            return false
+        }
+    }
+    for pair in data2 {
+        if !data1.keys.contains(pair.key) {
             return false
         }
     }
@@ -512,6 +519,21 @@ private class MockResultCollection {
     private let disposeBag = DisposeBag()
     
     public init(collectionPathString: String, initialDocuments: [String: [String: Any]]) {
+        let resolvePlaceholders: ([String: Any], Date) -> (fields: [String: Any], keysToDelete: Set<String>) = { fields, currentTime in
+            var resultFields = [String: Any](minimumCapacity: fields.count)
+            var keysToDelete = Set<String>()
+            for (key, value) in fields {
+                if case MockDataStorePlaceholder.deletePlaceholder = value {
+                    keysToDelete.insert(key)
+                } else if case MockDataStorePlaceholder.serverTimestampPlaceholder = value {
+                    resultFields[key] = currentTime
+                } else {
+                    resultFields[key] = value
+                }
+            }
+            return (fields: resultFields, keysToDelete: keysToDelete)
+        }
+        
         self.collectionPathString = collectionPathString
         result = executionSubject
             .scan(initialDocuments) { (prevAcc, execution) -> [String: [String: Any]] in
@@ -522,22 +544,38 @@ private class MockResultCollection {
                 loop: for action in actions {
                     switch action {
                     case .set(let documentID, let data):
-                        acc[documentID] = data
+                        let (resolvedData, keysToDelete) = resolvePlaceholders(data, Date())
+                        if !keysToDelete.isEmpty {
+                            error = MockDataStoreError.deletePlaceholderCannotBeUsed(keys: keysToDelete)
+                            break loop
+                        }
+                        acc[documentID] = resolvedData
+                        
                     case .update(let documentID, let fields):
+                        let (resolvedFields, keysToDelete) = resolvePlaceholders(fields, Date())
                         if let old = acc[documentID] {
-                            let merged = old.merging(fields) { (_, new) in new }
+                            let merged = old
+                                .filter { !keysToDelete.contains($0.key) }
+                                .merging(resolvedFields) { (_, new) in new }
                             acc[documentID] = merged
                         } else {
                             error = MockDataStoreError.documentNotFound(documentPathString: "\(collectionPathString)/\(documentID)")
                             break loop
                         }
+                        
                     case .merge(let documentID, let fields):
+                        let (resolvedFields, keysToDelete) = resolvePlaceholders(fields, Date())
+                        if !keysToDelete.isEmpty {
+                            error = MockDataStoreError.deletePlaceholderCannotBeUsed(keys: keysToDelete)
+                            break loop
+                        }
                         if let old = acc[documentID] {
-                            let merged = old.merging(fields) { (_, new) in new }
+                            let merged = old.merging(resolvedFields) { (_, new) in new }
                             acc[documentID] = merged
                         } else {
-                            acc[documentID] = fields
+                            acc[documentID] = resolvedFields
                         }
+                        
                     case .delete(let documentID):
                         acc.removeValue(forKey: documentID)
                     }
