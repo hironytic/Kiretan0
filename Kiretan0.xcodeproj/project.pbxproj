@@ -53,6 +53,7 @@
 		50B395191F7F4F7A00355F89 /* ItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B395181F7F4F7A00355F89 /* ItemRepository.swift */; };
 		50B3951B1F8597B300355F89 /* CollectionChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B3951A1F8597B300355F89 /* CollectionChange.swift */; };
 		50B3951F1F867B5500355F89 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B3951E1F867B5500355F89 /* DataStore.swift */; };
+		50D138081F98CE4D0064B293 /* ItemRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D138071F98CE4D0064B293 /* ItemRepositoryTests.swift */; };
 		50EDC1151F9238C500E5F4FF /* RecordThenFulfill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EDC1141F9238C500E5F4FF /* RecordThenFulfill.swift */; };
 		8604AA1E1F90780A00021D99 /* Diffitic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8604AA1D1F90780A00021D99 /* Diffitic.framework */; };
 		B8CF05BD73E585ACE10CEEAF /* Pods_Kiretan0Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D5514D7F7DF8D3775DE2A23 /* Pods_Kiretan0Tests.framework */; };
@@ -117,6 +118,7 @@
 		50B395181F7F4F7A00355F89 /* ItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRepository.swift; sourceTree = "<group>"; };
 		50B3951A1F8597B300355F89 /* CollectionChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionChange.swift; sourceTree = "<group>"; };
 		50B3951E1F867B5500355F89 /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
+		50D138071F98CE4D0064B293 /* ItemRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRepositoryTests.swift; sourceTree = "<group>"; };
 		50EDC1141F9238C500E5F4FF /* RecordThenFulfill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordThenFulfill.swift; sourceTree = "<group>"; };
 		814DE02FC637B398D9A08055 /* Pods-Kiretan0Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kiretan0Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kiretan0Tests/Pods-Kiretan0Tests.release.xcconfig"; sourceTree = "<group>"; };
 		8604AA1D1F90780A00021D99 /* Diffitic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Diffitic.framework; path = Carthage/Build/iOS/Diffitic.framework; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 			isa = PBXGroup;
 			children = (
 				509720801F75077200C623A5 /* View */,
+				50D138091F98CE640064B293 /* Model */,
 				509720861F750E3B00C623A5 /* Mock */,
 				5097208B1F750FF900C623A5 /* EventuallyFulfill.swift */,
 				50EDC1141F9238C500E5F4FF /* RecordThenFulfill.swift */,
@@ -324,6 +327,7 @@
 		509720871F750E6400C623A5 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				50D138061F98CE340064B293 /* Item */,
 				509720881F750E6900C623A5 /* UserAccount */,
 				50AD756B1F8F92ED003917E6 /* MockDataStore.swift */,
 				50AD75701F91827D003917E6 /* MockDataStoreTests.swift */,
@@ -375,6 +379,37 @@
 				50B3951E1F867B5500355F89 /* DataStore.swift */,
 			);
 			path = Utility;
+			sourceTree = "<group>";
+		};
+		50D138061F98CE340064B293 /* Item */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Item;
+			sourceTree = "<group>";
+		};
+		50D138091F98CE640064B293 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				50D1380A1F98CE6C0064B293 /* Model */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		50D1380A1F98CE6C0064B293 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				50D1380B1F98CE730064B293 /* Item */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		50D1380B1F98CE730064B293 /* Item */ = {
+			isa = PBXGroup;
+			children = (
+				50D138071F98CE4D0064B293 /* ItemRepositoryTests.swift */,
+			);
+			path = Item;
 			sourceTree = "<group>";
 		};
 		7FE24AFD56E00FB772473CAE /* Pods */ = {
@@ -697,6 +732,7 @@
 			files = (
 				509720831F7507B900C623A5 /* RootViewModelTests.swift in Sources */,
 				50AD756C1F8F92ED003917E6 /* MockDataStore.swift in Sources */,
+				50D138081F98CE4D0064B293 /* ItemRepositoryTests.swift in Sources */,
 				50EDC1151F9238C500E5F4FF /* RecordThenFulfill.swift in Sources */,
 				505263941F4B02EE00113180 /* Kiretan0Tests.swift in Sources */,
 				50AD75711F91827D003917E6 /* MockDataStoreTests.swift in Sources */,
