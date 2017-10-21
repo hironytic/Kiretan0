@@ -27,17 +27,6 @@ import XCTest
 import RxSwift
 @testable import Kiretan0
 
-private func makeDate(_ year: Int, _ month: Int, _ day: Int, _ hour: Int, _ minute: Int, _ second: Int) -> Date {
-    return DateComponents(calendar: Calendar(identifier: .gregorian),
-                          timeZone: TimeZone(identifier: "UTC"),
-                          year: year,
-                          month: month,
-                          day: day,
-                          hour: hour,
-                          minute: minute,
-                          second: second).date!
-}
-
 class ItemRepositoryTests: XCTestCase {
     var disposeBag: DisposeBag!
     var itemRepository: ItemRepository!
@@ -50,24 +39,24 @@ class ItemRepositoryTests: XCTestCase {
                 "item_aaa_1": [
                     "name": "Item 1",
                     "insufficient": false,
-                    "last_change": makeDate(2017, 7, 10, 17, 00, 00)
+                    "last_change": TestUtils.makeDate(2017, 7, 10, 17, 00, 00)
                 ],
                 "item_aaa_2": [
                     "name": "Item 2",
                     "insufficient": false,
-                    "last_change": makeDate(2017, 7, 12, 10, 00, 00)
+                    "last_change": TestUtils.makeDate(2017, 7, 12, 10, 00, 00)
                 ],
                 "item_aaa_3": [
                     "name": "Item 3",
                     "insufficient": true,
-                    "last_change": makeDate(2017, 7, 08, 14, 20, 30)
+                    "last_change": TestUtils.makeDate(2017, 7, 08, 14, 20, 30)
                 ],
             ],
             "/team/bbb_item": [
                 "item_bbb_1": [
                     "name": "Item 1",
                     "insufficient": false,
-                    "last_change": makeDate(2018, 1, 10, 3, 00, 00)
+                    "last_change": TestUtils.makeDate(2018, 1, 10, 3, 00, 00)
                 ]
             ]
         ])
@@ -114,7 +103,7 @@ class ItemRepositoryTests: XCTestCase {
         
         XCTAssertEqual(item0.name, "Item 2")
         XCTAssertFalse(item0.isInsufficient)
-        XCTAssertEqual(item0.lastChange, makeDate(2017, 7, 12, 10, 00, 00))
+        XCTAssertEqual(item0.lastChange, TestUtils.makeDate(2017, 7, 12, 10, 00, 00))
     }
     
     func testInsufficientItems() {
@@ -137,7 +126,7 @@ class ItemRepositoryTests: XCTestCase {
         
         XCTAssertEqual(item0.name, "Item 3")
         XCTAssertTrue(item0.isInsufficient)
-        XCTAssertEqual(item0.lastChange, makeDate(2017, 7, 08, 14, 20, 30))
+        XCTAssertEqual(item0.lastChange, TestUtils.makeDate(2017, 7, 08, 14, 20, 30))
     }
     
     func testCreateItem() {

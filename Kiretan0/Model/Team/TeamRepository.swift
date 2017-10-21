@@ -67,7 +67,8 @@ public class DefaultTeamRepository: TeamRepository {
     
     public func members(in teamID: String) -> Observable<CollectionChange<TeamMember>> {
         let teamMemberPath = _dataStore.collection("team").document(teamID).collection("member")
-        return _dataStore.observeCollection(matches: teamMemberPath)
+        let query = teamMemberPath.order(by: "name")
+        return _dataStore.observeCollection(matches: query)
     }
 
     public func teamList(of memberID: String) -> Observable<MemberTeam> {
@@ -95,7 +96,11 @@ public class DefaultTeamRepository: TeamRepository {
             
             let reversePath = self._dataStore.collection("member_team").document(member.memberID)
             writer.mergeDocumentData([teamID: true], at: reversePath)
-        }.andThen(Single.just(teamID))
+        }
+        .andThen(Single.create { observer in
+            observer(.success(teamID))
+            return Disposables.create()
+        })
     }
 
     public func join(to teamID: String, as member: TeamMember) -> Completable {

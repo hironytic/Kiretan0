@@ -54,6 +54,8 @@
 		50B3951B1F8597B300355F89 /* CollectionChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B3951A1F8597B300355F89 /* CollectionChange.swift */; };
 		50B3951F1F867B5500355F89 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B3951E1F867B5500355F89 /* DataStore.swift */; };
 		50D138081F98CE4D0064B293 /* ItemRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D138071F98CE4D0064B293 /* ItemRepositoryTests.swift */; };
+		50D1380E1F9B12EE0064B293 /* TeamRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D1380D1F9B12EE0064B293 /* TeamRepositoryTests.swift */; };
+		50D138101F9B13700064B293 /* TestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D1380F1F9B13700064B293 /* TestUtils.swift */; };
 		50EDC1151F9238C500E5F4FF /* RecordThenFulfill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EDC1141F9238C500E5F4FF /* RecordThenFulfill.swift */; };
 		8604AA1E1F90780A00021D99 /* Diffitic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8604AA1D1F90780A00021D99 /* Diffitic.framework */; };
 		B8CF05BD73E585ACE10CEEAF /* Pods_Kiretan0Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D5514D7F7DF8D3775DE2A23 /* Pods_Kiretan0Tests.framework */; };
@@ -119,6 +121,8 @@
 		50B3951A1F8597B300355F89 /* CollectionChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionChange.swift; sourceTree = "<group>"; };
 		50B3951E1F867B5500355F89 /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		50D138071F98CE4D0064B293 /* ItemRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRepositoryTests.swift; sourceTree = "<group>"; };
+		50D1380D1F9B12EE0064B293 /* TeamRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamRepositoryTests.swift; sourceTree = "<group>"; };
+		50D1380F1F9B13700064B293 /* TestUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestUtils.swift; sourceTree = "<group>"; };
 		50EDC1141F9238C500E5F4FF /* RecordThenFulfill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordThenFulfill.swift; sourceTree = "<group>"; };
 		814DE02FC637B398D9A08055 /* Pods-Kiretan0Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kiretan0Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kiretan0Tests/Pods-Kiretan0Tests.release.xcconfig"; sourceTree = "<group>"; };
 		8604AA1D1F90780A00021D99 /* Diffitic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Diffitic.framework; path = Carthage/Build/iOS/Diffitic.framework; sourceTree = "<group>"; };
@@ -204,13 +208,14 @@
 		505263921F4B02EE00113180 /* Kiretan0Tests */ = {
 			isa = PBXGroup;
 			children = (
-				509720801F75077200C623A5 /* View */,
-				50D138091F98CE640064B293 /* Model */,
 				509720861F750E3B00C623A5 /* Mock */,
+				50D138091F98CE640064B293 /* Model */,
+				505263951F4B02EE00113180 /* Info.plist */,
+				505263931F4B02EE00113180 /* Kiretan0Tests.swift */,
 				5097208B1F750FF900C623A5 /* EventuallyFulfill.swift */,
 				50EDC1141F9238C500E5F4FF /* RecordThenFulfill.swift */,
-				505263931F4B02EE00113180 /* Kiretan0Tests.swift */,
-				505263951F4B02EE00113180 /* Info.plist */,
+				50D1380F1F9B13700064B293 /* TestUtils.swift */,
+				509720801F75077200C623A5 /* View */,
 			);
 			path = Kiretan0Tests;
 			sourceTree = "<group>";
@@ -400,6 +405,7 @@
 			isa = PBXGroup;
 			children = (
 				50D1380B1F98CE730064B293 /* Item */,
+				50D1380C1F9B11650064B293 /* Team */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -410,6 +416,14 @@
 				50D138071F98CE4D0064B293 /* ItemRepositoryTests.swift */,
 			);
 			path = Item;
+			sourceTree = "<group>";
+		};
+		50D1380C1F9B11650064B293 /* Team */ = {
+			isa = PBXGroup;
+			children = (
+				50D1380D1F9B12EE0064B293 /* TeamRepositoryTests.swift */,
+			);
+			path = Team;
 			sourceTree = "<group>";
 		};
 		7FE24AFD56E00FB772473CAE /* Pods */ = {
@@ -732,12 +746,14 @@
 			files = (
 				509720831F7507B900C623A5 /* RootViewModelTests.swift in Sources */,
 				50AD756C1F8F92ED003917E6 /* MockDataStore.swift in Sources */,
+				50D138101F9B13700064B293 /* TestUtils.swift in Sources */,
 				50D138081F98CE4D0064B293 /* ItemRepositoryTests.swift in Sources */,
 				50EDC1151F9238C500E5F4FF /* RecordThenFulfill.swift in Sources */,
 				505263941F4B02EE00113180 /* Kiretan0Tests.swift in Sources */,
 				50AD75711F91827D003917E6 /* MockDataStoreTests.swift in Sources */,
 				5097208C1F750FF900C623A5 /* EventuallyFulfill.swift in Sources */,
 				5097208A1F750E7500C623A5 /* MockUserAccountRepository.swift in Sources */,
+				50D1380E1F9B12EE0064B293 /* TeamRepositoryTests.swift in Sources */,
 				5097208F1F7516B700C623A5 /* WelcomeViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
