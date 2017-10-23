@@ -41,7 +41,9 @@ public class RootViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        bindViewModel()
+        if ProcessInfo.processInfo.environment["Kiretan0Testing"] == nil {
+            bindViewModel()
+        }
     }
     
     private func bindViewModel() {
