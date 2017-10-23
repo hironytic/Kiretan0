@@ -332,7 +332,6 @@
 		509720871F750E6400C623A5 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				50D138061F98CE340064B293 /* Item */,
 				509720881F750E6900C623A5 /* UserAccount */,
 				50AD756B1F8F92ED003917E6 /* MockDataStore.swift */,
 				50AD75701F91827D003917E6 /* MockDataStoreTests.swift */,
@@ -384,13 +383,6 @@
 				50B3951E1F867B5500355F89 /* DataStore.swift */,
 			);
 			path = Utility;
-			sourceTree = "<group>";
-		};
-		50D138061F98CE340064B293 /* Item */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Item;
 			sourceTree = "<group>";
 		};
 		50D138091F98CE640064B293 /* Model */ = {
