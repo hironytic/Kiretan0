@@ -58,7 +58,7 @@ public class MockDataStore: DataStore {
         return rc.result
             .map { documents in
                 return try documents[mockDocumentPath.documentID]
-                    .map { try E.init(rawEntity: RawEntity(documentID: mockDocumentPath.documentID, data: $0)) }
+                    .map { try E.init(raw: RawEntity(documentID: mockDocumentPath.documentID, data: $0)) }
             }
     }
     
@@ -74,7 +74,7 @@ public class MockDataStore: DataStore {
             }
             .map { change in
                 let mockResultDocuments = change.result
-                let entities = try mockResultDocuments.map { doc in try E.init(rawEntity: RawEntity(documentID: doc.documentID, data: doc.data)) }
+                let entities = try mockResultDocuments.map { doc in try E.init(raw: RawEntity(documentID: doc.documentID, data: doc.data)) }
                 return CollectionChange(result: entities, deletions: change.deletions, insertions: change.insertions, modifications: change.modifications)
             }
     }

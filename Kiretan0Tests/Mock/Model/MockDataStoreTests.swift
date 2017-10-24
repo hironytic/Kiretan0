@@ -30,6 +30,14 @@ import RxSwift
 struct MockDocument: Entity {
     let rawEntity: RawEntity
     
+    init(raw: RawEntity) throws {
+        rawEntity = raw
+    }
+    
+    func raw() -> RawEntity {
+        return rawEntity
+    }
+    
     var documentID: String {
         return rawEntity.documentID
     }

@@ -38,12 +38,12 @@ public struct MemberTeam: Entity {
         self.teamIDList = teamIDList
     }
     
-    public init(rawEntity: RawEntity) throws {
-        let teamIDList = rawEntity.data.keys.sorted()
-        self.init(memberID: rawEntity.documentID, teamIDList: teamIDList)
+    public init(raw: RawEntity) throws {
+        let teamIDList = raw.data.keys.sorted()
+        self.init(memberID: raw.documentID, teamIDList: teamIDList)
     }
     
-    public var rawEntity: RawEntity {
+    public func raw() -> RawEntity {
         return RawEntity(documentID: memberID,
                          data: teamIDList.reduce(into: [:]) { (acc, teamID) in
             acc[teamID] = true
