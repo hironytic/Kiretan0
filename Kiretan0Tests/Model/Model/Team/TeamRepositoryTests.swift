@@ -135,8 +135,8 @@ class TeamRepositoryTests: XCTestCase {
         let exp = expectation(description: "Members are retrieved")
         let observer = EventuallyFulfill(exp) { (change: CollectionChange<TeamMember>) in
             guard change.result.count == 2 else { return false }
-            guard change.result[0].documentID == "user_y" else { return false }
-            guard change.result[1].documentID == "user_x" else { return false }
+            guard change.result[0].memberID == "user_y" else { return false }
+            guard change.result[1].memberID == "user_x" else { return false }
             
             member0Opt = change.result[0]
             return true
@@ -232,5 +232,163 @@ class TeamRepositoryTests: XCTestCase {
             .disposed(by: disposeBag)
         
         wait(for: [expMemberTeam], timeout: 3.0)
+    }
+    
+    func testJoinToTeam() {
+        let expectJoin = expectation(description: "Join to team")
+        let teamMember = TeamMember(memberID: "user_w", name: "Kate")
+        teamRepository.join(to: "aaa", as: teamMember)
+            .subscribe(onCompleted: {
+                expectJoin.fulfill()
+            }, onError: {error in
+                XCTFail("error \(error)")
+            })
+            .disposed(by: disposeBag)
+        
+        wait(for: [expectJoin], timeout: 3.0)
+        
+        // Confirm that the user is in the team
+        let expMember = expectation(description: "Get members")
+        let memberObserver = EventuallyFulfill(expMember) { (change: CollectionChange<TeamMember>) in
+            for member in change.result {
+                if member.memberID == "user_w" {
+                    return true
+                }
+            }
+            return false
+        }
+        
+        teamRepository.members(in: "aaa")
+            .bind(to: memberObserver)
+            .disposed(by: disposeBag)
+        
+        wait(for: [expMember], timeout: 3.0)
+
+        // Confirm that user's team list contains the team that the user joined to
+        let expMemberTeam = expectation(description: "Get member's team")
+        let memberTeamObserver = EventuallyFulfill(expMemberTeam) { (teams: MemberTeam) in
+            guard teams.teamIDList.contains("aaa") else { return false }
+            return true
+        }
+        
+        teamRepository.teamList(of: "user_w")
+            .bind(to: memberTeamObserver)
+            .disposed(by: disposeBag)
+        
+        wait(for: [expMemberTeam], timeout: 3.0)
+    }
+    
+    func testLeaveFromTeam() {
+        let expectLeave = expectation(description: "Leave from team")
+        teamRepository.leave(from: "aaa", as: "user_x")
+            .subscribe(onCompleted: {
+                expectLeave.fulfill()
+            }, onError: { error in
+                XCTFail("error \(error)")
+            })
+            .disposed(by: disposeBag)
+        
+        wait(for: [expectLeave], timeout: 3.0)
+
+        // Confirm that the user is not in the team
+        let expMember = expectation(description: "Get members")
+        let memberObserver = EventuallyFulfill(expMember) { (change: CollectionChange<TeamMember>) in
+            for member in change.result {
+                if member.memberID == "user_x" {
+                    return false
+                }
+            }
+            return true
+        }
+        
+        teamRepository.members(in: "aaa")
+            .bind(to: memberObserver)
+            .disposed(by: disposeBag)
+        
+        wait(for: [expMember], timeout: 3.0)
+
+        // Confirm that user's team list does not contain the team the the user left from
+        let expMemberTeam = expectation(description: "Get member's team")
+        let memberTeamObserver = EventuallyFulfill(expMemberTeam) { (teams: MemberTeam) in
+            guard !teams.teamIDList.contains("aaa") else { return false }
+            return true
+        }
+        
+        teamRepository.teamList(of: "user_x")
+            .bind(to: memberTeamObserver)
+            .disposed(by: disposeBag)
+        
+        wait(for: [expMemberTeam], timeout: 3.0)
+    }
+    
+    func testUpdateMember() {
+        let expectUpdate = expectation(description: "Update member")
+        let teamMember = TeamMember(memberID: "user_x", name: "TomTom")
+        teamRepository.updateMember(teamMember, in: "aaa")
+            .subscribe(onCompleted: {
+                expectUpdate.fulfill()
+            }, onError: { error in
+                XCTFail("error \(error)")
+            })
+            .disposed(by: disposeBag)
+        
+        wait(for: [expectUpdate], timeout: 3.0)
+        
+        // Confirm that the member is updated
+        var resultMemberOpt: TeamMember?
+        let exp = expectation(description: "Members are retrieved")
+        let observer = EventuallyFulfill(exp) { (change: CollectionChange<TeamMember>) in
+            for member in change.result {
+                if member.memberID == "user_x" {
+                    resultMemberOpt = member
+                    return true
+                }
+            }
+            return false
+        }
+        
+        teamRepository.members(in: "aaa")
+            .bind(to: observer)
+            .disposed(by: disposeBag)
+        
+        wait(for: [exp], timeout: 3.0)
+        guard let resultMember = resultMemberOpt else { return }
+        
+        XCTAssertEqual(resultMember.name, "TomTom")
+    }
+    
+    func testUpdateTeam() {
+        let expectUpdate = expectation(description: "Update team")
+        let team = Team(teamID: "aaa", name: "Team AAA")
+        teamRepository.updateTeam(team)
+            .subscribe(onCompleted: {
+                expectUpdate.fulfill()
+            }, onError: { error in
+                XCTFail("error \(error)")
+            })
+            .disposed(by: disposeBag)
+        
+        wait(for: [expectUpdate], timeout: 3.0)
+
+        // Confirm that the team is updated
+        var resultTeamOpt: Team?
+        let exp = expectation(description: "Team is retrieved")
+        let observer = EventuallyFulfill(exp) { (team: Team?) in
+            if let team = team {
+                resultTeamOpt = team
+                return true
+            } else {
+                return false
+            }
+        }
+        
+        teamRepository.team(for: "aaa")
+            .bind(to: observer)
+            .disposed(by: disposeBag)
+        
+        wait(for: [exp], timeout: 3.0)
+        guard let resultTeam = resultTeamOpt else { return }
+        
+        XCTAssertEqual(resultTeam.name, "Team AAA")
     }
 }

@@ -116,7 +116,7 @@ public class DefaultTeamRepository: TeamRepository {
 
     public func leave(from teamID: String, as memberID: String) -> Completable {
         return _dataStore.write { writer in
-            let teamPath = self._dataStore.collection("team").document()
+            let teamPath = self._dataStore.collection("team").document(teamID)
             let teamMemberPath = teamPath.collection("member").document(memberID)
             writer.deleteDocument(at: teamMemberPath)
 
