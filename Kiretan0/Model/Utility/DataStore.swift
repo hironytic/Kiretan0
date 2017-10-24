@@ -108,7 +108,7 @@ public class DefaultDataStore: DataStore {
                     let dSnapshot = documentSnapshot!
                     if dSnapshot.exists {
                         do {
-                            let entity = try E.init(documentID: dSnapshot.documentID, data: dSnapshot.data())
+                            let entity = try E.init(rawEntity: RawEntity(documentID: dSnapshot.documentID, data: dSnapshot.data()))
                             observer.onNext(entity)
                         } catch let error {
                             observer.onError(error)
@@ -132,7 +132,7 @@ public class DefaultDataStore: DataStore {
                 } else {
                     do {
                         let qSnapshot = querySnapshot!
-                        let result = try qSnapshot.documents.map { try E.init(documentID: $0.documentID, data: $0.data()) }
+                        let result = try qSnapshot.documents.map { try E.init(rawEntity: RawEntity(documentID: $0.documentID, data: $0.data())) }
                         let deletions = qSnapshot.documentChanges.filter({ $0.type == .removed }).map({ Int($0.oldIndex) })
                         let modifications = qSnapshot.documentChanges.filter({ $0.type == .modified }).map({ Int($0.oldIndex) })
                         let insertions = qSnapshot.documentChanges.filter({ $0.type == .added }).map({ Int($0.newIndex) })

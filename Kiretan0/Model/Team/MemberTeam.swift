@@ -38,18 +38,15 @@ public struct MemberTeam: Entity {
         self.teamIDList = teamIDList
     }
     
-    public init(documentID: String, data: [String: Any]) throws {
-        let teamIDList = data.keys.sorted()
-        self.init(memberID: documentID, teamIDList: teamIDList)
+    public init(rawEntity: RawEntity) throws {
+        let teamIDList = rawEntity.data.keys.sorted()
+        self.init(memberID: rawEntity.documentID, teamIDList: teamIDList)
     }
     
-    public var documentID: String {
-        return memberID
-    }
-    
-    public var data: [String: Any] {
-        return teamIDList.reduce(into: [:]) { (acc, teamID) in
+    public var rawEntity: RawEntity {
+        return RawEntity(documentID: memberID,
+                         data: teamIDList.reduce(into: [:]) { (acc, teamID) in
             acc[teamID] = true
-        }
+        })
     }
 }

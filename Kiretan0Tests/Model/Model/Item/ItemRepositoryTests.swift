@@ -87,8 +87,8 @@ class ItemRepositoryTests: XCTestCase {
         let exp = expectation(description: "Two items are retrieved")
         let observer = EventuallyFulfill(exp) { (change: CollectionChange<Item>) in
             guard change.result.count == 2 else { return false }
-            guard change.result[0].documentID == "item_aaa_2" else { return false }
-            guard change.result[1].documentID == "item_aaa_1" else { return false }
+            guard change.result[0].itemID == "item_aaa_2" else { return false }
+            guard change.result[1].itemID == "item_aaa_1" else { return false }
 
             item0Opt = change.result[0]
             return true
@@ -111,7 +111,7 @@ class ItemRepositoryTests: XCTestCase {
         let exp = expectation(description: "One item is retrieved")
         let observer = EventuallyFulfill(exp) { (change: CollectionChange<Item>) in
             guard change.result.count == 1 else { return false }
-            guard change.result[0].documentID == "item_aaa_3" else { return false }
+            guard change.result[0].itemID == "item_aaa_3" else { return false }
             
             item0Opt = change.result[0]
             return true
@@ -151,7 +151,7 @@ class ItemRepositoryTests: XCTestCase {
         let observer = EventuallyFulfill(expectNewItem) { (change: CollectionChange<Item>) in
             guard change.result.count == 3 else { return false }
             for item in change.result {
-                if item.documentID == newItemID {
+                if item.itemID == newItemID {
                     newItemOpt = item
                     return true
                 }
@@ -189,7 +189,7 @@ class ItemRepositoryTests: XCTestCase {
         let observer = EventuallyFulfill(expectUpdatedItem) { (change: CollectionChange<Item>) in
             guard change.result.count == 2 else { return false }
             for item in change.result {
-                if item.documentID == "item_aaa_1" {
+                if item.itemID == "item_aaa_1" {
                     itemOpt = item
                     return true
                 }
@@ -224,7 +224,7 @@ class ItemRepositoryTests: XCTestCase {
         let expectItemRemoved = expectation(description: "Item should be removed")
         let observer = EventuallyFulfill(expectItemRemoved) { (change: CollectionChange<Item>) in
             for item in change.result {
-                if item.documentID == "item_aaa_1" {
+                if item.itemID == "item_aaa_1" {
                     return false
                 }
             }

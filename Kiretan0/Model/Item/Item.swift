@@ -42,23 +42,19 @@ public struct Item: Entity {
         self.lastChange = lastChange
     }
     
-    public init(documentID: String, data: [String: Any]) throws {
-        guard let name = (data["name"] ?? "") as? String else { throw ItemError.invalidDataStructure }
-        guard let isInsufficient = (data["insufficient"] ?? false) as? Bool else { throw ItemError.invalidDataStructure }
-        guard let lastChange = (data["last_change"] ?? 0) as? Date else { throw ItemError.invalidDataStructure }
+    public init(rawEntity: RawEntity) throws {
+        guard let name = (rawEntity.data["name"] ?? "") as? String else { throw ItemError.invalidDataStructure }
+        guard let isInsufficient = (rawEntity.data["insufficient"] ?? false) as? Bool else { throw ItemError.invalidDataStructure }
+        guard let lastChange = (rawEntity.data["last_change"] ?? 0) as? Date else { throw ItemError.invalidDataStructure }
         
-        self.init(itemID: documentID, name: name, isInsufficient: isInsufficient, lastChange: lastChange)
+        self.init(itemID: rawEntity.documentID, name: name, isInsufficient: isInsufficient, lastChange: lastChange)
     }
     
-    public var documentID: String {
-        return itemID
-    }
-    
-    public var data: [String: Any] {
-        return [
+    public var rawEntity: RawEntity {
+        return RawEntity(documentID: itemID, data: [
             "name": name,
             "insufficient": isInsufficient,
             "last_change": lastChange,
-        ]
+        ])
     }
 }

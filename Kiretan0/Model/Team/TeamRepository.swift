@@ -89,10 +89,10 @@ public class DefaultTeamRepository: TeamRepository {
         return _dataStore.write { writer in
             let teamPath = self._dataStore.collection("team").document()
             teamID = teamPath.documentID
-            writer.setDocumentData(team.data, at: teamPath)
+            writer.setDocumentData(team.rawEntity.data, at: teamPath)
             
             let memberPath = teamPath.collection("member").document(member.memberID)
-            writer.setDocumentData(member.data, at: memberPath)
+            writer.setDocumentData(member.rawEntity.data, at: memberPath)
             
             let reversePath = self._dataStore.collection("member_team").document(member.memberID)
             writer.mergeDocumentData([teamID: true], at: reversePath)
@@ -107,7 +107,7 @@ public class DefaultTeamRepository: TeamRepository {
         return _dataStore.write { writer in
             let teamPath = self._dataStore.collection("team").document(teamID)
             let memberPath = teamPath.collection("member").document(member.memberID)
-            writer.setDocumentData(member.data, at: memberPath)
+            writer.setDocumentData(member.rawEntity.data, at: memberPath)
             
             let reversePath = self._dataStore.collection("member_team").document(member.memberID)
             writer.mergeDocumentData([teamID: true], at: reversePath)
@@ -129,14 +129,14 @@ public class DefaultTeamRepository: TeamRepository {
         return _dataStore.write { writer in
             let teamPath = self._dataStore.collection("team").document(teamID)
             let teamMemberPath = teamPath.collection("member").document(member.memberID)
-            writer.updateDocumentData(member.data, at: teamMemberPath)
+            writer.updateDocumentData(member.rawEntity.data, at: teamMemberPath)
         }
     }
 
     public func updateTeam(_ team: Team) -> Completable {
         return _dataStore.write { writer in
             let teamPath = self._dataStore.collection("team").document(team.teamID)
-            writer.updateDocumentData(team.data, at: teamPath)
+            writer.updateDocumentData(team.rawEntity.data, at: teamPath)
         }
     }
 }

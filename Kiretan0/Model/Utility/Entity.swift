@@ -25,9 +25,13 @@
 
 import Foundation
 
+public struct RawEntity {
+    let documentID: String
+    let data: [String: Any]
+}
+
 public protocol Entity {
-    init(documentID: String, data: [String : Any]) throws
-    
-    var documentID: String { get }
-    var data: [String : Any] { get }
+    init(rawEntity: RawEntity) throws
+
+    var rawEntity: RawEntity { get }
 }

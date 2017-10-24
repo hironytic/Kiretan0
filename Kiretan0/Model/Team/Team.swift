@@ -38,17 +38,13 @@ public struct Team: Entity {
         self.name = name
     }
     
-    public init(documentID: String, data: [String: Any]) throws {
-        guard let name = (data["name"] ?? "") as? String else { throw TeamError.invalidDataStructure }
+    public init(rawEntity: RawEntity) throws {
+        guard let name = (rawEntity.data["name"] ?? "") as? String else { throw TeamError.invalidDataStructure }
         
-        self.init(teamID: documentID, name: name)
+        self.init(teamID: rawEntity.documentID, name: name)
     }
     
-    public var documentID: String {
-        return teamID
-    }
-    
-    public var data: [String: Any] {
-        return ["name": name]
+    public var rawEntity: RawEntity {
+        return RawEntity(documentID: teamID, data: ["name": name])
     }
 }

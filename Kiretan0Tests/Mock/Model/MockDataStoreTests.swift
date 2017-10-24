@@ -28,12 +28,14 @@ import RxSwift
 @testable import Kiretan0
 
 struct MockDocument: Entity {
-    let documentID: String
-    let data: [String: Any]
+    let rawEntity: RawEntity
     
-    init(documentID: String, data: [String : Any]) throws {
-        self.documentID = documentID
-        self.data = data
+    var documentID: String {
+        return rawEntity.documentID
+    }
+    
+    var data: [String: Any] {
+        return rawEntity.data
     }
 }
 
