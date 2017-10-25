@@ -22,5 +22,8 @@ DerivedData
 # Carthage
 Carthage/
 
+# CocoaPods
+Pods/
+
 # Firebase configuration
 GoogleService-Info.plist
