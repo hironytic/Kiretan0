@@ -17,13 +17,12 @@
 		505263A11F4B155900113180 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 505263A01F4B155900113180 /* GoogleService-Info.plist */; };
 		505263AB1F4EF7F300113180 /* ActionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A31F4EF7F300113180 /* ActionObserver.swift */; };
 		505263AC1F4EF7F300113180 /* DefaultResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A41F4EF7F300113180 /* DefaultResolver.swift */; };
-		505263AD1F4EF7F300113180 /* DismissingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A61F4EF7F300113180 /* DismissingMessage.swift */; };
-		505263AE1F4EF7F300113180 /* TransitionMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A71F4EF7F300113180 /* TransitionMessage.swift */; };
+		505263AD1F4EF7F300113180 /* DismissalMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A61F4EF7F300113180 /* DismissalMessage.swift */; };
+		505263AE1F4EF7F300113180 /* DisplayMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A71F4EF7F300113180 /* DisplayMessage.swift */; };
 		505263B11F4EF7F300113180 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263AA1F4EF7F300113180 /* ViewModel.swift */; };
 		505263B41F4EF9C500113180 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B21F4EF9C500113180 /* RxCocoa.framework */; };
 		505263B51F4EF9C500113180 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B31F4EF9C500113180 /* RxSwift.framework */; };
 		505263BB1F4F092700113180 /* ViewControllerCreatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263B91F4F092700113180 /* ViewControllerCreatable.swift */; };
-		505263C01F4F0A2F00113180 /* Transitionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263BF1F4F0A2F00113180 /* Transitionable.swift */; };
 		505263C41F4F0F4C00113180 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263C31F4F0F4C00113180 /* MainViewModel.swift */; };
 		505263C71F4F14A300113180 /* Welcome.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 505263C61F4F14A300113180 /* Welcome.storyboard */; };
 		505263C91F4F150900113180 /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263C81F4F150900113180 /* WelcomeViewController.swift */; };
@@ -84,13 +83,12 @@
 		505263A01F4B155900113180 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		505263A31F4EF7F300113180 /* ActionObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionObserver.swift; sourceTree = "<group>"; };
 		505263A41F4EF7F300113180 /* DefaultResolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultResolver.swift; sourceTree = "<group>"; };
-		505263A61F4EF7F300113180 /* DismissingMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissingMessage.swift; sourceTree = "<group>"; };
-		505263A71F4EF7F300113180 /* TransitionMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransitionMessage.swift; sourceTree = "<group>"; };
+		505263A61F4EF7F300113180 /* DismissalMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissalMessage.swift; sourceTree = "<group>"; };
+		505263A71F4EF7F300113180 /* DisplayMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayMessage.swift; sourceTree = "<group>"; };
 		505263AA1F4EF7F300113180 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		505263B21F4EF9C500113180 /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
 		505263B31F4EF9C500113180 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		505263B91F4F092700113180 /* ViewControllerCreatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewControllerCreatable.swift; sourceTree = "<group>"; };
-		505263BF1F4F0A2F00113180 /* Transitionable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transitionable.swift; sourceTree = "<group>"; };
 		505263C31F4F0F4C00113180 /* MainViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		505263C61F4F14A300113180 /* Welcome.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Welcome.storyboard; sourceTree = "<group>"; };
 		505263C81F4F150900113180 /* WelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
@@ -219,11 +217,10 @@
 		505263A21F4EF7F300113180 /* AppFramework */ = {
 			isa = PBXGroup;
 			children = (
-				505263A61F4EF7F300113180 /* DismissingMessage.swift */,
-				505263A71F4EF7F300113180 /* TransitionMessage.swift */,
 				505263A31F4EF7F300113180 /* ActionObserver.swift */,
+				505263A61F4EF7F300113180 /* DismissalMessage.swift */,
+				505263A71F4EF7F300113180 /* DisplayMessage.swift */,
 				505263F81F56E74A00113180 /* NullResolver.swift */,
-				505263BF1F4F0A2F00113180 /* Transitionable.swift */,
 				505263B91F4F092700113180 /* ViewControllerCreatable.swift */,
 				505263AA1F4EF7F300113180 /* ViewModel.swift */,
 			);
@@ -688,7 +685,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				505263BB1F4F092700113180 /* ViewControllerCreatable.swift in Sources */,
-				505263AD1F4EF7F300113180 /* DismissingMessage.swift in Sources */,
+				505263AD1F4EF7F300113180 /* DismissalMessage.swift in Sources */,
 				505263FE1F56FC1300113180 /* RootViewController.swift in Sources */,
 				505263B11F4EF7F300113180 /* ViewModel.swift in Sources */,
 				509720A61F77510B00C623A5 /* Entity.swift in Sources */,
@@ -704,14 +701,13 @@
 				505263C41F4F0F4C00113180 /* MainViewModel.swift in Sources */,
 				505263F51F52B84000113180 /* UserAccountRepository.swift in Sources */,
 				5097209C1F7736D600C623A5 /* TeamMember.swift in Sources */,
-				505263AE1F4EF7F300113180 /* TransitionMessage.swift in Sources */,
+				505263AE1F4EF7F300113180 /* DisplayMessage.swift in Sources */,
 				505263F91F56E74A00113180 /* NullResolver.swift in Sources */,
 				505263C91F4F150900113180 /* WelcomeViewController.swift in Sources */,
 				50B3951F1F867B5500355F89 /* DataStore.swift in Sources */,
 				505263811F4B02EE00113180 /* MainViewController.swift in Sources */,
 				50B395171F7F486600355F89 /* Item.swift in Sources */,
 				5052637F1F4B02EE00113180 /* AppDelegate.swift in Sources */,
-				505263C01F4F0A2F00113180 /* Transitionable.swift in Sources */,
 				505263AB1F4EF7F300113180 /* ActionObserver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

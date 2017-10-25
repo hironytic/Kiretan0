@@ -1,5 +1,5 @@
 //
-// TransitionMessage.swift
+// DisplayMessage.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -24,22 +24,49 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
-public enum TransitionType {
+public enum DisplayType {
     case present
     case push
 }
 
-public struct TransitionMessage {
+public struct DisplayMessage {
     public let viewModel: ViewModel
-    public let type: TransitionType
+    public let type: DisplayType
     public let animated: Bool
     public let modalTransitionStyle: UIModalTransitionStyle
     
-    public init(viewModel: ViewModel, type: TransitionType, animated: Bool, modalTransitionStyle: UIModalTransitionStyle = .coverVertical) {
+    public init(viewModel: ViewModel, type: DisplayType, animated: Bool, modalTransitionStyle: UIModalTransitionStyle = .coverVertical) {
         self.viewModel = viewModel
         self.type = type
         self.animated = animated
         self.modalTransitionStyle = modalTransitionStyle
+    }
+}
+
+public protocol Displayable {
+    var displayer: AnyObserver<DisplayMessage> { get }
+}
+
+public extension Displayable where Self: UIViewController {
+    public var displayer: AnyObserver<DisplayMessage> {
+        return Binder(self) { element, message in
+            if let viewModel = message.viewModel as? ViewControllerCreatable {
+                let viewController = viewModel.createViewController()
+                switch message.type {
+                case .present:
+                    viewController.modalTransitionStyle = message.modalTransitionStyle
+                    element.present(viewController, animated: message.animated, completion: nil)
+                case .push:
+                    var vc = viewController
+                    if let navvc = vc as? UINavigationController {
+                        vc = navvc.viewControllers[0]
+                    }
+                    element.navigationController?.pushViewController(vc, animated: message.animated)
+                }
+            }
+        }.asObserver()
     }
 }

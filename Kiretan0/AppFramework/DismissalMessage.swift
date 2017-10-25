@@ -1,5 +1,5 @@
 //
-// DismissingMessage.swift
+// DismissalMessage.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -23,14 +23,33 @@
 // THE SOFTWARE.
 //
 
-import Foundation
+import UIKit
+import RxSwift
+import RxCocoa
 
-public enum DismissingType {
+public enum DismissalType {
     case dismiss
     case pop
 }
 
-public struct DismissingMessage {
-    public let type: DismissingType
+public struct DismissalMessage {
+    public let type: DismissalType
     public let animated: Bool
+}
+
+public protocol Dismissable {
+    var dismisser: AnyObserver<DismissalMessage> { get }
+}
+
+public extension Dismissable where Self: UIViewController {
+    public var dismisser: AnyObserver<DismissalMessage> {
+        return Binder(self) { element, message in
+            switch message.type {
+            case .dismiss:
+                self.dismiss(animated: message.animated, completion: nil)
+            case .pop:
+                _ = self.navigationController?.popViewController(animated: message.animated)
+            }
+        }.asObserver()
+    }
 }
