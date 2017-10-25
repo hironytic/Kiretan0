@@ -55,15 +55,16 @@ public class DefaultUserAccountRepository: UserAccountRepository {
         _resolver = resolver
         
         currentUser =
-            Observable.create({ (observer) -> Disposable in
-                let handle =  Auth.auth().addStateDidChangeListener() { (auth, user) in
-                    observer.onNext(user.map { UserAccount(user: $0) })
-                }
-                return Disposables.create {
-                    Auth.auth().removeStateDidChangeListener(handle)
-                }
-            })
-            .shareReplayLatestWhileConnected()
+            Observable
+                .create({ (observer) -> Disposable in
+                    let handle =  Auth.auth().addStateDidChangeListener() { (auth, user) in
+                        observer.onNext(user.map { UserAccount(user: $0) })
+                    }
+                    return Disposables.create {
+                        Auth.auth().removeStateDidChangeListener(handle)
+                    }
+                })
+                .share(replay: 1)
     }
     
     public func signInAnonymously() -> Completable {

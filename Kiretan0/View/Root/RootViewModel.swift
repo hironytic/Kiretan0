@@ -70,7 +70,7 @@ public class DefaultRootViewModel: RootViewModel {
             .distinctUntilChanged()
         
         scene = _scene
-            .shareReplayLatestWhileConnected()
+            .share(replay: 1)
             .observeOn(MainScheduler.instance)
     }
 }
