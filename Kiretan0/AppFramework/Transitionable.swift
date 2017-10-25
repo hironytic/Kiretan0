@@ -26,42 +26,43 @@
 import UIKit
 import RxSwift
 
-public protocol Transitionable {
-    func transitioner(_ observable: Observable<Message>) -> Disposable
-}
+//public protocol Transitionable {
+//    func transitioner(_ observable: Observable<Message>) -> Disposable
+//}
+//
+//public extension Transitionable where Self: UIViewController {
+//    public func transitioner(_ observable: Observable<Message>) -> Disposable {
+//        return observable
+//            .subscribe(onNext: { [unowned self] message in
+//                switch message {
+//                case let message as TransitionMessage:
+//                    if let viewModel = message.viewModel as? ViewControllerCreatable {
+//                        let viewController = viewModel.createViewController()
+//                        switch message.type {
+//                        case .present:
+//                            viewController.modalTransitionStyle = message.modalTransitionStyle
+//                            self.present(viewController, animated: message.animated, completion: nil)
+//                        case .push:
+//                            var vc = viewController
+//                            if let navvc = vc as? UINavigationController {
+//                                vc = navvc.viewControllers[0]
+//                            }
+//                            self.navigationController?.pushViewController(vc, animated: message.animated)
+//                        }
+//                    }
+//
+//                case let message as DismissingMessage:
+//                    switch message.type {
+//                    case .dismiss:
+//                        self.dismiss(animated: message.animated, completion: nil)
+//                    case .pop:
+//                        _ = self.navigationController?.popViewController(animated: message.animated)
+//                    }
+//
+//                default:
+//                    break
+//                }
+//            })
+//    }
+//}
 
-public extension Transitionable where Self: UIViewController {
-    public func transitioner(_ observable: Observable<Message>) -> Disposable {
-        return observable
-            .subscribe(onNext: { [unowned self] message in
-                switch message {
-                case let message as TransitionMessage:
-                    if let viewModel = message.viewModel as? ViewControllerCreatable {
-                        let viewController = viewModel.createViewController()
-                        switch message.type {
-                        case .present:
-                            viewController.modalTransitionStyle = message.modalTransitionStyle
-                            self.present(viewController, animated: message.animated, completion: nil)
-                        case .push:
-                            var vc = viewController
-                            if let navvc = vc as? UINavigationController {
-                                vc = navvc.viewControllers[0]
-                            }
-                            self.navigationController?.pushViewController(vc, animated: message.animated)
-                        }
-                    }
-                
-                case let message as DismissingMessage:
-                    switch message.type {
-                    case .dismiss:
-                        self.dismiss(animated: message.animated, completion: nil)
-                    case .pop:
-                        _ = self.navigationController?.popViewController(animated: message.animated)
-                    }
-                    
-                default:
-                    break
-                }
-            })
-    }
-}

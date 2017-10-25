@@ -19,8 +19,6 @@
 		505263AC1F4EF7F300113180 /* DefaultResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A41F4EF7F300113180 /* DefaultResolver.swift */; };
 		505263AD1F4EF7F300113180 /* DismissingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A61F4EF7F300113180 /* DismissingMessage.swift */; };
 		505263AE1F4EF7F300113180 /* TransitionMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A71F4EF7F300113180 /* TransitionMessage.swift */; };
-		505263AF1F4EF7F300113180 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A81F4EF7F300113180 /* Message.swift */; };
-		505263B01F4EF7F300113180 /* MessageSlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A91F4EF7F300113180 /* MessageSlot.swift */; };
 		505263B11F4EF7F300113180 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263AA1F4EF7F300113180 /* ViewModel.swift */; };
 		505263B41F4EF9C500113180 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B21F4EF9C500113180 /* RxCocoa.framework */; };
 		505263B51F4EF9C500113180 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B31F4EF9C500113180 /* RxSwift.framework */; };
@@ -88,8 +86,6 @@
 		505263A41F4EF7F300113180 /* DefaultResolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultResolver.swift; sourceTree = "<group>"; };
 		505263A61F4EF7F300113180 /* DismissingMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissingMessage.swift; sourceTree = "<group>"; };
 		505263A71F4EF7F300113180 /* TransitionMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransitionMessage.swift; sourceTree = "<group>"; };
-		505263A81F4EF7F300113180 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Message.swift; path = Kiretan0/AppFramework/Message/Message.swift; sourceTree = SOURCE_ROOT; };
-		505263A91F4EF7F300113180 /* MessageSlot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessageSlot.swift; path = Kiretan0/AppFramework/Message/MessageSlot.swift; sourceTree = SOURCE_ROOT; };
 		505263AA1F4EF7F300113180 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		505263B21F4EF9C500113180 /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
 		505263B31F4EF9C500113180 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
@@ -223,7 +219,8 @@
 		505263A21F4EF7F300113180 /* AppFramework */ = {
 			isa = PBXGroup;
 			children = (
-				505263A51F4EF7F300113180 /* Message */,
+				505263A61F4EF7F300113180 /* DismissingMessage.swift */,
+				505263A71F4EF7F300113180 /* TransitionMessage.swift */,
 				505263A31F4EF7F300113180 /* ActionObserver.swift */,
 				505263F81F56E74A00113180 /* NullResolver.swift */,
 				505263BF1F4F0A2F00113180 /* Transitionable.swift */,
@@ -231,17 +228,6 @@
 				505263AA1F4EF7F300113180 /* ViewModel.swift */,
 			);
 			path = AppFramework;
-			sourceTree = "<group>";
-		};
-		505263A51F4EF7F300113180 /* Message */ = {
-			isa = PBXGroup;
-			children = (
-				505263A81F4EF7F300113180 /* Message.swift */,
-				505263A91F4EF7F300113180 /* MessageSlot.swift */,
-				505263A61F4EF7F300113180 /* DismissingMessage.swift */,
-				505263A71F4EF7F300113180 /* TransitionMessage.swift */,
-			);
-			path = Message;
 			sourceTree = "<group>";
 		};
 		505263C11F4F0DAB00113180 /* View */ = {
@@ -721,14 +707,12 @@
 				505263AE1F4EF7F300113180 /* TransitionMessage.swift in Sources */,
 				505263F91F56E74A00113180 /* NullResolver.swift in Sources */,
 				505263C91F4F150900113180 /* WelcomeViewController.swift in Sources */,
-				505263B01F4EF7F300113180 /* MessageSlot.swift in Sources */,
 				50B3951F1F867B5500355F89 /* DataStore.swift in Sources */,
 				505263811F4B02EE00113180 /* MainViewController.swift in Sources */,
 				50B395171F7F486600355F89 /* Item.swift in Sources */,
 				5052637F1F4B02EE00113180 /* AppDelegate.swift in Sources */,
 				505263C01F4F0A2F00113180 /* Transitionable.swift in Sources */,
 				505263AB1F4EF7F300113180 /* ActionObserver.swift in Sources */,
-				505263AF1F4EF7F300113180 /* Message.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

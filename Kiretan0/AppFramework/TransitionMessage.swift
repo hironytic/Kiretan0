@@ -30,7 +30,7 @@ public enum TransitionType {
     case push
 }
 
-public struct TransitionMessage: Message {
+public struct TransitionMessage {
     public let viewModel: ViewModel
     public let type: TransitionType
     public let animated: Bool

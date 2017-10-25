@@ -30,7 +30,7 @@ public enum DismissingType {
     case pop
 }
 
-public struct DismissingMessage: Message {
+public struct DismissingMessage {
     public let type: DismissingType
     public let animated: Bool
 }
