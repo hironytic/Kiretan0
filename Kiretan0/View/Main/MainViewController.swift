@@ -27,16 +27,44 @@ import UIKit
 import RxCocoa
 import RxSwift
 
-public class MainViewController: UIViewController {
+public class MainViewController: UITableViewController {
     public var viewModel: MainViewModel?
 
-    @IBOutlet private weak var signOutButton: UIButton!
-    
+    private var _settingBarButtonItem: UIBarButtonItem!
+    private var _segment: UISegmentedControl!
+    private var _addBarButonItem: UIBarButtonItem!
+    private var _segmentItems: [UIBarButtonItem] = []
     private var _disposeBag: DisposeBag?
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navigationItem.rightBarButtonItem = editButtonItem
+        
+        _segment = UISegmentedControl(items: [
+            R.String.sufficient.localized(),
+            R.String.insufficient.localized()
+        ])
+        _segment.setContentPositionAdjustment(UIOffset.zero, forSegmentType: .any, barMetrics: .compact)
+        
+        _settingBarButtonItem = UIBarButtonItem(image: R.Image.setting.image(), style:.plain , target: nil, action: nil)
+        _addBarButonItem = UIBarButtonItem(barButtonSystemItem: .add , target: nil, action: nil)
+        
+        _segmentItems = [
+            _settingBarButtonItem,
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+            UIBarButtonItem(customView: _segment),
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+            _addBarButonItem,
+        ]
+        
+        toolbarItems = _segmentItems
+        
         bindViewModel()
+    }
+    
+    public func position(for bar: UIBarPositioning) -> UIBarPosition {
+        return .topAttached
     }
     
     private func bindViewModel() {
@@ -46,8 +74,24 @@ public class MainViewController: UIViewController {
         
         let disposeBag = DisposeBag()
 
-        signOutButton.rx.tap
-            .bind(to: viewModel.onSignOut)
+        viewModel.title
+            .bind(to: rx.title)
+            .disposed(by: disposeBag)
+        
+        viewModel.segmentSelectedIndex
+            .bind(to: _segment.rx.selectedSegmentIndex)
+            .disposed(by: disposeBag)
+        
+        _settingBarButtonItem.rx.tap
+            .bind(to: viewModel.onSetting)
+            .disposed(by: disposeBag)
+        
+        _segment.rx.selectedSegmentIndex
+            .bind(to: viewModel.onSegmentSelectedIndexChange)
+            .disposed(by: disposeBag)
+        
+        _addBarButonItem.rx.tap
+            .bind(to: viewModel.onAdd)
             .disposed(by: disposeBag)
         
         _disposeBag = disposeBag
@@ -57,8 +101,9 @@ public class MainViewController: UIViewController {
 extension DefaultMainViewModel: ViewControllerCreatable {
     public func createViewController() -> UIViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-        let viewController = storyboard.instantiateInitialViewController() as! MainViewController
+        let navController = storyboard.instantiateInitialViewController() as! UINavigationController
+        let viewController = navController.viewControllers[0] as! MainViewController
         viewController.viewModel = self
-        return viewController
+        return navController
     }
 }

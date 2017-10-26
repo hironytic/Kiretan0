@@ -27,6 +27,13 @@ import Foundation
 import RxSwift
 
 public protocol MainViewModel: ViewModel {
+    var title: Observable<String> { get }
+    var segmentSelectedIndex: Observable<Int> { get }
+    
+    var onSetting: AnyObserver<Void> { get }
+    var onSegmentSelectedIndexChange: AnyObserver<Int> { get }
+    var onAdd: AnyObserver<Void> { get }
+    
     // FIXME: Temporary Implementation
     var onSignOut: AnyObserver<Void> { get }
 }
@@ -44,17 +51,48 @@ extension DefaultResolver: MainViewModelResolver {
 public class DefaultMainViewModel: MainViewModel {
     public typealias Resolver = UserAccountRepositoryResolver
 
+    public let title: Observable<String>
+    public let segmentSelectedIndex: Observable<Int>
+    public let onSetting: AnyObserver<Void>
+    public let onSegmentSelectedIndexChange: AnyObserver<Int>
+    public let onAdd: AnyObserver<Void>
+
     public let onSignOut: AnyObserver<Void>
-    
+
     private let _resolver: Resolver
     private let _disposeBag = DisposeBag()
+    private let _onSetting = ActionObserver<Void>()
+    private let _onAdd = ActionObserver<Void>()
+    private let _onSegmentSelectedIndexChange = ActionObserver<Int>()
     private let _onSignOut = ActionObserver<Void>()
+    private let _segmentSelectedIndex = Variable<Int>(0)
     
     public init(resolver: Resolver) {
         _resolver = resolver
         
+        title = Observable.just("Team Name")
+        segmentSelectedIndex = _segmentSelectedIndex.asObservable()
+        onSetting = _onSetting.asObserver()
+        onSegmentSelectedIndexChange = _onSegmentSelectedIndexChange.asObserver()
+        onAdd = _onAdd.asObserver()
         onSignOut = _onSignOut.asObserver()
+        
+        _onSetting.handler = { [weak self] _ in self?.handleSetting() }
+        _onAdd.handler = { [weak self] _ in self?.handleAdd() }
+        _onSegmentSelectedIndexChange.handler = { [weak self] index in self?.handleSegmentSelectedIndexChange(index) }
         _onSignOut.handler = { [weak self] _ in self?.handleSignOut() }
+    }
+    
+    private func handleSetting() {
+        print("setting")
+    }
+    
+    private func handleSegmentSelectedIndexChange(_ index: Int) {
+        print("segment selected index change - \(index)")
+    }
+    
+    private func handleAdd() {
+        print("add")
     }
     
     private func handleSignOut() {
