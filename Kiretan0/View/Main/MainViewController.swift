@@ -27,6 +27,8 @@ import UIKit
 import RxCocoa
 import RxSwift
 
+private let ITEM_CELL = "ItemCell"
+
 public class MainViewController: UITableViewController {
     public var viewModel: MainViewModel?
 
@@ -38,8 +40,12 @@ public class MainViewController: UITableViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        if #available(iOS 11.0, *) {
+            navigationController?.navigationBar.prefersLargeTitles = true
+        }
         navigationItem.rightBarButtonItem = editButtonItem
+        tableView.rowHeight = 90
         
         _segment = UISegmentedControl(items: [
             R.String.sufficient.localized(),
@@ -80,6 +86,12 @@ public class MainViewController: UITableViewController {
         
         viewModel.segmentSelectedIndex
             .bind(to: _segment.rx.selectedSegmentIndex)
+            .disposed(by: disposeBag)
+        
+        viewModel.itemList
+            .bind(to: tableView.rx.items(cellIdentifier: ITEM_CELL, cellType: MainItemCell.self)) { (row, element, cell) in
+                cell.viewModel = element
+            }
             .disposed(by: disposeBag)
         
         _settingBarButtonItem.rx.tap
