@@ -69,23 +69,28 @@ public class DefaultMainViewModel: MainViewModel {
     private let _onSegmentSelectedIndexChange = ActionObserver<Int>()
     private let _onSignOut = ActionObserver<Void>()
     private let _segmentSelectedIndex: BehaviorRelay<Int>
+    private var _itemSelectedStates: [BehaviorRelay<Bool>]
     
     public init(resolver: Resolver) {
         _resolver = resolver
         
         title = Observable.just("Team Name")
-        itemList = Observable.just([
-            _resolver.resolveMainItemViewModel(),
-            _resolver.resolveMainItemViewModel(),
-            _resolver.resolveMainItemViewModel(),
-            _resolver.resolveMainItemViewModel(),
-            _resolver.resolveMainItemViewModel(),
-            _resolver.resolveMainItemViewModel(),
-            _resolver.resolveMainItemViewModel(),
-            _resolver.resolveMainItemViewModel(),
-            _resolver.resolveMainItemViewModel(),
-            _resolver.resolveMainItemViewModel(),
-        ])
+        _itemSelectedStates = [
+            BehaviorRelay(value: false),
+            BehaviorRelay(value: false),
+            BehaviorRelay(value: false),
+            BehaviorRelay(value: true),
+            BehaviorRelay(value: false),
+            BehaviorRelay(value: false),
+            BehaviorRelay(value: false),
+        ]
+        itemList = Observable.just(_itemSelectedStates.map { state in
+            let selected = state.asObservable()
+            let onSelected = AnyObserver<Void>(eventHandler: { _ in
+                state.accept(!state.value)
+            })
+            return resolver.resolveMainItemViewModel(selected: selected, onSelected: onSelected)
+        })
         _segmentSelectedIndex = BehaviorRelay(value: 1)
         segmentSelectedIndex = _segmentSelectedIndex.asObservable().observeOn(MainScheduler.instance)
         onSetting = _onSetting.asObserver()

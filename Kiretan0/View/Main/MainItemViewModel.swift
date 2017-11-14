@@ -35,12 +35,16 @@ public protocol MainItemViewModel: ViewModel {
 }
 
 public protocol MainItemViewModelResolver {
-    func resolveMainItemViewModel() -> MainItemViewModel
+    func resolveMainItemViewModel(selected: Observable<Bool>,
+                                  onSelected: AnyObserver<Void>) -> MainItemViewModel
 }
 
 extension DefaultResolver: MainItemViewModelResolver {
-    public func resolveMainItemViewModel() -> MainItemViewModel {
-        return DefaultMainItemViewModel(resolver: self)
+    public func resolveMainItemViewModel(selected: Observable<Bool>,
+                                         onSelected: AnyObserver<Void>) -> MainItemViewModel {
+        return DefaultMainItemViewModel(resolver: self,
+                                        selected: selected,
+                                        onSelected:onSelected)
     }
 }
 
@@ -54,16 +58,14 @@ public class DefaultMainItemViewModel: MainItemViewModel {
     
     public let onSelected: AnyObserver<Void>
     
-    private let _selected = BehaviorRelay(value: false)
-    private let _onSelected = ActionObserver<Void>()
-    
-    public init(resolver: Resolver) {
+    public init(resolver: Resolver, selected: Observable<Bool>, onSelected: AnyObserver<Void>) {
         _resolver = resolver
+        self.selected = selected
+        self.onSelected = onSelected
         
         switch arc4random() % 3 {
         case 0:
             name = Observable.just("洗剤")
-            _selected.accept(true)
         case 1:
             name = Observable.just("シャンプー")
         case 2:
@@ -71,13 +73,5 @@ public class DefaultMainItemViewModel: MainItemViewModel {
         default:
             name = Observable.just("洗剤")
         }
-        selected = _selected.asObservable().observeOn(MainScheduler.instance)
-        onSelected = _onSelected.asObserver()
-        
-        _onSelected.handler = { [weak self] _ in self?.handleSelected() }
-    }
-    
-    private func handleSelected() {
-        _selected.accept(!_selected.value)
     }
 }
