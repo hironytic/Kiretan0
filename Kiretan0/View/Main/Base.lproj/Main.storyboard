@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="k9B-bf-akE">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="k9B-bf-akE">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -27,21 +27,32 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YaV-cJ-IaR">
-                                            <rect key="frame" x="78" y="8" width="289" height="73.5"/>
+                                            <rect key="frame" x="86" y="11" width="273" height="68"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ccO-iY-u8p">
+                                            <rect key="frame" x="16" y="22" width="44" height="44"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="44" id="E9b-Mq-CHz"/>
+                                                <constraint firstAttribute="height" constant="44" id="o87-KG-ke7"/>
+                                            </constraints>
+                                            <state key="normal" image="Unchecked"/>
+                                        </button>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="YaV-cJ-IaR" firstAttribute="leading" secondItem="hkA-y3-gI1" secondAttribute="leadingMargin" constant="70" id="1eH-nC-4sF"/>
                                         <constraint firstItem="YaV-cJ-IaR" firstAttribute="trailing" secondItem="hkA-y3-gI1" secondAttribute="trailingMargin" id="3jo-iE-396"/>
+                                        <constraint firstItem="YaV-cJ-IaR" firstAttribute="leading" secondItem="ccO-iY-u8p" secondAttribute="trailing" constant="26" id="W01-mm-4Xg"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="YaV-cJ-IaR" secondAttribute="bottom" id="bzA-oH-FxV"/>
                                         <constraint firstItem="YaV-cJ-IaR" firstAttribute="top" secondItem="hkA-y3-gI1" secondAttribute="topMargin" id="css-N4-o7w"/>
+                                        <constraint firstItem="ccO-iY-u8p" firstAttribute="centerY" secondItem="hkA-y3-gI1" secondAttribute="centerY" id="l73-3k-540"/>
+                                        <constraint firstItem="ccO-iY-u8p" firstAttribute="leading" secondItem="hkA-y3-gI1" secondAttribute="leadingMargin" id="zP4-4W-oIA"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="nameLabel" destination="YaV-cJ-IaR" id="f7b-bm-5PF"/>
+                                    <outlet property="selectButton" destination="ccO-iY-u8p" id="4gn-VV-rhV"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -77,4 +88,7 @@
             <point key="canvasLocation" x="-799" y="32"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Unchecked" width="20" height="20"/>
+    </resources>
 </document>

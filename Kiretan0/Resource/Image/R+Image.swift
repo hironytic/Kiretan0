@@ -29,6 +29,9 @@ public extension R {
     public enum Image: Swift.String {
         case setting = "Setting"
         
+        case checked = "Checked"
+        case unchecked = "Unchecked"
+        
         public func image() -> UIImage {
             return UIImage(named: rawValue)!
         }

@@ -25,10 +25,12 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 
 public class MainItemCell: UITableViewCell {
     private var _disposeBag: DisposeBag?
     
+    @IBOutlet weak var selectButton: UIButton!
     @IBOutlet weak var nameLabel: UILabel!
     
     public var viewModel: MainItemViewModel? {
@@ -38,11 +40,18 @@ public class MainItemCell: UITableViewCell {
             
             let disposeBag = DisposeBag()
             
-            if let nameLabel = nameLabel {
-                viewModel.name
-                    .bind(to: nameLabel.rx.text)
-                    .disposed(by: disposeBag)
-            }
+            viewModel.name
+                .bind(to: nameLabel.rx.text)
+                .disposed(by: disposeBag)
+
+            viewModel.selected
+                .map { value -> UIImage? in value ? R.Image.checked.image() : R.Image.unchecked.image() }
+                .bind(to: selectButton.rx.image())
+                .disposed(by: disposeBag)
+            
+            selectButton.rx.tap
+                .bind(to: viewModel.onSelected)
+                .disposed(by: disposeBag)
             
             _disposeBag = disposeBag
         }

@@ -30,6 +30,8 @@ import RxCocoa
 public protocol MainItemViewModel: ViewModel {
     var name: Observable<String> { get }
     var selected: Observable<Bool> { get }
+    
+    var onSelected: AnyObserver<Void> { get }
 }
 
 public protocol MainItemViewModelResolver {
@@ -50,7 +52,10 @@ public class DefaultMainItemViewModel: MainItemViewModel {
     public let name: Observable<String>
     public let selected: Observable<Bool>
     
+    public let onSelected: AnyObserver<Void>
+    
     private let _selected = BehaviorRelay(value: false)
+    private let _onSelected = ActionObserver<Void>()
     
     public init(resolver: Resolver) {
         _resolver = resolver
@@ -58,6 +63,7 @@ public class DefaultMainItemViewModel: MainItemViewModel {
         switch arc4random() % 3 {
         case 0:
             name = Observable.just("洗剤")
+            _selected.accept(true)
         case 1:
             name = Observable.just("シャンプー")
         case 2:
@@ -66,5 +72,12 @@ public class DefaultMainItemViewModel: MainItemViewModel {
             name = Observable.just("洗剤")
         }
         selected = _selected.asObservable().observeOn(MainScheduler.instance)
+        onSelected = _onSelected.asObserver()
+        
+        _onSelected.handler = { [weak self] _ in self?.handleSelected() }
+    }
+    
+    private func handleSelected() {
+        _selected.accept(!_selected.value)
     }
 }
