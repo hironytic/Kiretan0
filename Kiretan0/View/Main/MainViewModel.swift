@@ -31,6 +31,7 @@ public protocol MainViewModel: ViewModel {
     var title: Observable<String> { get }
     var segmentSelectedIndex: Observable<Int> { get }
     var itemList: Observable<[MainItemViewModel]> { get }
+    var displayMessage: Observable<DisplayMessage> { get }
     
     var onSetting: AnyObserver<Void> { get }
     var onSegmentSelectedIndexChange: AnyObserver<Int> { get }
@@ -51,11 +52,12 @@ extension DefaultResolver: MainViewModelResolver {
 }
 
 public class DefaultMainViewModel: MainViewModel {
-    public typealias Resolver = UserAccountRepositoryResolver & MainItemViewModelResolver
+    public typealias Resolver = UserAccountRepositoryResolver & MainItemViewModelResolver & SettingViewModelResolver
 
     public let title: Observable<String>
     public let segmentSelectedIndex: Observable<Int>
     public let itemList: Observable<[MainItemViewModel]>
+    public let displayMessage: Observable<DisplayMessage>
     public let onSetting: AnyObserver<Void>
     public let onSegmentSelectedIndexChange: AnyObserver<Int>
     public let onAdd: AnyObserver<Void>
@@ -70,6 +72,7 @@ public class DefaultMainViewModel: MainViewModel {
     private let _onSignOut = ActionObserver<Void>()
     private let _segmentSelectedIndex: BehaviorRelay<Int>
     private var _itemSelectedStates: [BehaviorRelay<Bool>]
+    private var _displayMessageSlot = PublishSubject<DisplayMessage>()
     
     public init(resolver: Resolver) {
         _resolver = resolver
@@ -93,6 +96,7 @@ public class DefaultMainViewModel: MainViewModel {
         })
         _segmentSelectedIndex = BehaviorRelay(value: 1)
         segmentSelectedIndex = _segmentSelectedIndex.asObservable().observeOn(MainScheduler.instance)
+        displayMessage = _displayMessageSlot.observeOn(MainScheduler.instance)
         onSetting = _onSetting.asObserver()
         onSegmentSelectedIndexChange = _onSegmentSelectedIndexChange.asObserver()
         onAdd = _onAdd.asObserver()
@@ -105,7 +109,8 @@ public class DefaultMainViewModel: MainViewModel {
     }
     
     private func handleSetting() {
-        print("setting")
+        let settingViewModel = _resolver.resolveSettingViewModel()
+        _displayMessageSlot.onNext(DisplayMessage(viewModel: settingViewModel, type: .present, animated: true))
     }
     
     private func handleSegmentSelectedIndexChange(_ index: Int) {

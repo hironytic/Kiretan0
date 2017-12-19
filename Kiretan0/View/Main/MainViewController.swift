@@ -29,7 +29,7 @@ import RxSwift
 
 private let ITEM_CELL = "ItemCell"
 
-public class MainViewController: UITableViewController {
+public class MainViewController: UITableViewController, Displayable {
     public var viewModel: MainViewModel?
 
     private var _settingBarButtonItem: UIBarButtonItem!
@@ -92,6 +92,10 @@ public class MainViewController: UITableViewController {
             .bind(to: tableView.rx.items(cellIdentifier: ITEM_CELL, cellType: MainItemCell.self)) { (row, element, cell) in
                 cell.viewModel = element
             }
+            .disposed(by: disposeBag)
+        
+        viewModel.displayMessage
+            .bind(to: displayer)
             .disposed(by: disposeBag)
         
         _settingBarButtonItem.rx.tap
