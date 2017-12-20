@@ -27,6 +27,7 @@ import Foundation
 import RxSwift
 
 public protocol SettingViewModel: ViewModel {
+    var displayMessage: Observable<DisplayMessage> { get }
     var dismissalMessage: Observable<DismissalMessage> { get }
     var tableData: Observable<[TableSectionViewModel]> { get }
     
@@ -44,27 +45,41 @@ extension DefaultResolver: SettingViewModelResolver {
 }
 
 public class DefaultSettingViewModel: SettingViewModel {
-    public typealias Resolver = NullResolver
+    public typealias Resolver = TeamSelectionViewModelResolver
 
+    public let displayMessage: Observable<DisplayMessage>
     public let dismissalMessage: Observable<DismissalMessage>
     public let tableData: Observable<[TableSectionViewModel]>
     
     public let onDone: AnyObserver<Void>
 
     private let _resolver: Resolver
+    private let _displayMessageSlot = PublishSubject<DisplayMessage>()
     private let _dismissalMessageSlot = PublishSubject<DismissalMessage>()
     
     public init(resolver: Resolver) {
         _resolver = resolver
 
+        displayMessage = _displayMessageSlot.observeOn(MainScheduler.instance)
         dismissalMessage = _dismissalMessageSlot.observeOn(MainScheduler.instance)
         onDone = _dismissalMessageSlot.mapObserver { DismissalMessage(type: .dismiss, animated: true) }
         
+        class WeakSelfBox {
+            weak var ref: DefaultSettingViewModel?
+        }
+        let weakSelfBox = WeakSelfBox()
         tableData = Observable.just([
             StaticTableSectionViewModel(cells: [
-                DisclosureTableCellViewModel(text: R.String.settingTeam.localized(), detailText: Observable.just("うちのいえ")) { print("ちーむせってい") },
+                DisclosureTableCellViewModel(text: R.String.settingTeam.localized(), detailText: Observable.just("うちのいえ")) { weakSelfBox.ref?.handleTeam() },
                 DisclosureTableCellViewModel(text: R.String.settingTeamPreferences.localized()) { print("せってい") },
             ])
         ])
+        weakSelfBox.ref = self
+    }
+    
+    private func handleTeam() {
+        let teamSelectionViewModel = _resolver.resolveTeamSelectionViewModel()
+        let message = DisplayMessage(viewModel: teamSelectionViewModel, type: .push, animated: true)
+        _displayMessageSlot.onNext(message)
     }
 }

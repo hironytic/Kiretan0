@@ -44,6 +44,10 @@
 		5086F19C1FEA88190024A3B8 /* TableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5086F19B1FEA88190024A3B8 /* TableCell.swift */; };
 		5086F19E1FEA94AD0024A3B8 /* DisclosureTableCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5086F19D1FEA94AD0024A3B8 /* DisclosureTableCellViewModel.swift */; };
 		5086F1A01FEA96070024A3B8 /* DisclosureTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5086F19F1FEA96070024A3B8 /* DisclosureTableCell.swift */; };
+		5086F1A21FEB1EAF0024A3B8 /* CheckableTableCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5086F1A11FEB1EAF0024A3B8 /* CheckableTableCellViewModel.swift */; };
+		5086F1A41FEB202A0024A3B8 /* CheckableTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5086F1A31FEB202A0024A3B8 /* CheckableTableCell.swift */; };
+		5086F1A61FEB22180024A3B8 /* TeamSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5086F1A51FEB22180024A3B8 /* TeamSelectionViewController.swift */; };
+		5086F1A81FEB22260024A3B8 /* TeamSelectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5086F1A71FEB22260024A3B8 /* TeamSelectionViewModel.swift */; };
 		509720831F7507B900C623A5 /* RootViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509720821F7507B900C623A5 /* RootViewModelTests.swift */; };
 		509720841F750CA500C623A5 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B21F4EF9C500113180 /* RxCocoa.framework */; };
 		509720851F750CA800C623A5 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B31F4EF9C500113180 /* RxSwift.framework */; };
@@ -125,6 +129,10 @@
 		5086F19B1FEA88190024A3B8 /* TableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableCell.swift; sourceTree = "<group>"; };
 		5086F19D1FEA94AD0024A3B8 /* DisclosureTableCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureTableCellViewModel.swift; sourceTree = "<group>"; };
 		5086F19F1FEA96070024A3B8 /* DisclosureTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureTableCell.swift; sourceTree = "<group>"; };
+		5086F1A11FEB1EAF0024A3B8 /* CheckableTableCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckableTableCellViewModel.swift; sourceTree = "<group>"; };
+		5086F1A31FEB202A0024A3B8 /* CheckableTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckableTableCell.swift; sourceTree = "<group>"; };
+		5086F1A51FEB22180024A3B8 /* TeamSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamSelectionViewController.swift; sourceTree = "<group>"; };
+		5086F1A71FEB22260024A3B8 /* TeamSelectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamSelectionViewModel.swift; sourceTree = "<group>"; };
 		509720821F7507B900C623A5 /* RootViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModelTests.swift; sourceTree = "<group>"; };
 		509720891F750E7500C623A5 /* MockUserAccountRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserAccountRepository.swift; sourceTree = "<group>"; };
 		5097208B1F750FF900C623A5 /* EventuallyFulfill.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventuallyFulfill.swift; sourceTree = "<group>"; };
@@ -327,6 +335,8 @@
 			children = (
 				506C36D11FC035A100D8B836 /* SettingViewController.swift */,
 				506C36D31FC035BE00D8B836 /* SettingViewModel.swift */,
+				5086F1A51FEB22180024A3B8 /* TeamSelectionViewController.swift */,
+				5086F1A71FEB22260024A3B8 /* TeamSelectionViewModel.swift */,
 			);
 			path = Setting;
 			sourceTree = "<group>";
@@ -334,12 +344,14 @@
 		5086F1941FE9D5A50024A3B8 /* Table */ = {
 			isa = PBXGroup;
 			children = (
-				5086F19B1FEA88190024A3B8 /* TableCell.swift */,
-				5086F1971FE9D71F0024A3B8 /* TableCellViewModel.swift */,
 				5086F1991FEA87040024A3B8 /* TableDataSource.swift */,
 				5086F1951FE9D5BF0024A3B8 /* TableSectionViewModel.swift */,
-				5086F19D1FEA94AD0024A3B8 /* DisclosureTableCellViewModel.swift */,
+				5086F19B1FEA88190024A3B8 /* TableCell.swift */,
+				5086F1971FE9D71F0024A3B8 /* TableCellViewModel.swift */,
 				5086F19F1FEA96070024A3B8 /* DisclosureTableCell.swift */,
+				5086F19D1FEA94AD0024A3B8 /* DisclosureTableCellViewModel.swift */,
+				5086F1A31FEB202A0024A3B8 /* CheckableTableCell.swift */,
+				5086F1A11FEB1EAF0024A3B8 /* CheckableTableCellViewModel.swift */,
 			);
 			path = Table;
 			sourceTree = "<group>";
@@ -778,12 +790,14 @@
 				505263B11F4EF7F300113180 /* ViewModel.swift in Sources */,
 				5086F1A01FEA96070024A3B8 /* DisclosureTableCell.swift in Sources */,
 				509720A61F77510B00C623A5 /* Entity.swift in Sources */,
+				5086F1A61FEB22180024A3B8 /* TeamSelectionViewController.swift in Sources */,
 				505264001F56FC5B00113180 /* RootViewModel.swift in Sources */,
 				5086F19A1FEA87040024A3B8 /* TableDataSource.swift in Sources */,
 				505263CB1F4F153700113180 /* WelcomeViewModel.swift in Sources */,
 				505263AC1F4EF7F300113180 /* DefaultResolver.swift in Sources */,
 				505263F71F56E05500113180 /* UserAccount.swift in Sources */,
 				5097209E1F7737C200C623A5 /* MemberTeam.swift in Sources */,
+				5086F1A41FEB202A0024A3B8 /* CheckableTableCell.swift in Sources */,
 				5086F19E1FEA94AD0024A3B8 /* DisclosureTableCellViewModel.swift in Sources */,
 				5097209A1F7726AA00C623A5 /* Team.swift in Sources */,
 				50B3951B1F8597B300355F89 /* CollectionChange.swift in Sources */,
@@ -802,8 +816,10 @@
 				50B3951F1F867B5500355F89 /* DataStore.swift in Sources */,
 				505263811F4B02EE00113180 /* MainViewController.swift in Sources */,
 				50B395171F7F486600355F89 /* Item.swift in Sources */,
+				5086F1A21FEB1EAF0024A3B8 /* CheckableTableCellViewModel.swift in Sources */,
 				506C36D21FC035A100D8B836 /* SettingViewController.swift in Sources */,
 				506C36D41FC035BE00D8B836 /* SettingViewModel.swift in Sources */,
+				5086F1A81FEB22260024A3B8 /* TeamSelectionViewModel.swift in Sources */,
 				5052637F1F4B02EE00113180 /* AppDelegate.swift in Sources */,
 				50BB548A1FA212DF002E4443 /* R.swift in Sources */,
 				5083F6741FA89EA300F5821E /* MainItemCell.swift in Sources */,

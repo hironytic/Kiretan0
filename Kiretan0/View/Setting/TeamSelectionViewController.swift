@@ -1,5 +1,5 @@
 //
-// SettingViewController.swift
+// TeamSelectionViewController.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -26,30 +26,25 @@
 import UIKit
 import RxSwift
 
-public class SettingViewController: UITableViewController, Displayable, Dismissable {
-    public var viewModel: SettingViewModel?
-
+public class TeamSelectionViewController: UITableViewController {
+    public var viewModel: TeamSelectionViewModel?
+    
     private var _disposeBag: DisposeBag?
-    private weak var _doneButton: UIBarButtonItem!
 
     public init() {
         super.init(style: .grouped)
     }
-    
+
     public required init?(coder aDecoder: NSCoder) {
         fatalError()
     }
-    
+
     public override func viewDidLoad() {
         super.viewDidLoad()
-
-        title = R.String.settingTitle.localized()
         
-        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
-        navigationItem.rightBarButtonItem = doneButton
-        _doneButton = doneButton
+//        title = R.String.settingTitle.localized()
         
-        tableView.register(DisclosureTableCell.self, forCellReuseIdentifier: DisclosureTableCellViewModel.typeIdentifier)
+        tableView.register(CheckableTableCell.self, forCellReuseIdentifier: CheckableTableCellViewModel.typeIdentifier)
         bindViewModel()
     }
 
@@ -64,18 +59,6 @@ public class SettingViewController: UITableViewController, Displayable, Dismissa
             .bind(to: tableView.rx.items(dataSource: TableDataSource()))
             .disposed(by: disposeBag)
         
-        viewModel.displayMessage
-            .bind(to: displayer)
-            .disposed(by: disposeBag)
-        
-        viewModel.dismissalMessage
-            .bind(to: dismisser)
-            .disposed(by: disposeBag)
-        
-        _doneButton.rx.tap
-            .bind(to: viewModel.onDone)
-            .disposed(by: disposeBag)
-        
         tableView.rx.modelSelected(TableCellViewModel.self)
             .subscribe(onNext: { cellViewModel in
                 cellViewModel.selectAction()
@@ -84,12 +67,11 @@ public class SettingViewController: UITableViewController, Displayable, Dismissa
         
         _disposeBag = disposeBag
     }
-
 }
 
-extension DefaultSettingViewModel: ViewControllerCreatable {
+extension DefaultTeamSelectionViewModel: ViewControllerCreatable {
     public func createViewController() -> UIViewController {
-        let viewController = SettingViewController()
+        let viewController = TeamSelectionViewController()
         viewController.viewModel = self
         return UINavigationController(rootViewController: viewController)
     }
