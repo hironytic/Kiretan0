@@ -46,9 +46,9 @@ public extension Dismissable where Self: UIViewController {
         return Binder(self) { element, message in
             switch message.type {
             case .dismiss:
-                self.dismiss(animated: message.animated, completion: nil)
+                element.dismiss(animated: message.animated, completion: nil)
             case .pop:
-                _ = self.navigationController?.popViewController(animated: message.animated)
+                _ = element.navigationController?.popViewController(animated: message.animated)
             }
         }.asObserver()
     }
