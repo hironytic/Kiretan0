@@ -38,6 +38,12 @@
 		5082DBF11FA2F43A00D17710 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5082DBF01FA2F43A00D17710 /* Images.xcassets */; };
 		5083F6741FA89EA300F5821E /* MainItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5083F6731FA89EA300F5821E /* MainItemCell.swift */; };
 		5083F6781FA89F3500F5821E /* MainItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5083F6771FA89F3500F5821E /* MainItemViewModel.swift */; };
+		5086F1961FE9D5BF0024A3B8 /* TableSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5086F1951FE9D5BF0024A3B8 /* TableSectionViewModel.swift */; };
+		5086F1981FE9D71F0024A3B8 /* TableCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5086F1971FE9D71F0024A3B8 /* TableCellViewModel.swift */; };
+		5086F19A1FEA87040024A3B8 /* TableDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5086F1991FEA87040024A3B8 /* TableDataSource.swift */; };
+		5086F19C1FEA88190024A3B8 /* TableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5086F19B1FEA88190024A3B8 /* TableCell.swift */; };
+		5086F19E1FEA94AD0024A3B8 /* DisclosureTableCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5086F19D1FEA94AD0024A3B8 /* DisclosureTableCellViewModel.swift */; };
+		5086F1A01FEA96070024A3B8 /* DisclosureTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5086F19F1FEA96070024A3B8 /* DisclosureTableCell.swift */; };
 		509720831F7507B900C623A5 /* RootViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509720821F7507B900C623A5 /* RootViewModelTests.swift */; };
 		509720841F750CA500C623A5 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B21F4EF9C500113180 /* RxCocoa.framework */; };
 		509720851F750CA800C623A5 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B31F4EF9C500113180 /* RxSwift.framework */; };
@@ -113,6 +119,12 @@
 		5082DBF01FA2F43A00D17710 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		5083F6731FA89EA300F5821E /* MainItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainItemCell.swift; sourceTree = "<group>"; };
 		5083F6771FA89F3500F5821E /* MainItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainItemViewModel.swift; sourceTree = "<group>"; };
+		5086F1951FE9D5BF0024A3B8 /* TableSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableSectionViewModel.swift; sourceTree = "<group>"; };
+		5086F1971FE9D71F0024A3B8 /* TableCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableCellViewModel.swift; sourceTree = "<group>"; };
+		5086F1991FEA87040024A3B8 /* TableDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableDataSource.swift; sourceTree = "<group>"; };
+		5086F19B1FEA88190024A3B8 /* TableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableCell.swift; sourceTree = "<group>"; };
+		5086F19D1FEA94AD0024A3B8 /* DisclosureTableCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureTableCellViewModel.swift; sourceTree = "<group>"; };
+		5086F19F1FEA96070024A3B8 /* DisclosureTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureTableCell.swift; sourceTree = "<group>"; };
 		509720821F7507B900C623A5 /* RootViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModelTests.swift; sourceTree = "<group>"; };
 		509720891F750E7500C623A5 /* MockUserAccountRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserAccountRepository.swift; sourceTree = "<group>"; };
 		5097208B1F750FF900C623A5 /* EventuallyFulfill.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventuallyFulfill.swift; sourceTree = "<group>"; };
@@ -236,6 +248,7 @@
 		505263A21F4EF7F300113180 /* AppFramework */ = {
 			isa = PBXGroup;
 			children = (
+				5086F1941FE9D5A50024A3B8 /* Table */,
 				505263A31F4EF7F300113180 /* ActionObserver.swift */,
 				505263A61F4EF7F300113180 /* DismissalMessage.swift */,
 				505263A71F4EF7F300113180 /* DisplayMessage.swift */,
@@ -316,6 +329,19 @@
 				506C36D31FC035BE00D8B836 /* SettingViewModel.swift */,
 			);
 			path = Setting;
+			sourceTree = "<group>";
+		};
+		5086F1941FE9D5A50024A3B8 /* Table */ = {
+			isa = PBXGroup;
+			children = (
+				5086F19B1FEA88190024A3B8 /* TableCell.swift */,
+				5086F1971FE9D71F0024A3B8 /* TableCellViewModel.swift */,
+				5086F1991FEA87040024A3B8 /* TableDataSource.swift */,
+				5086F1951FE9D5BF0024A3B8 /* TableSectionViewModel.swift */,
+				5086F19D1FEA94AD0024A3B8 /* DisclosureTableCellViewModel.swift */,
+				5086F19F1FEA96070024A3B8 /* DisclosureTableCell.swift */,
+			);
+			path = Table;
 			sourceTree = "<group>";
 		};
 		509720801F75077200C623A5 /* View */ = {
@@ -750,24 +776,29 @@
 				505263AD1F4EF7F300113180 /* DismissalMessage.swift in Sources */,
 				505263FE1F56FC1300113180 /* RootViewController.swift in Sources */,
 				505263B11F4EF7F300113180 /* ViewModel.swift in Sources */,
+				5086F1A01FEA96070024A3B8 /* DisclosureTableCell.swift in Sources */,
 				509720A61F77510B00C623A5 /* Entity.swift in Sources */,
 				505264001F56FC5B00113180 /* RootViewModel.swift in Sources */,
+				5086F19A1FEA87040024A3B8 /* TableDataSource.swift in Sources */,
 				505263CB1F4F153700113180 /* WelcomeViewModel.swift in Sources */,
 				505263AC1F4EF7F300113180 /* DefaultResolver.swift in Sources */,
 				505263F71F56E05500113180 /* UserAccount.swift in Sources */,
 				5097209E1F7737C200C623A5 /* MemberTeam.swift in Sources */,
+				5086F19E1FEA94AD0024A3B8 /* DisclosureTableCellViewModel.swift in Sources */,
 				5097209A1F7726AA00C623A5 /* Team.swift in Sources */,
 				50B3951B1F8597B300355F89 /* CollectionChange.swift in Sources */,
 				509720A01F77383B00C623A5 /* TeamRepository.swift in Sources */,
 				50B395191F7F4F7A00355F89 /* ItemRepository.swift in Sources */,
 				505263C41F4F0F4C00113180 /* MainViewModel.swift in Sources */,
 				505263F51F52B84000113180 /* UserAccountRepository.swift in Sources */,
+				5086F19C1FEA88190024A3B8 /* TableCell.swift in Sources */,
 				5097209C1F7736D600C623A5 /* TeamMember.swift in Sources */,
 				5083F6781FA89F3500F5821E /* MainItemViewModel.swift in Sources */,
 				505263AE1F4EF7F300113180 /* DisplayMessage.swift in Sources */,
 				505263F91F56E74A00113180 /* NullResolver.swift in Sources */,
 				50BB548C1FA21305002E4443 /* R+String.swift in Sources */,
 				505263C91F4F150900113180 /* WelcomeViewController.swift in Sources */,
+				5086F1961FE9D5BF0024A3B8 /* TableSectionViewModel.swift in Sources */,
 				50B3951F1F867B5500355F89 /* DataStore.swift in Sources */,
 				505263811F4B02EE00113180 /* MainViewController.swift in Sources */,
 				50B395171F7F486600355F89 /* Item.swift in Sources */,
@@ -776,6 +807,7 @@
 				5052637F1F4B02EE00113180 /* AppDelegate.swift in Sources */,
 				50BB548A1FA212DF002E4443 /* R.swift in Sources */,
 				5083F6741FA89EA300F5821E /* MainItemCell.swift in Sources */,
+				5086F1981FE9D71F0024A3B8 /* TableCellViewModel.swift in Sources */,
 				505263AB1F4EF7F300113180 /* ActionObserver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

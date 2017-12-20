@@ -1,5 +1,5 @@
 //
-// R+String.swift
+// DisclosureTableCellViewModel.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -24,35 +24,16 @@
 //
 
 import Foundation
+import RxSwift
 
-public extension R {
-    public enum String: Swift.String {
-        case sufficient = "Kiretan0.sufficient"
-        case insufficient = "Kiretan0.insufficient"
-
-        case settingTitle = "Kiretan0.setting_title"
-        case settingTeam = "Kiretan0.setting_team"
-        case settingTeamPreferences = "Kiretan0.setting_team_preferences"
-    }
+public class DisclosureTableCellViewModel: TableCellViewModel {
+    public let text: String?
+    public let detailText: Observable<String?>
+    public let selectAction: () -> Void
     
-    public enum StringFormat: Swift.String {
-        case foo = "Foo"
-    }
-}
-
-public extension R.String {
-    public func localized() -> Swift.String {
-        return NSLocalizedString(rawValue, comment: "")
-    }
-}
-
-public extension R.StringFormat {
-    public func localized(_ arguments: CVarArg...) -> Swift.String {
-        return localized(arguments: arguments)
-    }
-    
-    public func localized(arguments: [CVarArg]) -> Swift.String {
-        let formatString = NSLocalizedString(rawValue, comment: "")
-        return Swift.String(format:formatString, arguments: arguments)
+    public init(text: String?, detailText: Observable<String?> = Observable.just(nil), selectAction: @escaping () -> Void = {}) {
+        self.text = text
+        self.detailText = detailText
+        self.selectAction = selectAction
     }
 }

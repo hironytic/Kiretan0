@@ -1,5 +1,5 @@
 //
-// R+String.swift
+// TableCellViewModel.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -25,34 +25,17 @@
 
 import Foundation
 
-public extension R {
-    public enum String: Swift.String {
-        case sufficient = "Kiretan0.sufficient"
-        case insufficient = "Kiretan0.insufficient"
-
-        case settingTitle = "Kiretan0.setting_title"
-        case settingTeam = "Kiretan0.setting_team"
-        case settingTeamPreferences = "Kiretan0.setting_team_preferences"
-    }
-    
-    public enum StringFormat: Swift.String {
-        case foo = "Foo"
-    }
+public protocol TableCellViewModel {
+    var identifier: String { get }
+    var selectAction: () -> Void { get }
 }
 
-public extension R.String {
-    public func localized() -> Swift.String {
-        return NSLocalizedString(rawValue, comment: "")
-    }
-}
-
-public extension R.StringFormat {
-    public func localized(_ arguments: CVarArg...) -> Swift.String {
-        return localized(arguments: arguments)
+extension TableCellViewModel {
+    public var identifier: String {
+        return type(of: self).typeIdentifier
     }
     
-    public func localized(arguments: [CVarArg]) -> Swift.String {
-        let formatString = NSLocalizedString(rawValue, comment: "")
-        return Swift.String(format:formatString, arguments: arguments)
+    public static var typeIdentifier: String {
+        return String(describing: self)
     }
 }

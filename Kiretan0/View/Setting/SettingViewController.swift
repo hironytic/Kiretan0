@@ -26,14 +26,30 @@
 import UIKit
 import RxSwift
 
-public class SettingViewController: UITableViewController {
+public class SettingViewController: UITableViewController, Dismissable {
     public var viewModel: SettingViewModel?
 
     private var _disposeBag: DisposeBag?
+    private weak var _doneButton: UIBarButtonItem!
 
+    public init() {
+        super.init(style: .grouped)
+    }
+    
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError()
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = R.String.settingTitle.localized()
+        
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
+        navigationItem.rightBarButtonItem = doneButton
+        _doneButton = doneButton
+        
+        tableView.register(DisclosureTableCell.self, forCellReuseIdentifier: DisclosureTableCellViewModel.typeIdentifier)
         bindViewModel()
     }
 
@@ -43,6 +59,24 @@ public class SettingViewController: UITableViewController {
         guard let viewModel = viewModel else { return }
         
         let disposeBag = DisposeBag()
+        
+        viewModel.tableData
+            .bind(to: tableView.rx.items(dataSource: TableDataSource()))
+            .disposed(by: disposeBag)
+        
+        viewModel.dismissalMessage
+            .bind(to: dismisser)
+            .disposed(by: disposeBag)
+        
+        _doneButton.rx.tap
+            .bind(to: viewModel.onDone)
+            .disposed(by: disposeBag)
+        
+        tableView.rx.modelSelected(TableCellViewModel.self)
+            .subscribe(onNext: { cellViewModel in
+                cellViewModel.selectAction()
+            })
+            .disposed(by: disposeBag)
         
         _disposeBag = disposeBag
     }

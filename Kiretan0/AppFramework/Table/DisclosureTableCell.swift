@@ -1,5 +1,5 @@
 //
-// R+String.swift
+// DisclosureTableCell.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -23,36 +23,40 @@
 // THE SOFTWARE.
 //
 
-import Foundation
+import UIKit
+import RxSwift
+import RxCocoa
 
-public extension R {
-    public enum String: Swift.String {
-        case sufficient = "Kiretan0.sufficient"
-        case insufficient = "Kiretan0.insufficient"
-
-        case settingTitle = "Kiretan0.setting_title"
-        case settingTeam = "Kiretan0.setting_team"
-        case settingTeamPreferences = "Kiretan0.setting_team_preferences"
+public class DisclosureTableCell: BaseTableCell<DisclosureTableCellViewModel> {
+    private var _disposeBag: DisposeBag?
+    
+    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: .value1, reuseIdentifier: reuseIdentifier)
+        accessoryType = .disclosureIndicator
     }
     
-    public enum StringFormat: Swift.String {
-        case foo = "Foo"
-    }
-}
-
-public extension R.String {
-    public func localized() -> Swift.String {
-        return NSLocalizedString(rawValue, comment: "")
-    }
-}
-
-public extension R.StringFormat {
-    public func localized(_ arguments: CVarArg...) -> Swift.String {
-        return localized(arguments: arguments)
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError()
     }
     
-    public func localized(arguments: [CVarArg]) -> Swift.String {
-        let formatString = NSLocalizedString(rawValue, comment: "")
-        return Swift.String(format:formatString, arguments: arguments)
+    public override var viewModel: DisclosureTableCellViewModel? {
+        didSet {
+            _disposeBag = nil
+            guard let viewModel = viewModel else { return }
+            
+            let disposeBag = DisposeBag()
+
+            if let textLabel = textLabel {
+                textLabel.text = viewModel.text
+            }
+            
+            if let detailTextLabel = detailTextLabel {
+                viewModel.detailText
+                    .bind(to: detailTextLabel.rx.text)
+                    .disposed(by: disposeBag)
+            }
+            
+            _disposeBag = disposeBag
+        }
     }
 }

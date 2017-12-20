@@ -25,3 +25,8 @@
 
 "Kiretan0.sufficient" = "まだある";
 "Kiretan0.insufficient" = "切らしてる";
+
+"Kiretan0.setting_title" = "設定";
+"Kiretan0.setting_team" = "チーム";
+"Kiretan0.setting_team_preferences" = "チームの設定";
+

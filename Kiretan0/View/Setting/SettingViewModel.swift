@@ -24,8 +24,13 @@
 //
 
 import Foundation
+import RxSwift
 
 public protocol SettingViewModel: ViewModel {
+    var dismissalMessage: Observable<DismissalMessage> { get }
+    var tableData: Observable<[TableSectionViewModel]> { get }
+    
+    var onDone: AnyObserver<Void> { get }
 }
 
 public protocol SettingViewModelResolver {
@@ -41,9 +46,25 @@ extension DefaultResolver: SettingViewModelResolver {
 public class DefaultSettingViewModel: SettingViewModel {
     public typealias Resolver = NullResolver
 
+    public let dismissalMessage: Observable<DismissalMessage>
+    public let tableData: Observable<[TableSectionViewModel]>
+    
+    public let onDone: AnyObserver<Void>
+
     private let _resolver: Resolver
+    private let _dismissalMessageSlot = PublishSubject<DismissalMessage>()
     
     public init(resolver: Resolver) {
         _resolver = resolver
+
+        dismissalMessage = _dismissalMessageSlot.observeOn(MainScheduler.instance)
+        onDone = _dismissalMessageSlot.mapObserver { DismissalMessage(type: .dismiss, animated: true) }
+        
+        tableData = Observable.just([
+            StaticTableSectionViewModel(cells: [
+                DisclosureTableCellViewModel(text: R.String.settingTeam.localized(), detailText: Observable.just("うちのいえ")) { print("ちーむせってい") },
+                DisclosureTableCellViewModel(text: R.String.settingTeamPreferences.localized()) { print("せってい") },
+            ])
+        ])
     }
 }
