@@ -1,5 +1,5 @@
 //
-// TableDataSource.swift
+// TableUI.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -27,12 +27,12 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-public class TableDataSource: NSObject {
+public class TableUI: NSObject {
     public typealias Element = [TableSectionViewModel]
     private var _itemModels: Element = []
 }
 
-extension TableDataSource: UITableViewDataSource {
+extension TableUI: UITableViewDataSource {
     public func numberOfSections(in tableView: UITableView) -> Int {
         return _itemModels.count
     }
@@ -59,7 +59,7 @@ extension TableDataSource: UITableViewDataSource {
     }
 }
 
-extension TableDataSource: RxTableViewDataSourceType {
+extension TableUI: RxTableViewDataSourceType {
     public func tableView(_ tableView: UITableView, observedEvent: Event<Element>) {
         Binder(self) { dataSource, element in
             dataSource._itemModels = element
@@ -69,8 +69,22 @@ extension TableDataSource: RxTableViewDataSourceType {
     }
 }
 
-extension TableDataSource: SectionedViewDataSourceType {
+extension TableUI: SectionedViewDataSourceType {
     public func model(at indexPath: IndexPath) throws -> Any {
         return _itemModels[indexPath.section].cells[indexPath.row]
+    }
+}
+
+extension TableUI {
+    public func bind(_ tableData: Observable<[TableSectionViewModel]>, to tableView: UITableView) -> Disposable {
+        let itemsDisposable = tableData.bind(to: tableView.rx.items(dataSource: self))
+        let modelSelectedDisposable = tableView.rx.modelSelected(TableCellViewModel.self).bind(to: onModelSelected)
+        return Disposables.create(itemsDisposable, modelSelectedDisposable)
+    }
+    
+    public var onModelSelected: AnyObserver<TableCellViewModel> {
+        return Binder(self) { this, cellViewModel in
+            cellViewModel.onSelect.onNext(())
+        }.asObserver()
     }
 }

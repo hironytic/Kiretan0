@@ -42,7 +42,7 @@ public class TeamSelectionViewController: UITableViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-//        title = R.String.settingTitle.localized()
+        title = R.String.teamSelectionTitle.localized()
         
         tableView.register(CheckableTableCell.self, forCellReuseIdentifier: CheckableTableCellViewModel.typeIdentifier)
         bindViewModel()
@@ -55,14 +55,8 @@ public class TeamSelectionViewController: UITableViewController {
         
         let disposeBag = DisposeBag()
         
-        viewModel.tableData
-            .bind(to: tableView.rx.items(dataSource: TableDataSource()))
-            .disposed(by: disposeBag)
-        
-        tableView.rx.modelSelected(TableCellViewModel.self)
-            .subscribe(onNext: { cellViewModel in
-                cellViewModel.selectAction()
-            })
+        TableUI()
+            .bind(viewModel.tableData, to: tableView)
             .disposed(by: disposeBag)
         
         _disposeBag = disposeBag

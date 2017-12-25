@@ -24,10 +24,11 @@
 //
 
 import Foundation
+import RxSwift
 
 public protocol TableCellViewModel {
     var identifier: String { get }
-    var selectAction: () -> Void { get }
+    var onSelect: AnyObserver<Void> { get }
 }
 
 extension TableCellViewModel {

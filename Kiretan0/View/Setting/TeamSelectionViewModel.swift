@@ -50,11 +50,14 @@ public class DefaultTeamSelectionViewModel: TeamSelectionViewModel {
     public init(resolver: Resolver) {
         _resolver = resolver
         
+        let checkSubject = PublishSubject<String>()
+        let checkedItem = checkSubject.scan("") { $1 }
+        
         tableData = Observable.just([
             StaticTableSectionViewModel(cells: [
-                CheckableTableCellViewModel(text: "うちのいえ", checked: Observable.just(false)) { print("ちーむせってい") },
-                CheckableTableCellViewModel(text: "バスケ部", checked: Observable.just(true)) { print("せってい") },
-                CheckableTableCellViewModel(text: "ほげほげ", checked: Observable.just(false)) { print("せってい") },
+                CheckableTableCellViewModel(text: "うちのいえ", checked: checkedItem.map { $0 == "0" }, onSelect: checkSubject.mapObserver { "0" }),
+                CheckableTableCellViewModel(text: "バスケ部", checked: checkedItem.map { $0 == "1" }, onSelect: checkSubject.mapObserver { "1" }),
+                CheckableTableCellViewModel(text: "ほげほげ", checked: checkedItem.map { $0 == "2" }, onSelect: checkSubject.mapObserver { "2" }),
             ])
         ])
     }

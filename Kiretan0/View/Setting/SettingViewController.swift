@@ -60,8 +60,8 @@ public class SettingViewController: UITableViewController, Displayable, Dismissa
         
         let disposeBag = DisposeBag()
         
-        viewModel.tableData
-            .bind(to: tableView.rx.items(dataSource: TableDataSource()))
+        TableUI()
+            .bind(viewModel.tableData, to: tableView)
             .disposed(by: disposeBag)
         
         viewModel.displayMessage
@@ -74,12 +74,6 @@ public class SettingViewController: UITableViewController, Displayable, Dismissa
         
         _doneButton.rx.tap
             .bind(to: viewModel.onDone)
-            .disposed(by: disposeBag)
-        
-        tableView.rx.modelSelected(TableCellViewModel.self)
-            .subscribe(onNext: { cellViewModel in
-                cellViewModel.selectAction()
-            })
             .disposed(by: disposeBag)
         
         _disposeBag = disposeBag

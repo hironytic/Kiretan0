@@ -64,17 +64,15 @@ public class DefaultSettingViewModel: SettingViewModel {
         dismissalMessage = _dismissalMessageSlot.observeOn(MainScheduler.instance)
         onDone = _dismissalMessageSlot.mapObserver { DismissalMessage(type: .dismiss, animated: true) }
         
-        class WeakSelfBox {
-            weak var ref: DefaultSettingViewModel?
-        }
-        let weakSelfBox = WeakSelfBox()
+        let teamObserver = ActionObserver<Void>()
         tableData = Observable.just([
             StaticTableSectionViewModel(cells: [
-                DisclosureTableCellViewModel(text: R.String.settingTeam.localized(), detailText: Observable.just("うちのいえ")) { weakSelfBox.ref?.handleTeam() },
-                DisclosureTableCellViewModel(text: R.String.settingTeamPreferences.localized()) { print("せってい") },
+                DisclosureTableCellViewModel(text: R.String.settingTeam.localized(), detailText: Observable.just("うちのいえ"), onSelect: teamObserver.asObserver()),
+                DisclosureTableCellViewModel(text: R.String.settingTeamPreferences.localized(), onSelect: AnyObserver(eventHandler: { _ in print("せってい") })),
             ])
         ])
-        weakSelfBox.ref = self
+        
+        teamObserver.handler = { [weak self] _ in self?.handleTeam() }
     }
     
     private func handleTeam() {

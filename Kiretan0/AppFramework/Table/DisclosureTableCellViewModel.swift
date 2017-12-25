@@ -29,11 +29,14 @@ import RxSwift
 public class DisclosureTableCellViewModel: TableCellViewModel {
     public let text: String?
     public let detailText: Observable<String?>
-    public let selectAction: () -> Void
-    
-    public init(text: String?, detailText: Observable<String?> = Observable.just(nil), selectAction: @escaping () -> Void = {}) {
+    public let onSelect: AnyObserver<Void>
+
+    public init(text: String?,
+                detailText: Observable<String?> = Observable.just(nil),
+                onSelect: AnyObserver<Void> = AnyObserver(eventHandler: { _ in }))
+    {
         self.text = text
         self.detailText = detailText
-        self.selectAction = selectAction
+        self.onSelect = onSelect
     }
 }

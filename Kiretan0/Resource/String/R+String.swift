@@ -33,6 +33,7 @@ public extension R {
         case settingTitle = "Kiretan0.setting_title"
         case settingTeam = "Kiretan0.setting_team"
         case settingTeamPreferences = "Kiretan0.setting_team_preferences"
+        case teamSelectionTitle = "Kiretan0.team_selection_title"
     }
     
     public enum StringFormat: Swift.String {

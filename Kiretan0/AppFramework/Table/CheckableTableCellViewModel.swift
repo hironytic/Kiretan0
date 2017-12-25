@@ -29,11 +29,14 @@ import RxSwift
 public class CheckableTableCellViewModel: TableCellViewModel {
     public let text: String?
     public let checked: Observable<Bool>
-    public let selectAction: () -> Void
-    
-    public init(text: String?, checked: Observable<Bool>, selectAction: @escaping () -> Void = {}) {
+    public let onSelect: AnyObserver<Void>
+
+    public init(text: String?,
+                checked: Observable<Bool>,
+                onSelect: AnyObserver<Void> = AnyObserver(eventHandler: { _ in }))
+    {
         self.text = text
         self.checked = checked
-        self.selectAction = selectAction
+        self.onSelect = onSelect
     }
 }
