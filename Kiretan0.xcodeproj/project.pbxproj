@@ -256,7 +256,7 @@
 		505263A21F4EF7F300113180 /* AppFramework */ = {
 			isa = PBXGroup;
 			children = (
-				5086F1941FE9D5A50024A3B8 /* Table */,
+				5086F1941FE9D5A50024A3B8 /* TableUI */,
 				505263A31F4EF7F300113180 /* ActionObserver.swift */,
 				505263A61F4EF7F300113180 /* DismissalMessage.swift */,
 				505263A71F4EF7F300113180 /* DisplayMessage.swift */,
@@ -341,7 +341,7 @@
 			path = Setting;
 			sourceTree = "<group>";
 		};
-		5086F1941FE9D5A50024A3B8 /* Table */ = {
+		5086F1941FE9D5A50024A3B8 /* TableUI */ = {
 			isa = PBXGroup;
 			children = (
 				5086F1991FEA87040024A3B8 /* TableUI.swift */,
@@ -353,7 +353,7 @@
 				5086F1A31FEB202A0024A3B8 /* CheckableTableCell.swift */,
 				5086F1A11FEB1EAF0024A3B8 /* CheckableTableCellViewModel.swift */,
 			);
-			path = Table;
+			path = TableUI;
 			sourceTree = "<group>";
 		};
 		509720801F75077200C623A5 /* View */ = {
