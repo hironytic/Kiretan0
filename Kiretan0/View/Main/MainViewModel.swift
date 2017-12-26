@@ -36,9 +36,6 @@ public protocol MainViewModel: ViewModel {
     var onSetting: AnyObserver<Void> { get }
     var onSegmentSelectedIndexChange: AnyObserver<Int> { get }
     var onAdd: AnyObserver<Void> { get }
-    
-    // FIXME: Temporary Implementation
-    var onSignOut: AnyObserver<Void> { get }
 }
 
 public protocol MainViewModelResolver {
@@ -52,7 +49,8 @@ extension DefaultResolver: MainViewModelResolver {
 }
 
 public class DefaultMainViewModel: MainViewModel {
-    public typealias Resolver = UserAccountRepositoryResolver & MainItemViewModelResolver & SettingViewModelResolver
+    public typealias Resolver = MainUserDefaultsRepositoryResolver & MainItemViewModelResolver &
+                                ItemRepositoryResolver & TextInputViewModelResolver & SettingViewModelResolver
 
     public let title: Observable<String>
     public let segmentSelectedIndex: Observable<Int>
@@ -61,8 +59,6 @@ public class DefaultMainViewModel: MainViewModel {
     public let onSetting: AnyObserver<Void>
     public let onSegmentSelectedIndexChange: AnyObserver<Int>
     public let onAdd: AnyObserver<Void>
-
-    public let onSignOut: AnyObserver<Void>
 
     private let _resolver: Resolver
     private let _disposeBag = DisposeBag()
@@ -94,18 +90,23 @@ public class DefaultMainViewModel: MainViewModel {
             })
             return resolver.resolveMainItemViewModel(selected: selected, onSelected: onSelected)
         })
-        _segmentSelectedIndex = BehaviorRelay(value: 1)
-        segmentSelectedIndex = _segmentSelectedIndex.asObservable().observeOn(MainScheduler.instance)
+        let segmentSelectedIndexRelay = BehaviorRelay(value: 0)
+        _segmentSelectedIndex = segmentSelectedIndexRelay
+        
+        let mainUserDefaultsRepository = _resolver.resolveMainUserDefaultsRepository()
+        mainUserDefaultsRepository.lastMainSegment
+            .subscribe(onNext: { segmentSelectedIndexRelay.accept($0) })
+            .disposed(by: _disposeBag)
+        segmentSelectedIndex = _segmentSelectedIndex.observeOn(MainScheduler.instance)
+        
         displayMessage = _displayMessageSlot.observeOn(MainScheduler.instance)
         onSetting = _onSetting.asObserver()
         onSegmentSelectedIndexChange = _onSegmentSelectedIndexChange.asObserver()
         onAdd = _onAdd.asObserver()
-        onSignOut = _onSignOut.asObserver()
         
         _onSetting.handler = { [weak self] _ in self?.handleSetting() }
         _onAdd.handler = { [weak self] _ in self?.handleAdd() }
         _onSegmentSelectedIndexChange.handler = { [weak self] index in self?.handleSegmentSelectedIndexChange(index) }
-        _onSignOut.handler = { [weak self] _ in self?.handleSignOut() }
     }
     
     private func handleSetting() {
@@ -114,21 +115,36 @@ public class DefaultMainViewModel: MainViewModel {
     }
     
     private func handleSegmentSelectedIndexChange(_ index: Int) {
-        print("segment selected index change - \(index)")
-        _segmentSelectedIndex.accept(index)
+        let mainUserDefaultsRepository = _resolver.resolveMainUserDefaultsRepository()
+        mainUserDefaultsRepository.setLastMainSegment(index)
     }
     
     private func handleAdd() {
-        print("add")
+        let title: String
+        switch _segmentSelectedIndex.value {
+        case 0:
+            title = "まだあるものを登録"
+        case 1:
+            title = "切らしてるものを登録"
+        default:
+            fatalError()
+        }
+        
+        let onDone = ActionObserver<String> { [weak self] name in self?.handleAddItem(name) }
+        let onCancel = AnyObserver<Void> { _ in }
+        let textInputViewModel = _resolver.resolveTextInputViewModel(
+            title: title,
+            detailMessage: nil,
+            placeholder: "",
+            initialText: "",
+            cancelButtonTitle: "キャンセル",
+            doneButtonTitle: "作成",
+            onDone: onDone.asObserver(),
+            onCancel: onCancel)
+        _displayMessageSlot.onNext(DisplayMessage(viewModel: textInputViewModel, type: .present, animated: true))
     }
     
-    private func handleSignOut() {
-        let userAccountRepository = _resolver.resolveUserAccountRepository()
-        userAccountRepository.signOut()
-            .subscribe(onCompleted: {
-            
-            }, onError: { (error) in
-            })
-            .disposed(by: _disposeBag)
+    private func handleAddItem(_ name: String) {
+        print("add \(name)")
     }
 }

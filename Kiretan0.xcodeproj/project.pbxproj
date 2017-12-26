@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		0B2809580F0B4D4980A46FA1 /* Pods_Kiretan0.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E05A20B411B107A41B7B407C /* Pods_Kiretan0.framework */; };
+		504783281FF277E200E6F098 /* TextInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504783271FF277E200E6F098 /* TextInputViewModel.swift */; };
+		5047832A1FF2797B00E6F098 /* TextInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504783291FF2797B00E6F098 /* TextInputViewController.swift */; };
+		5047832D1FF28FCE00E6F098 /* UserDefaultsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5047832C1FF28FCE00E6F098 /* UserDefaultsRepository.swift */; };
 		5052637F1F4B02EE00113180 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5052637E1F4B02EE00113180 /* AppDelegate.swift */; };
 		505263811F4B02EE00113180 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263801F4B02EE00113180 /* MainViewController.swift */; };
 		505263841F4B02EE00113180 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 505263821F4B02EE00113180 /* Main.storyboard */; };
@@ -89,6 +92,9 @@
 
 /* Begin PBXFileReference section */
 		1E1419A3FC37931B6B74467B /* Pods-Kiretan0Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kiretan0Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kiretan0Tests/Pods-Kiretan0Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		504783271FF277E200E6F098 /* TextInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputViewModel.swift; sourceTree = "<group>"; };
+		504783291FF2797B00E6F098 /* TextInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputViewController.swift; sourceTree = "<group>"; };
+		5047832C1FF28FCE00E6F098 /* UserDefaultsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsRepository.swift; sourceTree = "<group>"; };
 		5052637B1F4B02EE00113180 /* Kiretan0.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kiretan0.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5052637E1F4B02EE00113180 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		505263801F4B02EE00113180 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -201,6 +207,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		504783261FF277C800E6F098 /* TextInput */ = {
+			isa = PBXGroup;
+			children = (
+				504783291FF2797B00E6F098 /* TextInputViewController.swift */,
+				504783271FF277E200E6F098 /* TextInputViewModel.swift */,
+			);
+			path = TextInput;
+			sourceTree = "<group>";
+		};
+		5047832B1FF28FAE00E6F098 /* UserDefaults */ = {
+			isa = PBXGroup;
+			children = (
+				5047832C1FF28FCE00E6F098 /* UserDefaultsRepository.swift */,
+			);
+			path = UserDefaults;
+			sourceTree = "<group>";
+		};
 		505263721F4B02EE00113180 = {
 			isa = PBXGroup;
 			children = (
@@ -273,6 +296,7 @@
 				505263C21F4F0DAB00113180 /* Main */,
 				505263FA1F56FBE400113180 /* Root */,
 				506C36CE1FC0355E00D8B836 /* Setting */,
+				504783261FF277C800E6F098 /* TextInput */,
 				505263C51F4F148400113180 /* Welcome */,
 			);
 			path = View;
@@ -306,6 +330,7 @@
 				50B395151F7F483D00355F89 /* Item */,
 				509720901F77236300C623A5 /* Team */,
 				505263F31F52B81000113180 /* UserAccount */,
+				5047832B1FF28FAE00E6F098 /* UserDefaults */,
 				50B3951C1F867AFD00355F89 /* Utility */,
 			);
 			path = Model;
@@ -795,6 +820,7 @@
 				5086F19A1FEA87040024A3B8 /* TableUI.swift in Sources */,
 				505263CB1F4F153700113180 /* WelcomeViewModel.swift in Sources */,
 				505263AC1F4EF7F300113180 /* DefaultResolver.swift in Sources */,
+				5047832D1FF28FCE00E6F098 /* UserDefaultsRepository.swift in Sources */,
 				505263F71F56E05500113180 /* UserAccount.swift in Sources */,
 				5097209E1F7737C200C623A5 /* MemberTeam.swift in Sources */,
 				5086F1A41FEB202A0024A3B8 /* CheckableTableCell.swift in Sources */,
@@ -807,6 +833,7 @@
 				505263F51F52B84000113180 /* UserAccountRepository.swift in Sources */,
 				5086F19C1FEA88190024A3B8 /* TableCell.swift in Sources */,
 				5097209C1F7736D600C623A5 /* TeamMember.swift in Sources */,
+				5047832A1FF2797B00E6F098 /* TextInputViewController.swift in Sources */,
 				5083F6781FA89F3500F5821E /* MainItemViewModel.swift in Sources */,
 				505263AE1F4EF7F300113180 /* DisplayMessage.swift in Sources */,
 				505263F91F56E74A00113180 /* NullResolver.swift in Sources */,
@@ -814,6 +841,7 @@
 				505263C91F4F150900113180 /* WelcomeViewController.swift in Sources */,
 				5086F1961FE9D5BF0024A3B8 /* TableSectionViewModel.swift in Sources */,
 				50B3951F1F867B5500355F89 /* DataStore.swift in Sources */,
+				504783281FF277E200E6F098 /* TextInputViewModel.swift in Sources */,
 				505263811F4B02EE00113180 /* MainViewController.swift in Sources */,
 				50B395171F7F486600355F89 /* Item.swift in Sources */,
 				5086F1A21FEB1EAF0024A3B8 /* CheckableTableCellViewModel.swift in Sources */,
