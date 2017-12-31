@@ -139,7 +139,8 @@ public class DefaultMainViewModel: MainViewModel {
         _itemList.accept([])
         itemRepository
             .items(in: TEAM_ID, insufficient: segment == 1)
-            .subscribe(onNext: { [weak self] (change: CollectionChange<Item>) in
+            .subscribeOn(MainScheduler.instance)
+            .subscribe(onNext: { [weak self] (change: CollectionChange<Item>) in    // FIXME: subscribe errors
                 self?.handleItems(change, disposedBy: disposeBagSegment)
             })
             .disposed(by: disposeBagSegment)
@@ -157,12 +158,23 @@ public class DefaultMainViewModel: MainViewModel {
             let state = ItemState(name: change.result[ix].name)
             _itemStates.insert(state, at: ix)
             
-            let name = state.name.asObservable()
+            let name = state.name.distinctUntilChanged().asObservable()
             let selected = state.selected.asObservable()
             let onSelected = AnyObserver<Void>(eventHandler: { _ in
                 state.selected.accept(!state.selected.value)
             })
             items.insert(_resolver.resolveMainItemViewModel(name: name, selected: selected, onSelected: onSelected), at: ix)
+        }
+        var movings = [(ItemState, MainItemViewModel, Int)]()
+        for (oldIndex, newIndex) in change.modifications.sorted(by: { lhs, rhs in lhs.0 > rhs.0 }) {
+            let state = _itemStates.remove(at: oldIndex)
+            let itemViewModel = items.remove(at: oldIndex)
+            movings.append((state, itemViewModel, newIndex))
+        }
+        for (state, itemViewModel, newIndex) in movings.sorted(by: { lhs, rhs in lhs.2 < rhs.2 }) {
+            _itemStates.insert(state, at: newIndex)
+            items.insert(itemViewModel, at: newIndex)
+            state.name.accept(change.result[newIndex].name)
         }
         
         _itemList.accept(items)

@@ -476,7 +476,9 @@ class MockDataStoreTests: XCTestCase {
         XCTAssertEqual(data2["string2"] as? String ?? "", "BlahBlah")
         XCTAssertTrue(change2.insertions.isEmpty)
         XCTAssertTrue(change2.deletions.isEmpty)
-        XCTAssertEqual(change2.modifications, [1])
+        XCTAssertEqual(change2.modifications.count, 1)
+        XCTAssertEqual(change2.modifications[0].0, 1)
+        XCTAssertEqual(change2.modifications[0].1, 1)
     }
 
     func testOverwriteDocument() {
@@ -532,7 +534,9 @@ class MockDataStoreTests: XCTestCase {
         XCTAssertNil(data2["string2"])
         XCTAssertTrue(change2.insertions.isEmpty)
         XCTAssertTrue(change2.deletions.isEmpty)
-        XCTAssertEqual(change2.modifications, [1])
+        XCTAssertEqual(change2.modifications.count, 1)
+        XCTAssertEqual(change2.modifications[0].0, 1)
+        XCTAssertEqual(change2.modifications[0].1, 1)
     }
 
     func testMergeDocument() {
@@ -588,7 +592,9 @@ class MockDataStoreTests: XCTestCase {
         XCTAssertEqual(data2["string2"] as? String ?? "", "BlahBlah")
         XCTAssertTrue(change2.insertions.isEmpty)
         XCTAssertTrue(change2.deletions.isEmpty)
-        XCTAssertEqual(change2.modifications, [1])
+        XCTAssertEqual(change2.modifications.count, 1)
+        XCTAssertEqual(change2.modifications[0].0, 1)
+        XCTAssertEqual(change2.modifications[0].1, 1)
     }
     
     func testUpdateNonExistingDocument() {
@@ -658,7 +664,9 @@ class MockDataStoreTests: XCTestCase {
         XCTAssertNil(data2["string2"])
         XCTAssertTrue(change2.insertions.isEmpty)
         XCTAssertTrue(change2.deletions.isEmpty)
-        XCTAssertEqual(change2.modifications, [1])
+        XCTAssertEqual(change2.modifications.count, 1)
+        XCTAssertEqual(change2.modifications[0].0, 1)
+        XCTAssertEqual(change2.modifications[0].1, 1)
     }
     
     func testServerTime() {
@@ -711,7 +719,9 @@ class MockDataStoreTests: XCTestCase {
         XCTAssertLessThanOrEqual(abs(lastUpdate.timeIntervalSinceNow), 3.0)
         XCTAssertTrue(change2.insertions.isEmpty)
         XCTAssertTrue(change2.deletions.isEmpty)
-        XCTAssertEqual(change2.modifications, [1])
+        XCTAssertEqual(change2.modifications.count, 1)
+        XCTAssertEqual(change2.modifications[0].0, 1)
+        XCTAssertEqual(change2.modifications[0].1, 1)
     }
     
     func testQueryResultChangedCorrectlyByUpdatingDocument() {
@@ -759,8 +769,10 @@ class MockDataStoreTests: XCTestCase {
         XCTAssertEqual(documents2[0].documentID, "document1")
         XCTAssertEqual(documents2[1].documentID, "document2")
         XCTAssertEqual(documents2[2].documentID, "document3")
-        XCTAssertEqual(change2.insertions, [2])
-        XCTAssertEqual(change2.deletions, [0])
-        XCTAssertEqual(change2.modifications, [])
+        XCTAssertEqual(change2.insertions, [])
+        XCTAssertEqual(change2.deletions, [])
+        XCTAssertEqual(change2.modifications.count, 1)
+        XCTAssertEqual(change2.modifications[0].0, 0)
+        XCTAssertEqual(change2.modifications[0].1, 2)
     }
 }

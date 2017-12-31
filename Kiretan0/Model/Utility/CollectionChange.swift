@@ -29,5 +29,5 @@ public struct CollectionChange<Entity> {
     public let result: [Entity]
     public let deletions: [Int]
     public let insertions: [Int]
-    public let modifications: [Int]
+    public let modifications: [(Int, Int)]
 }

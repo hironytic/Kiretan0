@@ -85,7 +85,7 @@ public class MockDataStore: DataStore {
         }
         var deletions = [Int]()
         var insertions = [Int]()
-        var modifications = [Int]()
+        var modifications = [(Int, Int)]()
         for (type, prevIndex, prevCount, nextIndex, nextCount) in diffResult {
             switch type {
             case .inserted:
@@ -100,11 +100,23 @@ public class MockDataStore: DataStore {
                     let prevData = prev[prevIndex + offset].data
                     let nextData = next[nextIndex + offset].data
                     if (!isSameData(prevData, nextData)) {
-                        modifications.append(prevIndex + offset)
+                        modifications.append((prevIndex + offset, prevIndex + offset))
                     }
                 }
             }
         }
+        
+        // detect moves
+        // Note: deletions is sorted in asscending order in above process
+        for (deletionIndex, prevIndex) in Array(deletions.reversed()).enumerated() {
+            let documentID = prev[prevIndex].documentID
+            if let insertionIndex = insertions.index(where: { next[$0].documentID == documentID }) {
+                modifications.append((prevIndex, insertions[insertionIndex]))
+                deletions.remove(at: deletionIndex)
+                insertions.remove(at: insertionIndex)
+            }
+        }
+        modifications.sort(by: { lhs, rhs in lhs.0 < rhs.0 })
         return CollectionChange(result: next, deletions: deletions, insertions: insertions, modifications: modifications)
     }
     

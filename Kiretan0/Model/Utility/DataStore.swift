@@ -134,7 +134,7 @@ public class DefaultDataStore: DataStore {
                         let qSnapshot = querySnapshot!
                         let result = try qSnapshot.documents.map { try E.init(raw: RawEntity(documentID: $0.documentID, data: $0.data())) }
                         let deletions = qSnapshot.documentChanges.filter({ $0.type == .removed }).map({ Int($0.oldIndex) })
-                        let modifications = qSnapshot.documentChanges.filter({ $0.type == .modified }).map({ Int($0.oldIndex) })
+                        let modifications = qSnapshot.documentChanges.filter({ $0.type == .modified }).map({ (Int($0.oldIndex), Int($0.newIndex)) })
                         let insertions = qSnapshot.documentChanges.filter({ $0.type == .added }).map({ Int($0.newIndex) })
                         observer.onNext(CollectionChange(result: result, deletions: deletions, insertions: insertions, modifications: modifications))
                     } catch let error {
