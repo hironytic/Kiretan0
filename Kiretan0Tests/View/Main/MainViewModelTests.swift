@@ -245,4 +245,162 @@ class MainViewModelTests: XCTestCase {
 
         wait(for: [nameExpect0], timeout: 3.0)
     }
+    
+    func testItemListChangedByInsertion() {
+        let itemsSubject = PublishSubject<CollectionChange<Item>>()
+        resolver.itemRepository.mock.items.setup { (teamID, insufficient) in
+            return itemsSubject
+        }
+
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        
+        let expectItems = expectation(description: "items")
+        let observer = EventuallyFulfill(expectItems) { (items: [MainItemViewModel]) in
+            return items.count == 2
+        }
+        
+        viewModel.itemList
+            .bind(to: observer)
+            .disposed(by: disposeBag)
+
+        itemsSubject.onNext(CollectionChange(result: [
+            Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
+            Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
+        ], deletions: [], insertions: [0, 1], modifications: []))
+        
+        wait(for: [expectItems], timeout: 3.0)
+        
+        var itemVM1Opt: MainItemViewModel?
+        
+        let expectItemInserted = expectation(description: "item is inserted")
+        observer.reset(expectItemInserted) { (items: [MainItemViewModel]) in
+            guard items.count == 3 else { return false }
+            itemVM1Opt = items[1]
+            return true
+        }
+
+        itemsSubject.onNext(CollectionChange(result: [
+            Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
+            Item(itemID: "itemN", name: "New Item", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 8, 23, 10, 20, 40)),
+            Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
+        ], deletions: [], insertions: [1], modifications: []))
+        
+        wait(for: [expectItemInserted], timeout: 3.0)
+        guard let itemVM1 = itemVM1Opt else { return }
+        
+        let nameExpect1 = expectation(description: "name 1")
+        let name1Observer = EventuallyFulfill(nameExpect1) { (name: String) in
+            return name == "New Item"
+        }
+        itemVM1.name
+            .bind(to: name1Observer)
+            .disposed(by: disposeBag)
+        
+        wait(for: [nameExpect1], timeout: 3.0)
+    }
+    
+    func testItemListChangedByDeletion() {
+        let itemsSubject = PublishSubject<CollectionChange<Item>>()
+        resolver.itemRepository.mock.items.setup { (teamID, insufficient) in
+            return itemsSubject
+        }
+        
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        
+        let expectItems = expectation(description: "items")
+        let observer = EventuallyFulfill(expectItems) { (items: [MainItemViewModel]) in
+            return items.count == 2
+        }
+        
+        viewModel.itemList
+            .bind(to: observer)
+            .disposed(by: disposeBag)
+        
+        itemsSubject.onNext(CollectionChange(result: [
+            Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
+            Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
+        ], deletions: [], insertions: [0, 1], modifications: []))
+        
+        wait(for: [expectItems], timeout: 3.0)
+        
+        var itemVM0Opt: MainItemViewModel?
+
+        let expectItemDeleted = expectation(description: "item is deleted")
+        observer.reset(expectItemDeleted) { (items: [MainItemViewModel]) in
+            guard items.count == 1 else { return false }
+            itemVM0Opt = items[0]
+            return true
+        }
+        
+        itemsSubject.onNext(CollectionChange(result: [
+            Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
+        ], deletions: [0], insertions: [], modifications: []))
+        
+        wait(for: [expectItemDeleted], timeout: 3.0)
+        guard let itemVM0 = itemVM0Opt else { return }
+        
+        let nameExpect0 = expectation(description: "name 0")
+        let name0Observer = EventuallyFulfill(nameExpect0) { (name: String) in
+            return name == "Item 1"
+        }
+        itemVM0.name
+            .bind(to: name0Observer)
+            .disposed(by: disposeBag)
+        
+        wait(for: [nameExpect0], timeout: 3.0)
+    }
+
+    func testItemListChangedByReordering() {
+        let itemsSubject = PublishSubject<CollectionChange<Item>>()
+        resolver.itemRepository.mock.items.setup { (teamID, insufficient) in
+            return itemsSubject
+        }
+
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        
+        let expectItems = expectation(description: "items")
+        let observer = EventuallyFulfill(expectItems) { (items: [MainItemViewModel]) in
+            return items.count == 3
+        }
+        
+        viewModel.itemList
+            .bind(to: observer)
+            .disposed(by: disposeBag)
+
+        itemsSubject.onNext(CollectionChange(result: [
+            Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
+            Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
+            Item(itemID: "item2", name: "Item 2", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 11, 10, 8, 10, 05)),
+        ], deletions: [], insertions: [0, 1, 2], modifications: []))
+        
+        wait(for: [expectItems], timeout: 3.0)
+        
+        var itemVM1Opt: MainItemViewModel?
+        
+        let expectItemReordered = expectation(description: "item is inserted")
+        observer.reset(expectItemReordered) { (items: [MainItemViewModel]) in
+            guard items.count == 3 else { return false }
+            itemVM1Opt = items[1]
+            return true
+        }
+
+        itemsSubject.onNext(CollectionChange(result: [
+            Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
+            Item(itemID: "item2", name: "Item 2", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 11, 10, 8, 10, 05)),
+            Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2018, 1, 3, 16, 20, 00)),
+        ], deletions: [], insertions: [], modifications: [(0, 2)]))
+        
+        wait(for: [expectItemReordered], timeout: 3.0)
+        guard let itemVM1 = itemVM1Opt else { return }
+        
+        let nameExpect1 = expectation(description: "name 1")
+        let name1Observer = EventuallyFulfill(nameExpect1) { (name: String) in
+            return name == "Item 2"
+        }
+        itemVM1.name
+            .bind(to: name1Observer)
+            .disposed(by: disposeBag)
+        
+        wait(for: [nameExpect1], timeout: 3.0)
+    }
 }
