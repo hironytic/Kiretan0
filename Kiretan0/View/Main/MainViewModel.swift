@@ -136,6 +136,7 @@ public class DefaultMainViewModel: MainViewModel {
         _itemStates = []
         
         _segmentSelectedIndex.accept(segment)
+        _itemList.accept([])
         itemRepository
             .items(in: TEAM_ID, insufficient: segment == 1)
             .subscribe(onNext: { [weak self] (change: CollectionChange<Item>) in

@@ -83,9 +83,13 @@ class MainViewModelTests: XCTestCase {
             XCTAssertEqual(teamID, "TEST_TEAM_ID")
             return Observable.just(Team(teamID: "TEST_TEAM_ID", name: "My Team"))
         }
-        resolver.mainUserDefaultsRepository.mock.lastMainSegment.setup {
-            return Observable.just(0)
+        
+        let segment = BehaviorSubject(value: 0)
+        resolver.mainUserDefaultsRepository.mock.lastMainSegment.setup { segment }
+        resolver.mainUserDefaultsRepository.mock.setLastMainSegment.setup { index in
+            segment.onNext(index)
         }
+        
         resolver.itemRepository.mock.items.setup { (teamID, insufficient) in
             XCTAssertEqual(teamID, "TEST_TEAM_ID")
             return Observable.just(CollectionChange(result: [], deletions: [], insertions: [], modifications: []))
@@ -116,17 +120,11 @@ class MainViewModelTests: XCTestCase {
     }
     
     func testSegment() {
-        let segment = BehaviorSubject(value: 1)
-        resolver.mainUserDefaultsRepository.mock.lastMainSegment.setup { segment }
-        resolver.mainUserDefaultsRepository.mock.setLastMainSegment.setup { index in
-            segment.onNext(index)
-        }
-        
         let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
 
-        let expect1 = expectation(description: "segment 1 is selected")
+        let expect1 = expectation(description: "segment 0 is selected")
         let segmentSelectedIndexObserver = EventuallyFulfill(expect1) { (index: Int) in
-            return index == 1
+            return index == 0
         }
         
         viewModel.segmentSelectedIndex
@@ -135,16 +133,16 @@ class MainViewModelTests: XCTestCase {
         
         wait(for: [expect1], timeout: 3.0)
         
-        let expect2 = expectation(description: "segument 0 is selected")
+        let expect2 = expectation(description: "segument 1 is selected")
         segmentSelectedIndexObserver.reset(expect2) { (index: Int) in
-            return index == 0
+            return index == 1
         }
         
-        viewModel.onSegmentSelectedIndexChange.onNext(0)
+        viewModel.onSegmentSelectedIndexChange.onNext(1)
         wait(for: [expect2], timeout: 3.0)
     }
     
-    func testItemList() {
+    func testInitialItemList() {
         resolver.itemRepository.mock.items.setup { (teamID, insufficient) in
             XCTAssertEqual(teamID, "TEST_TEAM_ID")
             XCTAssertEqual(insufficient, false)
@@ -161,10 +159,10 @@ class MainViewModelTests: XCTestCase {
         var itemVM1Opt: MainItemViewModel?
         
         let expect = expectation(description: "items")
-        let observer = EventuallyFulfill(expect) { (change: [MainItemViewModel]) in
-            guard change.count == 2 else { return false }
-            itemVM0Opt = change[0]
-            itemVM1Opt = change[1]
+        let observer = EventuallyFulfill(expect) { (items: [MainItemViewModel]) in
+            guard items.count == 2 else { return false }
+            itemVM0Opt = items[0]
+            itemVM1Opt = items[1]
             return true
         }
         
@@ -192,5 +190,59 @@ class MainViewModelTests: XCTestCase {
             .disposed(by: disposeBag)
 
         wait(for: [nameExpect0, nameExpect1], timeout: 3.0)
+    }
+    
+    func testItemListChangedBySelectingSegmentControl() {
+        resolver.itemRepository.mock.items.setup { (teamID, insufficient) in
+            if (!insufficient) {
+                return Observable.just(CollectionChange(result: [
+                    Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
+                    Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
+                ], deletions: [], insertions: [0, 1], modifications: []))
+            } else {
+                return Observable.just(CollectionChange(result: [
+                    Item(itemID: "item2", name: "Item 2", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 11, 20, 3, 40, 50)),
+                    Item(itemID: "item3", name: "Item 3", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 12, 31, 20, 11, 22)),
+                    Item(itemID: "item4", name: "Item 4", isInsufficient: true, lastChange: TestUtils.makeDate(2018, 1, 1, 9, 00, 00)),
+                ], deletions: [], insertions: [0, 1, 2], modifications: []))
+            }
+        }
+
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        
+        let expectSufficient = expectation(description: "sufficient items")
+        let observer = EventuallyFulfill(expectSufficient) { (items: [MainItemViewModel]) in
+            return items.count == 2
+        }
+        
+        viewModel.itemList
+            .bind(to: observer)
+            .disposed(by: disposeBag)
+
+        wait(for: [expectSufficient], timeout: 3.0)
+
+        var itemVM0Opt: MainItemViewModel?
+
+        let expectInsufficient = expectation(description: "insufficient items")
+        observer.reset(expectInsufficient) { (items: [MainItemViewModel]) in
+            guard items.count == 3 else { return false }
+            itemVM0Opt = items[0]
+            return true
+        }
+        
+        viewModel.onSegmentSelectedIndexChange.onNext(1)
+
+        wait(for: [expectInsufficient], timeout: 3.0)
+        guard let itemVM0 = itemVM0Opt else { return }
+
+        let nameExpect0 = expectation(description: "name 0")
+        let name0Observer = EventuallyFulfill(nameExpect0) { (name: String) in
+            return name == "Item 2"
+        }
+        itemVM0.name
+            .bind(to: name0Observer)
+            .disposed(by: disposeBag)
+
+        wait(for: [nameExpect0], timeout: 3.0)
     }
 }
