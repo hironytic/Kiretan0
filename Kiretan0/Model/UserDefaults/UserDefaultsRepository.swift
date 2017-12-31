@@ -53,7 +53,7 @@ public class DefaultUserDefaultsRepository: MainUserDefaultsRepository {
         lastMainSegment = ud.rx.observe(Int.self, _lastMainSegmentKey)
             .map { $0 ?? 0 }
             .distinctUntilChanged()
-            .asObservable()
+            .share(replay: 1, scope: .whileConnected)
     }
     
     public func setLastMainSegment(_ segment: Int) {

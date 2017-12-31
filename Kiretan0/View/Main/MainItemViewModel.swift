@@ -35,14 +35,17 @@ public protocol MainItemViewModel: ViewModel {
 }
 
 public protocol MainItemViewModelResolver {
-    func resolveMainItemViewModel(selected: Observable<Bool>,
+    func resolveMainItemViewModel(name: Observable<String>,
+                                  selected: Observable<Bool>,
                                   onSelected: AnyObserver<Void>) -> MainItemViewModel
 }
 
 extension DefaultResolver: MainItemViewModelResolver {
-    public func resolveMainItemViewModel(selected: Observable<Bool>,
+    public func resolveMainItemViewModel(name: Observable<String>,
+                                         selected: Observable<Bool>,
                                          onSelected: AnyObserver<Void>) -> MainItemViewModel {
         return DefaultMainItemViewModel(resolver: self,
+                                        name: name,
                                         selected: selected,
                                         onSelected:onSelected)
     }
@@ -58,20 +61,10 @@ public class DefaultMainItemViewModel: MainItemViewModel {
     
     public let onSelected: AnyObserver<Void>
     
-    public init(resolver: Resolver, selected: Observable<Bool>, onSelected: AnyObserver<Void>) {
+    public init(resolver: Resolver, name: Observable<String>, selected: Observable<Bool>, onSelected: AnyObserver<Void>) {
         _resolver = resolver
+        self.name = name
         self.selected = selected
         self.onSelected = onSelected
-        
-        switch arc4random() % 3 {
-        case 0:
-            name = Observable.just("洗剤")
-        case 1:
-            name = Observable.just("シャンプー")
-        case 2:
-            name = Observable.just("トイレットペーパー（ダブル・無臭タイプ）")
-        default:
-            name = Observable.just("洗剤")
-        }
     }
 }

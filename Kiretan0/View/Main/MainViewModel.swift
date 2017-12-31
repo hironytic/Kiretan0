@@ -48,9 +48,11 @@ extension DefaultResolver: MainViewModelResolver {
     }
 }
 
+private let TEAM_ID = "TEST_TEAM_ID"
+
 public class DefaultMainViewModel: MainViewModel {
-    public typealias Resolver = MainUserDefaultsRepositoryResolver & MainItemViewModelResolver &
-                                ItemRepositoryResolver & TextInputViewModelResolver & SettingViewModelResolver
+    public typealias Resolver = MainItemViewModelResolver & TextInputViewModelResolver & SettingViewModelResolver &
+                                TeamRepositoryResolver & MainUserDefaultsRepositoryResolver & ItemRepositoryResolver
 
     public let title: Observable<String>
     public let segmentSelectedIndex: Observable<Int>
@@ -60,6 +62,15 @@ public class DefaultMainViewModel: MainViewModel {
     public let onSegmentSelectedIndexChange: AnyObserver<Int>
     public let onAdd: AnyObserver<Void>
 
+    private class ItemState {
+        let selected = BehaviorRelay<Bool>(value: false)
+        let name: BehaviorRelay<String>
+        
+        init(name: String) {
+            self.name = BehaviorRelay(value: name)
+        }
+    }
+    
     private let _resolver: Resolver
     private let _disposeBag = DisposeBag()
     private let _onSetting = ActionObserver<Void>()
@@ -67,56 +78,93 @@ public class DefaultMainViewModel: MainViewModel {
     private let _onSegmentSelectedIndexChange = ActionObserver<Int>()
     private let _onSignOut = ActionObserver<Void>()
     private let _segmentSelectedIndex: BehaviorRelay<Int>
-    private var _itemSelectedStates: [BehaviorRelay<Bool>]
+    private var _itemStates = [ItemState]()
+    private var _itemList = BehaviorRelay<[MainItemViewModel]>(value: [])
+    private var _disposeBagSegment: DisposeBag?
     private var _displayMessageSlot = PublishSubject<DisplayMessage>()
     
     public init(resolver: Resolver) {
         _resolver = resolver
         
-        title = Observable.just("Team Name")
-        _itemSelectedStates = [
-            BehaviorRelay(value: false),
-            BehaviorRelay(value: false),
-            BehaviorRelay(value: false),
-            BehaviorRelay(value: true),
-            BehaviorRelay(value: false),
-            BehaviorRelay(value: false),
-            BehaviorRelay(value: false),
-        ]
-        itemList = Observable.just(_itemSelectedStates.map { state in
-            let selected = state.asObservable()
-            let onSelected = AnyObserver<Void>(eventHandler: { _ in
-                state.accept(!state.value)
-            })
-            return resolver.resolveMainItemViewModel(selected: selected, onSelected: onSelected)
-        })
-        let segmentSelectedIndexRelay = BehaviorRelay(value: 0)
-        _segmentSelectedIndex = segmentSelectedIndexRelay
-        
-        let mainUserDefaultsRepository = _resolver.resolveMainUserDefaultsRepository()
-        mainUserDefaultsRepository.lastMainSegment
-            .subscribe(onNext: { segmentSelectedIndexRelay.accept($0) })
-            .disposed(by: _disposeBag)
+        let teamRepository = resolver.resolveTeamRepository()
+        title = teamRepository
+            .team(for: TEAM_ID)
+            .map { team in
+                team?.name ?? ""
+            }
+            .share(replay: 1, scope: .whileConnected)
+            .observeOn(MainScheduler.instance)
+
+        _segmentSelectedIndex = BehaviorRelay(value: 0)
         segmentSelectedIndex = _segmentSelectedIndex.observeOn(MainScheduler.instance)
-        
+        itemList = _itemList.observeOn(MainScheduler.instance)
+
         displayMessage = _displayMessageSlot.observeOn(MainScheduler.instance)
         onSetting = _onSetting.asObserver()
         onSegmentSelectedIndexChange = _onSegmentSelectedIndexChange.asObserver()
         onAdd = _onAdd.asObserver()
-        
+
+        // --- all stored properties are initialized before this line ---
+
+        let mainUserDefaultsRepository = _resolver.resolveMainUserDefaultsRepository()
+        mainUserDefaultsRepository.lastMainSegment
+            .subscribe(onNext: { [weak self] in self?.handleLastMainSegment($0) })
+            .disposed(by: _disposeBag)
+
         _onSetting.handler = { [weak self] _ in self?.handleSetting() }
         _onAdd.handler = { [weak self] _ in self?.handleAdd() }
         _onSegmentSelectedIndexChange.handler = { [weak self] index in self?.handleSegmentSelectedIndexChange(index) }
     }
-    
+
+    /// Called when setting button is pressed on view
     private func handleSetting() {
         let settingViewModel = _resolver.resolveSettingViewModel()
         _displayMessageSlot.onNext(DisplayMessage(viewModel: settingViewModel, type: .present, animated: true))
     }
     
+    /// Called when segment control is pressed on view
     private func handleSegmentSelectedIndexChange(_ index: Int) {
         let mainUserDefaultsRepository = _resolver.resolveMainUserDefaultsRepository()
         mainUserDefaultsRepository.setLastMainSegment(index)
+    }
+    
+    /// Called when the segment value in user defaults is changed
+    private func handleLastMainSegment(_ segment: Int) {
+        let itemRepository = _resolver.resolveItemRepository()
+        let disposeBagSegment = DisposeBag()
+        _disposeBagSegment = disposeBagSegment
+        _itemStates = []
+        
+        _segmentSelectedIndex.accept(segment)
+        itemRepository
+            .items(in: TEAM_ID, insufficient: segment == 1)
+            .subscribe(onNext: { [weak self] (change: CollectionChange<Item>) in
+                self?.handleItems(change, disposedBy: disposeBagSegment)
+            })
+            .disposed(by: disposeBagSegment)
+    }
+    
+    /// Called when the sequence of items is changed in item repository.
+    private func handleItems(_ change: CollectionChange<Item>, disposedBy disposeBag: DisposeBag) {
+        var items = _itemList.value
+        
+        for ix in change.deletions.reversed() {
+            _itemStates.remove(at: ix)
+            items.remove(at: ix)
+        }
+        for ix in change.insertions {
+            let state = ItemState(name: change.result[ix].name)
+            _itemStates.insert(state, at: ix)
+            
+            let name = state.name.asObservable()
+            let selected = state.selected.asObservable()
+            let onSelected = AnyObserver<Void>(eventHandler: { _ in
+                state.selected.accept(!state.selected.value)
+            })
+            items.insert(_resolver.resolveMainItemViewModel(name: name, selected: selected, onSelected: onSelected), at: ix)
+        }
+        
+        _itemList.accept(items)
     }
     
     private func handleAdd() {

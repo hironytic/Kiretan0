@@ -47,8 +47,8 @@ class MainViewModelTests: XCTestCase {
         init() {
         }
 
-        func resolveMainItemViewModel(selected: Observable<Bool>, onSelected: AnyObserver<Void>) -> MainItemViewModel {
-            return DefaultMainItemViewModel(resolver: self, selected: selected, onSelected: onSelected)
+        func resolveMainItemViewModel(name: Observable<String>, selected: Observable<Bool>, onSelected: AnyObserver<Void>) -> MainItemViewModel {
+            return DefaultMainItemViewModel(resolver: self, name: name, selected: selected, onSelected: onSelected)
         }
         
         func resolveSettingViewModel() -> SettingViewModel {
