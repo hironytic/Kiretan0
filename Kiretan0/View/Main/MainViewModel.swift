@@ -124,6 +124,8 @@ public class DefaultMainViewModel: MainViewModel {
     
     /// Called when segment control is pressed on view
     private func handleSegmentSelectedIndexChange(_ index: Int) {
+        guard index >= 0 else { return }
+        
         let mainUserDefaultsRepository = _resolver.resolveMainUserDefaultsRepository()
         mainUserDefaultsRepository.setLastMainSegment(index)
     }
@@ -141,13 +143,13 @@ public class DefaultMainViewModel: MainViewModel {
             .items(in: TEAM_ID, insufficient: segment == 1)
             .subscribeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] (change: CollectionChange<Item>) in    // FIXME: subscribe errors
-                self?.handleItems(change, disposedBy: disposeBagSegment)
+                self?.handleItems(change)
             })
             .disposed(by: disposeBagSegment)
     }
     
     /// Called when the sequence of items is changed in item repository.
-    private func handleItems(_ change: CollectionChange<Item>, disposedBy disposeBag: DisposeBag) {
+    private func handleItems(_ change: CollectionChange<Item>) {
         var items = _itemList.value
         
         for ix in change.deletions.reversed() {
