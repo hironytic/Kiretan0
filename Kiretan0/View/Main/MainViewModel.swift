@@ -27,10 +27,17 @@ import Foundation
 import RxSwift
 import RxCocoa
 
+public enum MainViewToolbar {
+    case segment
+    case selection0
+    case selection1
+}
+
 public protocol MainViewModel: ViewModel {
     var title: Observable<String> { get }
     var segmentSelectedIndex: Observable<Int> { get }
     var itemList: Observable<[MainItemViewModel]> { get }
+    var mainViewToolbar: Observable<MainViewToolbar> { get }
     var displayMessage: Observable<DisplayMessage> { get }
     
     var onSetting: AnyObserver<Void> { get }
@@ -58,6 +65,7 @@ public class DefaultMainViewModel: MainViewModel {
     public let title: Observable<String>
     public let segmentSelectedIndex: Observable<Int>
     public let itemList: Observable<[MainItemViewModel]>
+    public let mainViewToolbar: Observable<MainViewToolbar>
     public let displayMessage: Observable<DisplayMessage>
     public let onSetting: AnyObserver<Void>
     public let onSegmentSelectedIndexChange: AnyObserver<Int>
@@ -82,6 +90,7 @@ public class DefaultMainViewModel: MainViewModel {
     private let _segmentSelectedIndex: BehaviorRelay<Int>
     private var _itemStates = [ItemState]()
     private var _itemList = BehaviorRelay<[MainItemViewModel]>(value: [])
+    private var _mainViewToolbar = BehaviorRelay<MainViewToolbar>(value: .segment)
     private var _disposeBagSegment: DisposeBag?
     private var _displayMessageSlot = PublishSubject<DisplayMessage>()
     
@@ -100,6 +109,7 @@ public class DefaultMainViewModel: MainViewModel {
         _segmentSelectedIndex = BehaviorRelay(value: 0)
         segmentSelectedIndex = _segmentSelectedIndex.observeOn(MainScheduler.instance)
         itemList = _itemList.observeOn(MainScheduler.instance)
+        mainViewToolbar = _mainViewToolbar.distinctUntilChanged().observeOn(MainScheduler.instance)
 
         displayMessage = _displayMessageSlot.observeOn(MainScheduler.instance)
         onSetting = _onSetting.asObserver()
@@ -109,6 +119,7 @@ public class DefaultMainViewModel: MainViewModel {
 
         // --- all stored properties are initialized before this line ---
 
+        updateToolbar()
         let mainUserDefaultsRepository = _resolver.resolveMainUserDefaultsRepository()
         mainUserDefaultsRepository.lastMainSegment
             .subscribe(onNext: { [weak self] in self?.handleLastMainSegment($0) })
@@ -140,6 +151,7 @@ public class DefaultMainViewModel: MainViewModel {
         let disposeBagSegment = DisposeBag()
         _disposeBagSegment = disposeBagSegment
         _itemStates = []
+        updateToolbar()
         
         _segmentSelectedIndex.accept(segment)
         _itemList.accept([])
@@ -166,8 +178,9 @@ public class DefaultMainViewModel: MainViewModel {
             
             let name = state.name.distinctUntilChanged().asObservable()
             let selected = state.selected.asObservable()
-            let onSelected = AnyObserver<Void>(eventHandler: { _ in
+            let onSelected = AnyObserver<Void>(eventHandler: { [weak self] _ in
                 state.selected.accept(!state.selected.value)
+                self?.updateToolbar()
             })
             items.insert(_resolver.resolveMainItemViewModel(name: name, selected: selected, onSelected: onSelected), at: ix)
         }
@@ -184,11 +197,25 @@ public class DefaultMainViewModel: MainViewModel {
         }
         
         _itemList.accept(items)
+        updateToolbar()
+    }
+    
+    private func updateToolbar() {
+        if _itemStates.contains(where: { $0.selected.value }) {
+            if _segmentSelectedIndex.value == 0 {
+                _mainViewToolbar.accept(.selection0)
+            } else {
+                _mainViewToolbar.accept(.selection1)
+            }
+        } else {
+            _mainViewToolbar.accept(.segment)
+        }
     }
     
     private func handleItemSelected(_ row: Int) {
         let state = _itemStates[row]
         state.selected.accept(!state.selected.value)
+        updateToolbar()
     }
     
     private func handleAdd() {

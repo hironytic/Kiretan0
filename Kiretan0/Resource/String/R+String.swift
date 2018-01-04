@@ -29,7 +29,10 @@ public extension R {
     public enum String: Swift.String {
         case sufficient = "Kiretan0.sufficient"
         case insufficient = "Kiretan0.insufficient"
-
+        case deselectAll = "Kiretan0.deselect_all"
+        case makeInsufficient = "Kiretan0.make_insufficient"
+        case makeSufficient = "Kiretan0.make_sufficient"
+        
         case settingTitle = "Kiretan0.setting_title"
         case settingTeam = "Kiretan0.setting_team"
         case settingTeamPreferences = "Kiretan0.setting_team_preferences"
