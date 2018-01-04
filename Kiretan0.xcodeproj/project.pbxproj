@@ -306,11 +306,11 @@
 			children = (
 				509720861F750E3B00C623A5 /* Mock */,
 				50D138091F98CE640064B293 /* Model */,
+				509720801F75077200C623A5 /* View */,
 				505263951F4B02EE00113180 /* Info.plist */,
 				5097208B1F750FF900C623A5 /* EventuallyFulfill.swift */,
 				50EDC1141F9238C500E5F4FF /* RecordThenFulfill.swift */,
 				50D1380F1F9B13700064B293 /* TestUtils.swift */,
-				509720801F75077200C623A5 /* View */,
 			);
 			path = Kiretan0Tests;
 			sourceTree = "<group>";

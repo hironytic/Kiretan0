@@ -403,4 +403,86 @@ class MainViewModelTests: XCTestCase {
         
         wait(for: [nameExpect1], timeout: 3.0)
     }
+    
+    func testToolbarChangedBySelection() {
+        resolver.itemRepository.mock.items.setup { (teamID, insufficient) in
+            if (!insufficient) {
+                return Observable.just(CollectionChange(result: [
+                    Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
+                    Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
+                    ], deletions: [], insertions: [0, 1], modifications: []))
+            } else {
+                return Observable.just(CollectionChange(result: [
+                    Item(itemID: "item2", name: "Item 2", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 11, 20, 3, 40, 50)),
+                    Item(itemID: "item3", name: "Item 3", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 12, 31, 20, 11, 22)),
+                    Item(itemID: "item4", name: "Item 4", isInsufficient: true, lastChange: TestUtils.makeDate(2018, 1, 1, 9, 00, 00)),
+                    ], deletions: [], insertions: [0, 1, 2], modifications: []))
+            }
+        }
+        
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        
+        let expectSegmentToolbar = expectation(description: "segment toolbar")
+        let observer = EventuallyFulfill(expectSegmentToolbar) { (toolbar: MainViewToolbar) in
+            return toolbar == .segment
+        }
+
+        viewModel.mainViewToolbar
+            .bind(to: observer)
+            .disposed(by: disposeBag)
+        
+        wait(for: [expectSegmentToolbar], timeout: 3.0)
+        
+        
+        let expectSufficientSelectionToolbar = expectation(description: "sufficient selection toolbar")
+        observer.reset(expectSufficientSelectionToolbar) { (toolbar: MainViewToolbar) in
+            return toolbar == .selection0
+        }
+        
+        // change segment to sufficient items
+        viewModel.onSegmentSelectedIndexChange.onNext(0)
+        
+        // select first item
+        var disposeBag0: DisposeBag! = DisposeBag()
+        viewModel.itemList
+            .subscribe(onNext: { itemViewModels in
+                itemViewModels[0].onSelected.onNext(())
+            })
+            .disposed(by: disposeBag0)
+
+        wait(for: [expectSufficientSelectionToolbar], timeout: 3.0)
+        disposeBag0 = nil
+
+        let expectInsufficientSelectionToolbar = expectation(description: "insufficient selection toolbar")
+        observer.reset(expectInsufficientSelectionToolbar) { (toolbar: MainViewToolbar) in
+            return toolbar == .selection1
+        }
+
+        // change segment to insufficient items
+        viewModel.onSegmentSelectedIndexChange.onNext(1)
+        
+        // select first item
+        var onSelected = AnyObserver<Void>(eventHandler: { _ in })
+        var disposeBag1: DisposeBag! = DisposeBag()
+        viewModel.itemList
+            .subscribe(onNext: { itemViewModels in
+                onSelected = itemViewModels[0].onSelected
+                onSelected.onNext(())
+            })
+            .disposed(by: disposeBag1)
+        
+        wait(for: [expectInsufficientSelectionToolbar], timeout: 3.0)
+
+
+        let expectSegmentToolbarAgain = expectation(description: "segment toolbar again")
+        observer.reset(expectSegmentToolbarAgain) { (toolbar: MainViewToolbar) in
+            return toolbar == .segment
+        }
+        
+        // deselect first item
+        onSelected.onNext(())
+
+        wait(for: [expectSegmentToolbarAgain], timeout: 3.0)
+        disposeBag1 = nil
+    }
 }
