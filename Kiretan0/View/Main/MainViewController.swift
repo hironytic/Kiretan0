@@ -109,6 +109,14 @@ public class MainViewController: UITableViewController, Displayable {
         _addBarButonItem.rx.tap
             .bind(to: viewModel.onAdd)
             .disposed(by: disposeBag)
+
+        let table = tableView
+        tableView.rx.itemSelected
+            .do(onNext: { indexPath in
+                table?.deselectRow(at: indexPath, animated: true)
+            })
+            .bind(to: viewModel.onItemSelected)
+            .disposed(by: disposeBag)
         
         _disposeBag = disposeBag
     }

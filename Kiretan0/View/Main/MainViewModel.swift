@@ -35,6 +35,7 @@ public protocol MainViewModel: ViewModel {
     
     var onSetting: AnyObserver<Void> { get }
     var onSegmentSelectedIndexChange: AnyObserver<Int> { get }
+    var onItemSelected: AnyObserver<IndexPath> { get }
     var onAdd: AnyObserver<Void> { get }
 }
 
@@ -60,6 +61,7 @@ public class DefaultMainViewModel: MainViewModel {
     public let displayMessage: Observable<DisplayMessage>
     public let onSetting: AnyObserver<Void>
     public let onSegmentSelectedIndexChange: AnyObserver<Int>
+    public let onItemSelected: AnyObserver<IndexPath>
     public let onAdd: AnyObserver<Void>
 
     private class ItemState {
@@ -76,7 +78,7 @@ public class DefaultMainViewModel: MainViewModel {
     private let _onSetting = ActionObserver<Void>()
     private let _onAdd = ActionObserver<Void>()
     private let _onSegmentSelectedIndexChange = ActionObserver<Int>()
-    private let _onSignOut = ActionObserver<Void>()
+    private let _onItemSelected = ActionObserver<IndexPath>()
     private let _segmentSelectedIndex: BehaviorRelay<Int>
     private var _itemStates = [ItemState]()
     private var _itemList = BehaviorRelay<[MainItemViewModel]>(value: [])
@@ -102,6 +104,7 @@ public class DefaultMainViewModel: MainViewModel {
         displayMessage = _displayMessageSlot.observeOn(MainScheduler.instance)
         onSetting = _onSetting.asObserver()
         onSegmentSelectedIndexChange = _onSegmentSelectedIndexChange.asObserver()
+        onItemSelected = _onItemSelected.asObserver()
         onAdd = _onAdd.asObserver()
 
         // --- all stored properties are initialized before this line ---
@@ -114,6 +117,7 @@ public class DefaultMainViewModel: MainViewModel {
         _onSetting.handler = { [weak self] _ in self?.handleSetting() }
         _onAdd.handler = { [weak self] _ in self?.handleAdd() }
         _onSegmentSelectedIndexChange.handler = { [weak self] index in self?.handleSegmentSelectedIndexChange(index) }
+        _onItemSelected.handler = { [weak self] indexPath in self?.handleItemSelected(indexPath.row) }
     }
 
     /// Called when setting button is pressed on view
@@ -180,6 +184,11 @@ public class DefaultMainViewModel: MainViewModel {
         }
         
         _itemList.accept(items)
+    }
+    
+    private func handleItemSelected(_ row: Int) {
+        let state = _itemStates[row]
+        state.selected.accept(!state.selected.value)
     }
     
     private func handleAdd() {
