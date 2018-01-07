@@ -73,7 +73,7 @@ public class DefaultMainViewModel: MainViewModel {
     public let onItemSelected: AnyObserver<IndexPath>
     public let onAdd: AnyObserver<Void>
 
-    private let disposeBag = DisposeBag()
+    private let disposeBag: DisposeBag
 
     private class ItemState {
         let itemID: String
@@ -97,160 +97,211 @@ public class DefaultMainViewModel: MainViewModel {
     }
 
     public init(resolver: Resolver) {
-        let onSegmentSelectedIndexChangeSubject = PublishSubject<Int>()
-        let onItemSelectedSubject = PublishSubject<Int>()
-        let onItemSelectedByIDSubject = PublishSubject<String>()
-        let onSettingSubject = PublishSubject<Void>()
-        let onAddSubject = PublishSubject<Void>()
-        let onAddItemSubject = PublishSubject<String>()
+        let disposeBag = DisposeBag()
+        
+        struct Subject {
+            let onSegmentSelectedIndexChange = PublishSubject<Int>()
+            let onItemSelected = PublishSubject<Int>()
+            let onItemSelectedByID = PublishSubject<String>()
+            let onSetting = PublishSubject<Void>()
+            let onAdd = PublishSubject<Void>()
+            let onAddItem = PublishSubject<String>()
+        }
+        let subject = Subject()
         
         let teamRepository = resolver.resolveTeamRepository()
         let mainUserDefaultsRepository = resolver.resolveMainUserDefaultsRepository()
         let itemRepository = resolver.resolveItemRepository()
-        
-        title = teamRepository
-            .team(for: TEAM_ID)
-            .map { team in
-                team?.name ?? ""
-            }
-            .share(replay: 1, scope: .whileConnected)
-            .observeOn(MainScheduler.instance)
 
-        onSetting = onSettingSubject.asObserver()
-        onSegmentSelectedIndexChange = onSegmentSelectedIndexChangeSubject.asObserver()
-        onItemSelected = onItemSelectedSubject.asObserver().mapObserver{ $0.row }
-        onAdd = onAddSubject.asObserver()
-
-        onSegmentSelectedIndexChangeSubject
-            .subscribe(onNext: { index in
-                guard index >= 0 else { return }
-                
-                mainUserDefaultsRepository.setLastMainSegment(index)
-            })
-            .disposed(by: disposeBag)
-        
         let lastMainSegment = mainUserDefaultsRepository
             .lastMainSegment
             .share(replay: 1, scope: .whileConnected)
-        
-        segmentSelectedIndex = lastMainSegment
-        
-        let itemListState = lastMainSegment
-            .flatMapLatest { (segment: Int) -> Observable<ItemListState> in
-                let items = itemRepository.items(in: TEAM_ID, insufficient: segment == 1)
-                return Observable
-                    .merge([
-                        items.map { ItemStateAction.change($0) },
-                        onItemSelectedSubject.map { ItemStateAction.select($0) },
-                    ])
-                    .scan(ItemListState(states: [], viewModels: [])) { acc, action in
-                        var states = acc.states
-                        var viewModels = acc.viewModels
-                
-                        switch action {
-                        case .change(let change):
-                            for ix in change.deletions.reversed() {
-                                states.remove(at: ix)
-                                viewModels.remove(at: ix)
-                            }
-                            for ix in change.insertions {
-                                let itemID = change.result[ix].itemID
-                                let state = ItemState(itemID: itemID, name: change.result[ix].name)
-                                states.insert(state, at: ix)
-    
-                                let name = state.name.distinctUntilChanged().asObservable()
-                                let selected = state.isSelected.asObservable()
-                                let onSelected = onItemSelectedByIDSubject.mapObserver { itemID }
-                                viewModels.insert(resolver.resolveMainItemViewModel(name: name, selected: selected, onSelected: onSelected), at: ix)
-                            }
-                            var movings = [(ItemState, MainItemViewModel, Int)]()
-                            for (oldIndex, newIndex) in change.modifications.sorted(by: { lhs, rhs in lhs.0 > rhs.0 }) {
-                                let state = states.remove(at: oldIndex)
-                                let itemViewModel = viewModels.remove(at: oldIndex)
-                                movings.append((state, itemViewModel, newIndex))
-                            }
-                            for (state, itemViewModel, newIndex) in movings.sorted(by: { lhs, rhs in lhs.2 < rhs.2 }) {
-                                states.insert(state, at: newIndex)
-                                viewModels.insert(itemViewModel, at: newIndex)
-                                state.name.accept(change.result[newIndex].name)
-                            }
 
-                        case .select(let index):
-                            states[index].isSelected.accept(!states[index].isSelected.value)
+        func createTitle() -> Observable<String> {
+            return teamRepository
+                .team(for: TEAM_ID)
+                .map { team in
+                    team?.name ?? ""
+                }
+                .share(replay: 1, scope: .whileConnected)
+                .observeOn(MainScheduler.instance)
+        }
+
+        func createSegmentSelectedIndex() -> Observable<Int> {
+            return lastMainSegment
+                .observeOn(MainScheduler.instance)
+        }
+        
+        func createItemListState() -> Observable<ItemListState> {
+            return lastMainSegment
+                .flatMapLatest { (segment: Int) -> Observable<ItemListState> in
+                    let items = itemRepository.items(in: TEAM_ID, insufficient: segment == 1)
+                    return Observable
+                        .merge([
+                            items.map { ItemStateAction.change($0) },
+                            subject.onItemSelected.map { ItemStateAction.select($0) },
+                        ])
+                        .scan(ItemListState(states: [], viewModels: []), accumulator: itemListStateReducer)
+                }
+                .share(replay: 1, scope: .whileConnected)
+        }
+        
+        func itemListStateReducer(_ acc: ItemListState, _ action: ItemStateAction) -> ItemListState {
+            var states = acc.states
+            var viewModels = acc.viewModels
+
+            switch action {
+            case .change(let change):
+                for ix in change.deletions.reversed() {
+                    states.remove(at: ix)
+                    viewModels.remove(at: ix)
+                }
+                for ix in change.insertions {
+                    let itemID = change.result[ix].itemID
+                    let state = ItemState(itemID: itemID, name: change.result[ix].name)
+                    states.insert(state, at: ix)
+
+                    let name = state.name.distinctUntilChanged().asObservable()
+                    let selected = state.isSelected.asObservable()
+                    let onSelected = subject.onItemSelectedByID.mapObserver { itemID }
+                    viewModels.insert(resolver.resolveMainItemViewModel(name: name, selected: selected, onSelected: onSelected), at: ix)
+                }
+                var movings = [(ItemState, MainItemViewModel, Int)]()
+                for (oldIndex, newIndex) in change.modifications.sorted(by: { lhs, rhs in lhs.0 > rhs.0 }) {
+                    let state = states.remove(at: oldIndex)
+                    let itemViewModel = viewModels.remove(at: oldIndex)
+                    movings.append((state, itemViewModel, newIndex))
+                }
+                for (state, itemViewModel, newIndex) in movings.sorted(by: { lhs, rhs in lhs.2 < rhs.2 }) {
+                    states.insert(state, at: newIndex)
+                    viewModels.insert(itemViewModel, at: newIndex)
+                    state.name.accept(change.result[newIndex].name)
+                }
+
+            case .select(let index):
+                states[index].isSelected.accept(!states[index].isSelected.value)
+            }
+
+            return ItemListState(states: states, viewModels: viewModels)
+        }
+        
+        func createDisplayMessageOfTextInputForAdding() -> Observable<DisplayMessage> {
+            return subject.onAdd
+                .withLatestFrom(lastMainSegment)
+                .map { segmentIndex in
+                    let title: String
+                    switch segmentIndex {
+                    case 0:
+                        title = "まだあるものを登録"
+                    case 1:
+                        title = "切らしてるものを登録"
+                    default:
+                        fatalError()
+                    }
+
+                    let onDone: AnyObserver<String> = subject.onAddItem.asObserver()
+                    let onCancel = AnyObserver<Void> { _ in }
+                    let textInputViewModel = resolver.resolveTextInputViewModel(
+                        title: title,
+                        detailMessage: nil,
+                        placeholder: "",
+                        initialText: "",
+                        cancelButtonTitle: "キャンセル",
+                        doneButtonTitle: "作成",
+                        onDone: onDone,
+                        onCancel: onCancel)
+                    
+                    return DisplayMessage(viewModel: textInputViewModel, type: .present, animated: true)
+                }
+        }
+
+        func createDisplayMessageOfSetting() -> Observable<DisplayMessage> {
+            return subject.onSetting
+                .map {
+                    let settingViewModel = resolver.resolveSettingViewModel()
+                    return DisplayMessage(viewModel: settingViewModel, type: .present, animated: true)
+                }
+        }
+        
+        func createDisplayMessage() -> Observable<DisplayMessage> {
+            return Observable.merge([
+                createDisplayMessageOfTextInputForAdding(),
+                createDisplayMessageOfSetting(),
+            ])
+        }
+
+        let itemListState = createItemListState()
+        
+        func createItemList() -> Observable<[MainItemViewModel]> {
+            return itemListState
+                .map { $0.viewModels }
+                .observeOn(MainScheduler.instance)
+        }
+
+        func createMainViewToolbar() -> Observable<MainViewToolbar> {
+            return Observable
+                .combineLatest(itemListState, lastMainSegment)
+                .map { (itemListState, segmentSelectedIndex) in
+                    if itemListState.states.contains(where: { $0.isSelected.value }) {
+                        if segmentSelectedIndex == 0 {
+                            return .selection0
+                        } else {
+                            return .selection1
                         }
-
-                        return ItemListState(states: states, viewModels: viewModels)
-                    }
-            }
-            .share(replay: 1, scope: .whileConnected)
-
-        onItemSelectedByIDSubject
-            .withLatestFrom(itemListState) { itemID, itemListState in
-                return itemListState.states.index { $0.itemID == itemID }
-            }
-            .subscribe(onNext: { index in
-                guard let index = index else { return }
-                
-                onItemSelectedSubject.onNext(index)
-            })
-            .disposed(by: disposeBag)
-        
-        itemList = itemListState.map { $0.viewModels }.observeOn(MainScheduler.instance)
-        
-        let displayTextInputForAddingMessage: Observable<DisplayMessage> = onAddSubject
-            .withLatestFrom(segmentSelectedIndex)
-            .map { segmentIndex in
-                let title: String
-                switch segmentIndex {
-                case 0:
-                    title = "まだあるものを登録"
-                case 1:
-                    title = "切らしてるものを登録"
-                default:
-                    fatalError()
-                }
-
-                let onDone: AnyObserver<String> = onAddItemSubject.asObserver()
-                let onCancel = AnyObserver<Void> { _ in }
-                let textInputViewModel = resolver.resolveTextInputViewModel(
-                    title: title,
-                    detailMessage: nil,
-                    placeholder: "",
-                    initialText: "",
-                    cancelButtonTitle: "キャンセル",
-                    doneButtonTitle: "作成",
-                    onDone: onDone,
-                    onCancel: onCancel)
-                
-                return DisplayMessage(viewModel: textInputViewModel, type: .present, animated: true)
-            }
-
-        let displaySettingMessage: Observable<DisplayMessage> = onSettingSubject
-            .map {
-                let settingViewModel = resolver.resolveSettingViewModel()
-                return DisplayMessage(viewModel: settingViewModel, type: .present, animated: true)
-            }
-        
-        displayMessage = Observable.merge(displayTextInputForAddingMessage, displaySettingMessage)
-
-        mainViewToolbar = Observable
-            .combineLatest(itemListState, segmentSelectedIndex)
-            .map { (itemListState, segmentSelectedIndex) in
-                if itemListState.states.contains(where: { $0.isSelected.value }) {
-                    if segmentSelectedIndex == 0 {
-                        return .selection0
                     } else {
-                        return .selection1
+                        return .segment
                     }
-                } else {
-                    return .segment
                 }
-            }
+        }
         
-        onAddItemSubject
-            .subscribe(onNext: { name in
-                print("add \(name)")
-            })
-            .disposed(by: disposeBag)
+        func handleSegmentSelectedIndexChange() {
+            subject.onSegmentSelectedIndexChange
+                .subscribe(onNext: { index in
+                    guard index >= 0 else { return }
+                    
+                    mainUserDefaultsRepository.setLastMainSegment(index)
+                })
+                .disposed(by: disposeBag)
+        }
+        
+        func handleItemSelectedByID() {
+            subject.onItemSelectedByID
+                .withLatestFrom(itemListState) { itemID, itemListState in
+                    return itemListState.states.index { $0.itemID == itemID }
+                }
+                .subscribe(onNext: { index in
+                    guard let index = index else { return }
+                    
+                    subject.onItemSelected.onNext(index)
+                })
+                .disposed(by: disposeBag)
+        }
+        
+        func handleAddItem() {
+            subject.onAddItem
+                .subscribe(onNext: { name in
+                    print("add \(name)")
+                })
+                .disposed(by: disposeBag)
+        }
+        
+        handleSegmentSelectedIndexChange()
+        handleItemSelectedByID()
+        handleAddItem()
+        
+        // initialize stored properties
+        title = createTitle()
+        segmentSelectedIndex = createSegmentSelectedIndex()
+        itemList = createItemList()
+        mainViewToolbar = createMainViewToolbar()
+        displayMessage = createDisplayMessage()
+
+        onSetting = subject.onSetting.asObserver()
+        onSegmentSelectedIndexChange = subject.onSegmentSelectedIndexChange.asObserver()
+        onItemSelected = subject.onItemSelected.asObserver().mapObserver{ $0.row }
+        onAdd = subject.onAdd.asObserver()
+        
+        self.disposeBag = disposeBag
     }
 }
+
