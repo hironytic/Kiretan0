@@ -30,41 +30,30 @@ import RxCocoa
 public protocol MainItemViewModel: ViewModel {
     var name: Observable<String> { get }
     var selected: Observable<Bool> { get }
-    
-    var onSelected: AnyObserver<Void> { get }
 }
 
 public protocol MainItemViewModelResolver {
     func resolveMainItemViewModel(name: Observable<String>,
-                                  selected: Observable<Bool>,
-                                  onSelected: AnyObserver<Void>) -> MainItemViewModel
+                                  selected: Observable<Bool>) -> MainItemViewModel
 }
 
 extension DefaultResolver: MainItemViewModelResolver {
     public func resolveMainItemViewModel(name: Observable<String>,
-                                         selected: Observable<Bool>,
-                                         onSelected: AnyObserver<Void>) -> MainItemViewModel {
+                                         selected: Observable<Bool>) -> MainItemViewModel {
         return DefaultMainItemViewModel(resolver: self,
                                         name: name,
-                                        selected: selected,
-                                        onSelected:onSelected)
+                                        selected: selected)
     }
 }
 
 public class DefaultMainItemViewModel: MainItemViewModel {
     public typealias Resolver = NullResolver
 
-    private let _resolver: Resolver
-
     public let name: Observable<String>
     public let selected: Observable<Bool>
     
-    public let onSelected: AnyObserver<Void>
-    
-    public init(resolver: Resolver, name: Observable<String>, selected: Observable<Bool>, onSelected: AnyObserver<Void>) {
-        _resolver = resolver
+    public init(resolver: Resolver, name: Observable<String>, selected: Observable<Bool>) {
         self.name = name
         self.selected = selected
-        self.onSelected = onSelected
     }
 }

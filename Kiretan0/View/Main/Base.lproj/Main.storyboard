@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="k9B-bf-akE">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="k9B-bf-akE">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -32,27 +32,26 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ccO-iY-u8p">
+                                        <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ok4-dc-f5e">
                                             <rect key="frame" x="16" y="22" width="44" height="44"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="44" id="E9b-Mq-CHz"/>
-                                                <constraint firstAttribute="height" constant="44" id="o87-KG-ke7"/>
+                                                <constraint firstAttribute="width" constant="44" id="H7Y-YR-f4M"/>
+                                                <constraint firstAttribute="height" constant="44" id="LvN-eO-Ld2"/>
                                             </constraints>
-                                            <state key="normal" image="Unchecked"/>
-                                        </button>
+                                        </imageView>
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="YaV-cJ-IaR" firstAttribute="trailing" secondItem="hkA-y3-gI1" secondAttribute="trailingMargin" id="3jo-iE-396"/>
-                                        <constraint firstItem="YaV-cJ-IaR" firstAttribute="leading" secondItem="ccO-iY-u8p" secondAttribute="trailing" constant="26" id="W01-mm-4Xg"/>
+                                        <constraint firstItem="Ok4-dc-f5e" firstAttribute="leading" secondItem="hkA-y3-gI1" secondAttribute="leadingMargin" id="VXH-GI-9e9"/>
+                                        <constraint firstItem="YaV-cJ-IaR" firstAttribute="leading" secondItem="Ok4-dc-f5e" secondAttribute="trailing" constant="26" id="W01-mm-4Xg"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="YaV-cJ-IaR" secondAttribute="bottom" id="bzA-oH-FxV"/>
                                         <constraint firstItem="YaV-cJ-IaR" firstAttribute="top" secondItem="hkA-y3-gI1" secondAttribute="topMargin" id="css-N4-o7w"/>
-                                        <constraint firstItem="ccO-iY-u8p" firstAttribute="centerY" secondItem="hkA-y3-gI1" secondAttribute="centerY" id="l73-3k-540"/>
-                                        <constraint firstItem="ccO-iY-u8p" firstAttribute="leading" secondItem="hkA-y3-gI1" secondAttribute="leadingMargin" id="zP4-4W-oIA"/>
+                                        <constraint firstItem="Ok4-dc-f5e" firstAttribute="centerY" secondItem="hkA-y3-gI1" secondAttribute="centerY" id="iQM-zW-TeX"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="nameLabel" destination="YaV-cJ-IaR" id="f7b-bm-5PF"/>
-                                    <outlet property="selectButton" destination="ccO-iY-u8p" id="4gn-VV-rhV"/>
+                                    <outlet property="selectImageView" destination="Ok4-dc-f5e" id="JhD-lW-BQQ"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -88,7 +87,4 @@
             <point key="canvasLocation" x="-799" y="32"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="Unchecked" width="20" height="20"/>
-    </resources>
 </document>

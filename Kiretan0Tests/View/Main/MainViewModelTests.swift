@@ -47,8 +47,8 @@ class MainViewModelTests: XCTestCase {
         init() {
         }
 
-        func resolveMainItemViewModel(name: Observable<String>, selected: Observable<Bool>, onSelected: AnyObserver<Void>) -> MainItemViewModel {
-            return DefaultMainItemViewModel(resolver: self, name: name, selected: selected, onSelected: onSelected)
+        func resolveMainItemViewModel(name: Observable<String>, selected: Observable<Bool>) -> MainItemViewModel {
+            return DefaultMainItemViewModel(resolver: self, name: name, selected: selected)
         }
         
         func resolveSettingViewModel() -> SettingViewModel {
@@ -443,15 +443,8 @@ class MainViewModelTests: XCTestCase {
         viewModel.onSegmentSelectedIndexChange.onNext(0)
         
         // select first item
-        var disposeBag0: DisposeBag! = DisposeBag()
-        viewModel.itemList
-            .subscribe(onNext: { list in
-                list.viewModels[0].onSelected.onNext(())
-            })
-            .disposed(by: disposeBag0)
-
+        viewModel.onItemSelected.onNext(IndexPath(row: 0, section: 0))
         wait(for: [expectSufficientSelectionToolbar], timeout: 3.0)
-        disposeBag0 = nil
 
         let expectInsufficientSelectionToolbar = expectation(description: "insufficient selection toolbar")
         observer.reset(expectInsufficientSelectionToolbar) { (toolbar: MainViewToolbar) in
@@ -462,17 +455,8 @@ class MainViewModelTests: XCTestCase {
         viewModel.onSegmentSelectedIndexChange.onNext(1)
         
         // select first item
-        var onSelected = AnyObserver<Void>(eventHandler: { _ in })
-        var disposeBag1: DisposeBag! = DisposeBag()
-        viewModel.itemList
-            .subscribe(onNext: { list in
-                onSelected = list.viewModels[0].onSelected
-                onSelected.onNext(())
-            })
-            .disposed(by: disposeBag1)
-        
+        viewModel.onItemSelected.onNext(IndexPath(row: 0, section: 0))
         wait(for: [expectInsufficientSelectionToolbar], timeout: 3.0)
-
 
         let expectSegmentToolbarAgain = expectation(description: "segment toolbar again")
         observer.reset(expectSegmentToolbarAgain) { (toolbar: MainViewToolbar) in
@@ -480,9 +464,7 @@ class MainViewModelTests: XCTestCase {
         }
         
         // deselect first item
-        onSelected.onNext(())
-
+        viewModel.onItemSelected.onNext(IndexPath(row: 0, section: 0))
         wait(for: [expectSegmentToolbarAgain], timeout: 3.0)
-        disposeBag1 = nil
     }
 }

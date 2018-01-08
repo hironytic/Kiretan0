@@ -108,7 +108,6 @@ public class DefaultMainViewModel: MainViewModel {
         struct Subject {
             let onSegmentSelectedIndexChange = PublishSubject<Int>()
             let onItemSelected = PublishSubject<Int>()
-            let onItemSelectedByID = PublishSubject<String>()
             let onSetting = PublishSubject<Void>()
             let onAdd = PublishSubject<Void>()
             let onAddItem = PublishSubject<String>()
@@ -172,8 +171,7 @@ public class DefaultMainViewModel: MainViewModel {
 
                     let name = state.name.distinctUntilChanged().asObservable()
                     let selected = state.isSelected.asObservable()
-                    let onSelected = subject.onItemSelectedByID.mapObserver { itemID }
-                    viewModels.insert(resolver.resolveMainItemViewModel(name: name, selected: selected, onSelected: onSelected), at: ix)
+                    viewModels.insert(resolver.resolveMainItemViewModel(name: name, selected: selected), at: ix)
                 }
                 var movings = [(ItemState, MainItemViewModel, Int)]()
                 for (oldIndex, newIndex) in change.modifications.sorted(by: { lhs, rhs in lhs.0 > rhs.0 }) {
@@ -285,19 +283,6 @@ public class DefaultMainViewModel: MainViewModel {
                 .disposed(by: disposeBag)
         }
         
-        func handleItemSelectedByID() {
-            subject.onItemSelectedByID
-                .withLatestFrom(itemListState) { itemID, itemListState in
-                    return itemListState.states.index { $0.itemID == itemID }
-                }
-                .subscribe(onNext: { index in
-                    guard let index = index else { return }
-                    
-                    subject.onItemSelected.onNext(index)
-                })
-                .disposed(by: disposeBag)
-        }
-        
         func handleAddItem() {
             subject.onAddItem
                 .subscribe(onNext: { name in
@@ -307,7 +292,6 @@ public class DefaultMainViewModel: MainViewModel {
         }
         
         handleSegmentSelectedIndexChange()
-        handleItemSelectedByID()
         handleAddItem()
         
         // initialize stored properties
