@@ -106,11 +106,10 @@ public class MainViewController: UITableViewController, Displayable {
         viewModel.segmentSelectedIndex
             .bind(to: _segment.rx.selectedSegmentIndex)
             .disposed(by: disposeBag)
-        
+
+        let dataSource = MainViewDataSource()
         viewModel.itemList
-            .bind(to: tableView.rx.items(cellIdentifier: ITEM_CELL, cellType: MainItemCell.self)) { (row, element, cell) in
-                cell.viewModel = element
-            }
+            .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
         viewModel.mainViewToolbar
@@ -154,6 +153,56 @@ public class MainViewController: UITableViewController, Displayable {
             .disposed(by: disposeBag)
         
         _disposeBag = disposeBag
+    }
+}
+
+private class MainViewDataSource: NSObject {
+    typealias Element = MainViewItemList
+    private var _itemModels = [MainItemViewModel]()
+}
+
+extension MainViewDataSource: UITableViewDataSource {
+    public func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return _itemModels.count
+    }
+    
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: ITEM_CELL, for: indexPath) as! MainItemCell
+        let viewModel = _itemModels[indexPath.row]
+        cell.viewModel = viewModel
+        return cell
+    }
+}
+
+extension MainViewDataSource: RxTableViewDataSourceType {
+    public func tableView(_ tableView: UITableView, observedEvent: Event<MainViewItemList>) {
+        Binder(self) { dataSource, element in
+            dataSource._itemModels = element.viewModels
+            switch element.hint {
+            case .whole:
+                tableView.reloadData()
+            case .partial(let diff):
+                tableView.beginUpdates()
+                defer { tableView.endUpdates() }
+                
+                if !diff.deletedRows.isEmpty {
+                    tableView.deleteRows(at: diff.deletedRows, with: .fade)
+                }
+                if !diff.insertedRows.isEmpty {
+                    tableView.insertRows(at: diff.insertedRows, with: .fade)
+                }
+                for (old, new) in diff.movedRows {
+                    tableView.moveRow(at: old, to: new)
+                }
+            case .nothing:
+                break
+            }
+        }
+        .on(observedEvent)
     }
 }
 

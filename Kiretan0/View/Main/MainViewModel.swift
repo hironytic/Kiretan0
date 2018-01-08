@@ -33,10 +33,15 @@ public enum MainViewToolbar {
     case selection1
 }
 
+public struct MainViewItemList {
+    public let viewModels: [MainItemViewModel]
+    public let hint: TableViewUpdateHint
+}
+
 public protocol MainViewModel: ViewModel {
     var title: Observable<String> { get }
     var segmentSelectedIndex: Observable<Int> { get }
-    var itemList: Observable<[MainItemViewModel]> { get }
+    var itemList: Observable<MainViewItemList> { get }
     var mainViewToolbar: Observable<MainViewToolbar> { get }
     var displayMessage: Observable<DisplayMessage> { get }
     
@@ -64,7 +69,7 @@ public class DefaultMainViewModel: MainViewModel {
 
     public let title: Observable<String>
     public let segmentSelectedIndex: Observable<Int>
-    public let itemList: Observable<[MainItemViewModel]>
+    public let itemList: Observable<MainViewItemList>
     public let mainViewToolbar: Observable<MainViewToolbar>
     public let displayMessage: Observable<DisplayMessage>
     
@@ -89,6 +94,7 @@ public class DefaultMainViewModel: MainViewModel {
     private struct ItemListState {
         let states: [ItemState]
         let viewModels: [MainItemViewModel]
+        let hint: TableViewUpdateHint
     }
 
     private enum ItemStateAction {
@@ -135,13 +141,15 @@ public class DefaultMainViewModel: MainViewModel {
         func createItemListState() -> Observable<ItemListState> {
             return lastMainSegment
                 .flatMapLatest { (segment: Int) -> Observable<ItemListState> in
+                    let initialState = ItemListState(states: [], viewModels: [], hint: .whole)
                     let items = itemRepository.items(in: TEAM_ID, insufficient: segment == 1)
                     return Observable
                         .merge([
                             items.map { ItemStateAction.change($0) },
                             subject.onItemSelected.map { ItemStateAction.select($0) },
                         ])
-                        .scan(ItemListState(states: [], viewModels: []), accumulator: itemListStateReducer)
+                        .scan(initialState, accumulator: itemListStateReducer)
+                        .startWith(initialState)
                 }
                 .share(replay: 1, scope: .whileConnected)
         }
@@ -149,6 +157,7 @@ public class DefaultMainViewModel: MainViewModel {
         func itemListStateReducer(_ acc: ItemListState, _ action: ItemStateAction) -> ItemListState {
             var states = acc.states
             var viewModels = acc.viewModels
+            let hint: TableViewUpdateHint
 
             switch action {
             case .change(let change):
@@ -177,12 +186,19 @@ public class DefaultMainViewModel: MainViewModel {
                     viewModels.insert(itemViewModel, at: newIndex)
                     state.name.accept(change.result[newIndex].name)
                 }
-
+                if acc.states.isEmpty {
+                    hint = .whole
+                } else {
+                    hint = .partial(.init(deletedRows: change.deletions.map({ IndexPath(row: $0, section: 0) }),
+                                          insertedRows: change.insertions.map({ IndexPath(row: $0, section: 0) }),
+                                          movedRows: change.modifications.map({ (IndexPath(row: $0.0, section: 0), IndexPath(row: $0.1, section: 0)) })))
+                }
             case .select(let index):
                 states[index].isSelected.accept(!states[index].isSelected.value)
+                hint = .nothing
             }
 
-            return ItemListState(states: states, viewModels: viewModels)
+            return ItemListState(states: states, viewModels: viewModels, hint: hint)
         }
         
         func createDisplayMessageOfTextInputForAdding() -> Observable<DisplayMessage> {
@@ -235,9 +251,9 @@ public class DefaultMainViewModel: MainViewModel {
 
         let itemListState = createItemListState()
         
-        func createItemList() -> Observable<[MainItemViewModel]> {
+        func createItemList() -> Observable<MainViewItemList> {
             return itemListState
-                .map { $0.viewModels }
+                .map { MainViewItemList(viewModels: $0.viewModels, hint: $0.hint) }
                 .observeOn(MainScheduler.instance)
         }
 

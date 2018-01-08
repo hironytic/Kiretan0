@@ -75,6 +75,7 @@
 		50BB548A1FA212DF002E4443 /* R.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BB54891FA212DF002E4443 /* R.swift */; };
 		50BB548C1FA21305002E4443 /* R+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BB548B1FA21305002E4443 /* R+String.swift */; };
 		50BB548E1FA216D7002E4443 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 50BB548D1FA216D7002E4443 /* Localizable.strings */; };
+		50D0272920033822004A0C44 /* TableViewUpdateHint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D0272820033822004A0C44 /* TableViewUpdateHint.swift */; };
 		50D138081F98CE4D0064B293 /* ItemRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D138071F98CE4D0064B293 /* ItemRepositoryTests.swift */; };
 		50D1380E1F9B12EE0064B293 /* TeamRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D1380D1F9B12EE0064B293 /* TeamRepositoryTests.swift */; };
 		50D138101F9B13700064B293 /* TestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D1380F1F9B13700064B293 /* TestUtils.swift */; };
@@ -165,6 +166,7 @@
 		50BB54891FA212DF002E4443 /* R.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = R.swift; sourceTree = "<group>"; };
 		50BB548B1FA21305002E4443 /* R+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "R+String.swift"; sourceTree = "<group>"; };
 		50BB548D1FA216D7002E4443 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		50D0272820033822004A0C44 /* TableViewUpdateHint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewUpdateHint.swift; sourceTree = "<group>"; };
 		50D138071F98CE4D0064B293 /* ItemRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRepositoryTests.swift; sourceTree = "<group>"; };
 		50D1380D1F9B12EE0064B293 /* TeamRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamRepositoryTests.swift; sourceTree = "<group>"; };
 		50D1380F1F9B13700064B293 /* TestUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestUtils.swift; sourceTree = "<group>"; };
@@ -337,6 +339,7 @@
 				506C36CE1FC0355E00D8B836 /* Setting */,
 				504783261FF277C800E6F098 /* TextInput */,
 				505263C51F4F148400113180 /* Welcome */,
+				50D02727200337EA004A0C44 /* Utility */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -514,6 +517,14 @@
 				50BB54891FA212DF002E4443 /* R.swift */,
 			);
 			path = Resource;
+			sourceTree = "<group>";
+		};
+		50D02727200337EA004A0C44 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				50D0272820033822004A0C44 /* TableViewUpdateHint.swift */,
+			);
+			path = Utility;
 			sourceTree = "<group>";
 		};
 		50D138091F98CE640064B293 /* Model */ = {
@@ -891,6 +902,7 @@
 				5086F1A21FEB1EAF0024A3B8 /* CheckableTableCellViewModel.swift in Sources */,
 				506C36D21FC035A100D8B836 /* SettingViewController.swift in Sources */,
 				506C36D41FC035BE00D8B836 /* SettingViewModel.swift in Sources */,
+				50D0272920033822004A0C44 /* TableViewUpdateHint.swift in Sources */,
 				5086F1A81FEB22260024A3B8 /* TeamSelectionViewModel.swift in Sources */,
 				5052637F1F4B02EE00113180 /* AppDelegate.swift in Sources */,
 				50BB548A1FA212DF002E4443 /* R.swift in Sources */,

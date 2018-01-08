@@ -159,10 +159,10 @@ class MainViewModelTests: XCTestCase {
         var itemVM1Opt: MainItemViewModel?
         
         let expect = expectation(description: "items")
-        let observer = EventuallyFulfill(expect) { (items: [MainItemViewModel]) in
-            guard items.count == 2 else { return false }
-            itemVM0Opt = items[0]
-            itemVM1Opt = items[1]
+        let observer = EventuallyFulfill(expect) { (list: MainViewItemList) in
+            guard list.viewModels.count == 2 else { return false }
+            itemVM0Opt = list.viewModels[0]
+            itemVM1Opt = list.viewModels[1]
             return true
         }
         
@@ -211,8 +211,8 @@ class MainViewModelTests: XCTestCase {
         let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
         
         let expectSufficient = expectation(description: "sufficient items")
-        let observer = EventuallyFulfill(expectSufficient) { (items: [MainItemViewModel]) in
-            return items.count == 2
+        let observer = EventuallyFulfill(expectSufficient) { (list: MainViewItemList) in
+            return list.viewModels.count == 2
         }
         
         viewModel.itemList
@@ -224,9 +224,9 @@ class MainViewModelTests: XCTestCase {
         var itemVM0Opt: MainItemViewModel?
 
         let expectInsufficient = expectation(description: "insufficient items")
-        observer.reset(expectInsufficient) { (items: [MainItemViewModel]) in
-            guard items.count == 3 else { return false }
-            itemVM0Opt = items[0]
+        observer.reset(expectInsufficient) { (list: MainViewItemList) in
+            guard list.viewModels.count == 3 else { return false }
+            itemVM0Opt = list.viewModels[0]
             return true
         }
         
@@ -255,8 +255,8 @@ class MainViewModelTests: XCTestCase {
         let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
         
         let expectItems = expectation(description: "items")
-        let observer = EventuallyFulfill(expectItems) { (items: [MainItemViewModel]) in
-            return items.count == 2
+        let observer = EventuallyFulfill(expectItems) { (list: MainViewItemList) in
+            return list.viewModels.count == 2
         }
         
         viewModel.itemList
@@ -273,9 +273,9 @@ class MainViewModelTests: XCTestCase {
         var itemVM1Opt: MainItemViewModel?
         
         let expectItemInserted = expectation(description: "item is inserted")
-        observer.reset(expectItemInserted) { (items: [MainItemViewModel]) in
-            guard items.count == 3 else { return false }
-            itemVM1Opt = items[1]
+        observer.reset(expectItemInserted) { (list: MainViewItemList) in
+            guard list.viewModels.count == 3 else { return false }
+            itemVM1Opt = list.viewModels[1]
             return true
         }
 
@@ -308,8 +308,8 @@ class MainViewModelTests: XCTestCase {
         let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
         
         let expectItems = expectation(description: "items")
-        let observer = EventuallyFulfill(expectItems) { (items: [MainItemViewModel]) in
-            return items.count == 2
+        let observer = EventuallyFulfill(expectItems) { (list: MainViewItemList) in
+            return list.viewModels.count == 2
         }
         
         viewModel.itemList
@@ -326,9 +326,9 @@ class MainViewModelTests: XCTestCase {
         var itemVM0Opt: MainItemViewModel?
 
         let expectItemDeleted = expectation(description: "item is deleted")
-        observer.reset(expectItemDeleted) { (items: [MainItemViewModel]) in
-            guard items.count == 1 else { return false }
-            itemVM0Opt = items[0]
+        observer.reset(expectItemDeleted) { (list: MainViewItemList) in
+            guard list.viewModels.count == 1 else { return false }
+            itemVM0Opt = list.viewModels[0]
             return true
         }
         
@@ -359,8 +359,8 @@ class MainViewModelTests: XCTestCase {
         let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
         
         let expectItems = expectation(description: "items")
-        let observer = EventuallyFulfill(expectItems) { (items: [MainItemViewModel]) in
-            return items.count == 3
+        let observer = EventuallyFulfill(expectItems) { (list: MainViewItemList) in
+            return list.viewModels.count == 3
         }
         
         viewModel.itemList
@@ -378,9 +378,9 @@ class MainViewModelTests: XCTestCase {
         var itemVM1Opt: MainItemViewModel?
         
         let expectItemReordered = expectation(description: "item is inserted")
-        observer.reset(expectItemReordered) { (items: [MainItemViewModel]) in
-            guard items.count == 3 else { return false }
-            itemVM1Opt = items[1]
+        observer.reset(expectItemReordered) { (list: MainViewItemList) in
+            guard list.viewModels.count == 3 else { return false }
+            itemVM1Opt = list.viewModels[1]
             return true
         }
 
@@ -445,8 +445,8 @@ class MainViewModelTests: XCTestCase {
         // select first item
         var disposeBag0: DisposeBag! = DisposeBag()
         viewModel.itemList
-            .subscribe(onNext: { itemViewModels in
-                itemViewModels[0].onSelected.onNext(())
+            .subscribe(onNext: { list in
+                list.viewModels[0].onSelected.onNext(())
             })
             .disposed(by: disposeBag0)
 
@@ -465,8 +465,8 @@ class MainViewModelTests: XCTestCase {
         var onSelected = AnyObserver<Void>(eventHandler: { _ in })
         var disposeBag1: DisposeBag! = DisposeBag()
         viewModel.itemList
-            .subscribe(onNext: { itemViewModels in
-                onSelected = itemViewModels[0].onSelected
+            .subscribe(onNext: { list in
+                onSelected = list.viewModels[0].onSelected
                 onSelected.onNext(())
             })
             .disposed(by: disposeBag1)
