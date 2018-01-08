@@ -23,11 +23,16 @@
   THE SOFTWARE.
 */
 
+"Kiretan0.cancel" = "キャンセル";
+
 "Kiretan0.sufficient" = "まだある";
 "Kiretan0.insufficient" = "切らしてる";
 "Kiretan0.deselect_all" = "選択を解除";
 "Kiretan0.make_insufficient" = "切れた";
 "Kiretan0.make_sufficient" = "補充した";
+"Kiretan0.add_sufficient_item" = "まだあるものを登録";
+"Kiretan0.add_insufficient_item" = "切らしているものを登録";
+"Kiretan0.do_add_item" = "登録";
 
 "Kiretan0.setting_title" = "設定";
 "Kiretan0.setting_team" = "チーム";

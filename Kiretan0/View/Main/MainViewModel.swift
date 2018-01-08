@@ -110,7 +110,7 @@ public class DefaultMainViewModel: MainViewModel {
             let onItemSelected = PublishSubject<Int>()
             let onSetting = PublishSubject<Void>()
             let onAdd = PublishSubject<Void>()
-            let onAddItem = PublishSubject<String>()
+            let onAddItem = PublishSubject<(String, Bool)>()
         }
         let subject = Subject()
         
@@ -204,24 +204,27 @@ public class DefaultMainViewModel: MainViewModel {
                 .withLatestFrom(lastMainSegment)
                 .map { segmentIndex in
                     let title: String
+                    let isInsufficient: Bool
                     switch segmentIndex {
                     case 0:
-                        title = "まだあるものを登録"
+                        title = R.String.addSufficientItem.localized()
+                        isInsufficient = false
                     case 1:
-                        title = "切らしてるものを登録"
+                        title = R.String.addInsufficientItem.localized()
+                        isInsufficient = true
                     default:
                         fatalError()
                     }
 
-                    let onDone = ActionObserver.asObserver { title in subject.onAddItem.onNext(title) }
+                    let onDone = ActionObserver.asObserver { title in subject.onAddItem.onNext((title, isInsufficient)) }
                     let onCancel = ActionObserver.asObserver { }
                     let textInputViewModel = resolver.resolveTextInputViewModel(
                         title: title,
                         detailMessage: nil,
                         placeholder: "",
                         initialText: "",
-                        cancelButtonTitle: "キャンセル",
-                        doneButtonTitle: "作成",
+                        cancelButtonTitle: R.String.cancel.localized(),
+                        doneButtonTitle: R.String.doAddItem.localized(),
                         onDone: onDone,
                         onCancel: onCancel)
                     
@@ -285,8 +288,11 @@ public class DefaultMainViewModel: MainViewModel {
         
         func handleAddItem() {
             subject.onAddItem
-                .subscribe(onNext: { name in
-                    print("add \(name)")
+                .subscribe(onNext: { (name, isInsufficient) in
+                    let newItem = Item(name: name, isInsufficient: isInsufficient)
+                    itemRepository.createItem(newItem, in: TEAM_ID)
+                        .subscribe(onSuccess: { _ in }, onError: { _ in })  // TODO: handle error!
+                        .disposed(by: disposeBag)
                 })
                 .disposed(by: disposeBag)
         }
