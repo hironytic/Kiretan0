@@ -199,8 +199,8 @@ public class DefaultMainViewModel: MainViewModel {
                         fatalError()
                     }
 
-                    let onDone: AnyObserver<String> = subject.onAddItem.asObserver()
-                    let onCancel = AnyObserver<Void> { _ in }
+                    let onDone = ActionObserver.asObserver { title in subject.onAddItem.onNext(title) }
+                    let onCancel = ActionObserver.asObserver { }
                     let textInputViewModel = resolver.resolveTextInputViewModel(
                         title: title,
                         detailMessage: nil,
