@@ -224,10 +224,13 @@ public class DefaultMainViewModel: MainViewModel {
         }
         
         func createDisplayMessage() -> Observable<DisplayMessage> {
-            return Observable.merge([
-                createDisplayMessageOfTextInputForAdding(),
-                createDisplayMessageOfSetting(),
-            ])
+            return Observable
+                .merge([
+                    createDisplayMessageOfTextInputForAdding(),
+                    createDisplayMessageOfSetting(),
+                ])
+                .share(replay: 1, scope: .whileConnected)
+                .observeOn(MainScheduler.instance)
         }
 
         let itemListState = createItemListState()
@@ -252,6 +255,8 @@ public class DefaultMainViewModel: MainViewModel {
                         return .segment
                     }
                 }
+                .share(replay: 1, scope: .whileConnected)
+                .observeOn(MainScheduler.instance)
         }
         
         func handleSegmentSelectedIndexChange() {
