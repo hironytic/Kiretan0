@@ -102,6 +102,8 @@ class MainViewModelTests: XCTestCase {
 
         super.tearDown()
     }
+
+    // MARK: - normal scinarios
     
     func testTitle() {
         let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
@@ -410,13 +412,13 @@ class MainViewModelTests: XCTestCase {
                 return Observable.just(CollectionChange(result: [
                     Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
                     Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
-                    ], deletions: [], insertions: [0, 1], modifications: []))
+                ], deletions: [], insertions: [0, 1], modifications: []))
             } else {
                 return Observable.just(CollectionChange(result: [
                     Item(itemID: "item2", name: "Item 2", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 11, 20, 3, 40, 50)),
                     Item(itemID: "item3", name: "Item 3", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 12, 31, 20, 11, 22)),
                     Item(itemID: "item4", name: "Item 4", isInsufficient: true, lastChange: TestUtils.makeDate(2018, 1, 1, 9, 00, 00)),
-                    ], deletions: [], insertions: [0, 1, 2], modifications: []))
+                ], deletions: [], insertions: [0, 1, 2], modifications: []))
             }
         }
         
@@ -466,5 +468,88 @@ class MainViewModelTests: XCTestCase {
         // deselect first item
         viewModel.onItemSelected.onNext(IndexPath(row: 0, section: 0))
         wait(for: [expectSegmentToolbarAgain], timeout: 3.0)
+    }
+    
+    // MARK: - error handling scinarios
+    
+    func testItemsError() {
+        enum TestError: Error { case error }
+        
+        resolver.itemRepository.mock.items.setup { teamID, insufficient in
+            if (!insufficient) {
+                return Observable.just(CollectionChange(result: [
+                    Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
+                    Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
+                ], deletions: [], insertions: [0, 1], modifications: []))
+            } else {
+                return Observable.error(TestError.error)
+            }
+        }
+        
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+
+        let expectItems = expectation(description: "item list can loaded")
+        let itemListObserver = EventuallyFulfill(expectItems) { (list: MainViewItemList) in
+            return list.viewModels.count == 2
+        }
+        viewModel.itemList
+            .bind(to: itemListObserver)
+            .disposed(by: disposeBag)
+        
+        let expectNoMessage = expectation(description: "message does not exist")
+        let itemListMessageTextObserver = EventuallyFulfill(expectNoMessage) { (text: String) in
+            return text == ""
+        }
+        viewModel.itemListMessageText
+            .bind(to: itemListMessageTextObserver)
+            .disposed(by: disposeBag)
+        
+        let expectMessageHidden = expectation(description: "message is hidden")
+        let itemListMessageHiddenObserver = EventuallyFulfill(expectMessageHidden) { (isHidden: Bool) in
+            return isHidden
+        }
+        viewModel.itemListMessageHidden
+            .bind(to: itemListMessageHiddenObserver)
+            .disposed(by: disposeBag)
+
+        wait(for: [expectItems, expectNoMessage, expectMessageHidden], timeout: 3.0)
+        
+        let expectEmptyList = expectation(description: "item list become empty")
+        itemListObserver.reset(expectEmptyList) { (list: MainViewItemList) in
+            return list.viewModels.count == 0
+        }
+        
+        let expectErrorMessage = expectation(description: "error message is shown")
+        itemListMessageTextObserver.reset(expectErrorMessage) { (text: String) in
+            return text == R.String.errorItemList.localized()
+        }
+        
+        let expectMessageVisible = expectation(description: "message is visible")
+        itemListMessageHiddenObserver.reset(expectMessageVisible) { (isHidden: Bool) in
+            return !isHidden
+        }
+        
+        // change segment to insufficient items
+        viewModel.onSegmentSelectedIndexChange.onNext(1)
+        wait(for: [expectEmptyList, expectErrorMessage, expectMessageVisible], timeout: 3.0)
+
+        let expectItemsAgain = expectation(description: "item list can loaded again")
+        itemListObserver.reset(expectItemsAgain) { (list: MainViewItemList) in
+            return list.viewModels.count == 2
+        }
+        
+        let expectNoMessageAgain = expectation(description: "message does not exist again")
+        itemListMessageTextObserver.reset(expectNoMessageAgain)  { (text: String) in
+            return text == ""
+        }
+        
+        let expectMessageHiddenAgain = expectation(description: "message is hidden again")
+        itemListMessageHiddenObserver.reset(expectMessageHiddenAgain) { (isHidden: Bool) in
+            return isHidden
+        }
+
+        // change segment to sufficient items again
+        viewModel.onSegmentSelectedIndexChange.onNext(0)
+        wait(for: [expectItemsAgain, expectNoMessageAgain, expectMessageHiddenAgain], timeout: 3.0)
     }
 }
