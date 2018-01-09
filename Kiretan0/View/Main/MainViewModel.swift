@@ -275,7 +275,7 @@ public class DefaultMainViewModel: MainViewModel {
             return itemListState
                 .map { state in
                     if let _ /*error*/ = state.error {
-                        return "データ読み込みエラー" // FIXME: to string resource
+                        return R.String.errorItemList.localized()
                     } else {
                         return ""
                     }
