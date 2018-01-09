@@ -42,6 +42,8 @@ public protocol MainViewModel: ViewModel {
     var title: Observable<String> { get }
     var segmentSelectedIndex: Observable<Int> { get }
     var itemList: Observable<MainViewItemList> { get }
+    var itemListMessageText: Observable<String> { get }
+    var itemListMessageHidden: Observable<Bool> { get }
     var mainViewToolbar: Observable<MainViewToolbar> { get }
     var displayMessage: Observable<DisplayMessage> { get }
     
@@ -70,6 +72,8 @@ public class DefaultMainViewModel: MainViewModel {
     public let title: Observable<String>
     public let segmentSelectedIndex: Observable<Int>
     public let itemList: Observable<MainViewItemList>
+    public let itemListMessageText: Observable<String>
+    public let itemListMessageHidden: Observable<Bool>
     public let mainViewToolbar: Observable<MainViewToolbar>
     public let displayMessage: Observable<DisplayMessage>
     
@@ -95,6 +99,14 @@ public class DefaultMainViewModel: MainViewModel {
         let states: [ItemState]
         let viewModels: [MainItemViewModel]
         let hint: TableViewUpdateHint
+        let error: Error?
+        
+        public init(states: [ItemState], viewModels: [MainItemViewModel], hint: TableViewUpdateHint, error: Error? = nil) {
+            self.states = states
+            self.viewModels = viewModels
+            self.hint = hint
+            self.error = error
+        }
     }
 
     private enum ItemStateAction {
@@ -148,6 +160,7 @@ public class DefaultMainViewModel: MainViewModel {
                             subject.onItemSelected.map { ItemStateAction.select($0) },
                         ])
                         .scan(initialState, accumulator: itemListStateReducer)
+                        .catchError { Observable.just(ItemListState(states: [], viewModels: [], hint: .whole, error: $0)) }
                         .startWith(initialState)
                 }
                 .share(replay: 1, scope: .whileConnected)
@@ -257,6 +270,24 @@ public class DefaultMainViewModel: MainViewModel {
                 .map { MainViewItemList(viewModels: $0.viewModels, hint: $0.hint) }
                 .observeOn(MainScheduler.instance)
         }
+        
+        func createItemListMessageText() -> Observable<String> {
+            return itemListState
+                .map { state in
+                    if let _ /*error*/ = state.error {
+                        return "データ読み込みエラー" // FIXME: to string resource
+                    } else {
+                        return ""
+                    }
+                }
+                .observeOn(MainScheduler.instance)
+        }
+        
+        func createItemListMessageHidden() -> Observable<Bool> {
+            return itemListState
+                .map { $0.error == nil }
+                .observeOn(MainScheduler.instance)
+        }
 
         func createMainViewToolbar() -> Observable<MainViewToolbar> {
             return Observable
@@ -304,6 +335,8 @@ public class DefaultMainViewModel: MainViewModel {
         title = createTitle()
         segmentSelectedIndex = createSegmentSelectedIndex()
         itemList = createItemList()
+        itemListMessageText = createItemListMessageText()
+        itemListMessageHidden = createItemListMessageHidden()
         mainViewToolbar = createMainViewToolbar()
         displayMessage = createDisplayMessage()
 

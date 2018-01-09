@@ -32,6 +32,7 @@ private let ITEM_CELL = "ItemCell"
 public class MainViewController: UITableViewController, Displayable {
     public var viewModel: MainViewModel?
 
+    private var _itemListMessageLabel: UILabel!
     private var _settingBarButtonItem: UIBarButtonItem!
     private var _segment: UISegmentedControl!
     private var _addBarButonItem: UIBarButtonItem!
@@ -51,6 +52,15 @@ public class MainViewController: UITableViewController, Displayable {
         }
         navigationItem.rightBarButtonItem = editButtonItem
         tableView.rowHeight = 90
+        
+        let itemListMessageParent = UIView()
+        tableView.backgroundView = itemListMessageParent
+        _itemListMessageLabel = UILabel()
+        _itemListMessageLabel.translatesAutoresizingMaskIntoConstraints = false
+        itemListMessageParent.addSubview(_itemListMessageLabel)
+        let horizontalConstraint = NSLayoutConstraint(item: _itemListMessageLabel, attribute: .centerX, relatedBy: .equal, toItem: itemListMessageParent, attribute: .centerX, multiplier: 1.0, constant: 0.0)
+        let verticalConstraint = NSLayoutConstraint(item: _itemListMessageLabel, attribute: .centerY, relatedBy: .equal, toItem: itemListMessageParent, attribute: .centerY, multiplier: 1.0, constant: 0.0)
+        itemListMessageParent.addConstraints([horizontalConstraint, verticalConstraint])
         
         _segment = UISegmentedControl(items: [
             R.String.sufficient.localized(),
@@ -110,6 +120,14 @@ public class MainViewController: UITableViewController, Displayable {
         let dataSource = MainViewDataSource()
         viewModel.itemList
             .bind(to: tableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
+        viewModel.itemListMessageText
+            .bind(to: _itemListMessageLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        viewModel.itemListMessageHidden
+            .bind(to: _itemListMessageLabel.rx.isHidden)
             .disposed(by: disposeBag)
         
         viewModel.mainViewToolbar
