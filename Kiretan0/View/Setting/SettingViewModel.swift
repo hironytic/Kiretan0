@@ -27,8 +27,8 @@ import Foundation
 import RxSwift
 
 public protocol SettingViewModel: ViewModel {
-    var displayMessage: Observable<DisplayMessage> { get }
-    var dismissalMessage: Observable<DismissalMessage> { get }
+    var displayRequest: Observable<DisplayRequest> { get }
+    var dismissalRequest: Observable<DismissalRequest> { get }
     var tableData: Observable<[TableSectionViewModel]> { get }
     
     var onDone: AnyObserver<Void> { get }
@@ -47,22 +47,22 @@ extension DefaultResolver: SettingViewModelResolver {
 public class DefaultSettingViewModel: SettingViewModel {
     public typealias Resolver = TeamSelectionViewModelResolver
 
-    public let displayMessage: Observable<DisplayMessage>
-    public let dismissalMessage: Observable<DismissalMessage>
+    public let displayRequest: Observable<DisplayRequest>
+    public let dismissalRequest: Observable<DismissalRequest>
     public let tableData: Observable<[TableSectionViewModel]>
     
     public let onDone: AnyObserver<Void>
 
     private let _resolver: Resolver
-    private let _displayMessageSlot = PublishSubject<DisplayMessage>()
-    private let _dismissalMessageSlot = PublishSubject<DismissalMessage>()
+    private let _displayRequestSlot = PublishSubject<DisplayRequest>()
+    private let _dismissalRequestSlot = PublishSubject<DismissalRequest>()
     
     public init(resolver: Resolver) {
         _resolver = resolver
 
-        displayMessage = _displayMessageSlot.observeOn(MainScheduler.instance)
-        dismissalMessage = _dismissalMessageSlot.observeOn(MainScheduler.instance)
-        onDone = _dismissalMessageSlot.mapObserver { DismissalMessage(type: .dismiss, animated: true) }
+        displayRequest = _displayRequestSlot.observeOn(MainScheduler.instance)
+        dismissalRequest = _dismissalRequestSlot.observeOn(MainScheduler.instance)
+        onDone = _dismissalRequestSlot.mapObserver { DismissalRequest(type: .dismiss, animated: true) }
         
         let teamObserver = ActionObserver<Void>()
         tableData = Observable.just([
@@ -77,7 +77,7 @@ public class DefaultSettingViewModel: SettingViewModel {
     
     private func handleTeam() {
         let teamSelectionViewModel = _resolver.resolveTeamSelectionViewModel()
-        let message = DisplayMessage(viewModel: teamSelectionViewModel, type: .push, animated: true)
-        _displayMessageSlot.onNext(message)
+        let message = DisplayRequest(viewModel: teamSelectionViewModel, type: .push, animated: true)
+        _displayRequestSlot.onNext(message)
     }
 }

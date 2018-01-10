@@ -146,7 +146,7 @@ public class MainViewController: UITableViewController, Displayable {
             })
             .disposed(by: disposeBag)
         
-        viewModel.displayMessage
+        viewModel.displayRequest
             .bind(to: displayer)
             .disposed(by: disposeBag)
         

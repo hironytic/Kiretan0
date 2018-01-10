@@ -64,11 +64,11 @@ public class SettingViewController: UITableViewController, Displayable, Dismissa
             .bind(viewModel.tableData, to: tableView)
             .disposed(by: disposeBag)
         
-        viewModel.displayMessage
+        viewModel.displayRequest
             .bind(to: displayer)
             .disposed(by: disposeBag)
         
-        viewModel.dismissalMessage
+        viewModel.dismissalRequest
             .bind(to: dismisser)
             .disposed(by: disposeBag)
         

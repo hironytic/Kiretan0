@@ -45,7 +45,7 @@ public protocol MainViewModel: ViewModel {
     var itemListMessageText: Observable<String> { get }
     var itemListMessageHidden: Observable<Bool> { get }
     var mainViewToolbar: Observable<MainViewToolbar> { get }
-    var displayMessage: Observable<DisplayMessage> { get }
+    var displayRequest: Observable<DisplayRequest> { get }
     
     var onSetting: AnyObserver<Void> { get }
     var onSegmentSelectedIndexChange: AnyObserver<Int> { get }
@@ -75,7 +75,7 @@ public class DefaultMainViewModel: MainViewModel {
     public let itemListMessageText: Observable<String>
     public let itemListMessageHidden: Observable<Bool>
     public let mainViewToolbar: Observable<MainViewToolbar>
-    public let displayMessage: Observable<DisplayMessage>
+    public let displayRequest: Observable<DisplayRequest>
     
     public let onSetting: AnyObserver<Void>
     public let onSegmentSelectedIndexChange: AnyObserver<Int>
@@ -212,7 +212,7 @@ public class DefaultMainViewModel: MainViewModel {
             return ItemListState(states: states, viewModels: viewModels, hint: hint)
         }
         
-        func createDisplayMessageOfTextInputForAdding() -> Observable<DisplayMessage> {
+        func createDisplayRequestOfTextInputForAdding() -> Observable<DisplayRequest> {
             return subject.onAdd
                 .withLatestFrom(lastMainSegment)
                 .map { segmentIndex in
@@ -241,23 +241,23 @@ public class DefaultMainViewModel: MainViewModel {
                         onDone: onDone,
                         onCancel: onCancel)
                     
-                    return DisplayMessage(viewModel: textInputViewModel, type: .present, animated: true)
+                    return DisplayRequest(viewModel: textInputViewModel, type: .present, animated: true)
                 }
         }
 
-        func createDisplayMessageOfSetting() -> Observable<DisplayMessage> {
+        func createDisplayRequestOfSetting() -> Observable<DisplayRequest> {
             return subject.onSetting
                 .map {
                     let settingViewModel = resolver.resolveSettingViewModel()
-                    return DisplayMessage(viewModel: settingViewModel, type: .present, animated: true)
+                    return DisplayRequest(viewModel: settingViewModel, type: .present, animated: true)
                 }
         }
         
-        func createDisplayMessage() -> Observable<DisplayMessage> {
+        func createDisplayRequest() -> Observable<DisplayRequest> {
             return Observable
                 .merge([
-                    createDisplayMessageOfTextInputForAdding(),
-                    createDisplayMessageOfSetting(),
+                    createDisplayRequestOfTextInputForAdding(),
+                    createDisplayRequestOfSetting(),
                 ])
                 .share(replay: 1, scope: .whileConnected)
                 .observeOn(MainScheduler.instance)
@@ -338,7 +338,7 @@ public class DefaultMainViewModel: MainViewModel {
         itemListMessageText = createItemListMessageText()
         itemListMessageHidden = createItemListMessageHidden()
         mainViewToolbar = createMainViewToolbar()
-        displayMessage = createDisplayMessage()
+        displayRequest = createDisplayRequest()
 
         onSetting = subject.onSetting.asObserver()
         onSegmentSelectedIndexChange = subject.onSegmentSelectedIndexChange.asObserver()

@@ -24,8 +24,8 @@
 		505263A11F4B155900113180 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 505263A01F4B155900113180 /* GoogleService-Info.plist */; };
 		505263AB1F4EF7F300113180 /* ActionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A31F4EF7F300113180 /* ActionObserver.swift */; };
 		505263AC1F4EF7F300113180 /* DefaultResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A41F4EF7F300113180 /* DefaultResolver.swift */; };
-		505263AD1F4EF7F300113180 /* DismissalMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A61F4EF7F300113180 /* DismissalMessage.swift */; };
-		505263AE1F4EF7F300113180 /* DisplayMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A71F4EF7F300113180 /* DisplayMessage.swift */; };
+		505263AD1F4EF7F300113180 /* DismissalRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A61F4EF7F300113180 /* DismissalRequest.swift */; };
+		505263AE1F4EF7F300113180 /* DisplayRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263A71F4EF7F300113180 /* DisplayRequest.swift */; };
 		505263B11F4EF7F300113180 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263AA1F4EF7F300113180 /* ViewModel.swift */; };
 		505263B41F4EF9C500113180 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B21F4EF9C500113180 /* RxCocoa.framework */; };
 		505263B51F4EF9C500113180 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B31F4EF9C500113180 /* RxSwift.framework */; };
@@ -117,8 +117,8 @@
 		505263A01F4B155900113180 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		505263A31F4EF7F300113180 /* ActionObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionObserver.swift; sourceTree = "<group>"; };
 		505263A41F4EF7F300113180 /* DefaultResolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultResolver.swift; sourceTree = "<group>"; };
-		505263A61F4EF7F300113180 /* DismissalMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissalMessage.swift; sourceTree = "<group>"; };
-		505263A71F4EF7F300113180 /* DisplayMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayMessage.swift; sourceTree = "<group>"; };
+		505263A61F4EF7F300113180 /* DismissalRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissalRequest.swift; sourceTree = "<group>"; };
+		505263A71F4EF7F300113180 /* DisplayRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayRequest.swift; sourceTree = "<group>"; };
 		505263AA1F4EF7F300113180 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		505263B21F4EF9C500113180 /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
 		505263B31F4EF9C500113180 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
@@ -322,8 +322,8 @@
 			children = (
 				5086F1941FE9D5A50024A3B8 /* TableUI */,
 				505263A31F4EF7F300113180 /* ActionObserver.swift */,
-				505263A61F4EF7F300113180 /* DismissalMessage.swift */,
-				505263A71F4EF7F300113180 /* DisplayMessage.swift */,
+				505263A61F4EF7F300113180 /* DismissalRequest.swift */,
+				505263A71F4EF7F300113180 /* DisplayRequest.swift */,
 				505263F81F56E74A00113180 /* NullResolver.swift */,
 				505263B91F4F092700113180 /* ViewControllerCreatable.swift */,
 				505263AA1F4EF7F300113180 /* ViewModel.swift */,
@@ -865,7 +865,7 @@
 			files = (
 				8673AB4E1FA72EAF00EE72AB /* R+Image.swift in Sources */,
 				505263BB1F4F092700113180 /* ViewControllerCreatable.swift in Sources */,
-				505263AD1F4EF7F300113180 /* DismissalMessage.swift in Sources */,
+				505263AD1F4EF7F300113180 /* DismissalRequest.swift in Sources */,
 				505263FE1F56FC1300113180 /* RootViewController.swift in Sources */,
 				505263B11F4EF7F300113180 /* ViewModel.swift in Sources */,
 				5086F1A01FEA96070024A3B8 /* DisclosureTableCell.swift in Sources */,
@@ -890,7 +890,7 @@
 				5097209C1F7736D600C623A5 /* TeamMember.swift in Sources */,
 				5047832A1FF2797B00E6F098 /* TextInputViewController.swift in Sources */,
 				5083F6781FA89F3500F5821E /* MainItemViewModel.swift in Sources */,
-				505263AE1F4EF7F300113180 /* DisplayMessage.swift in Sources */,
+				505263AE1F4EF7F300113180 /* DisplayRequest.swift in Sources */,
 				505263F91F56E74A00113180 /* NullResolver.swift in Sources */,
 				50BB548C1FA21305002E4443 /* R+String.swift in Sources */,
 				505263C91F4F150900113180 /* WelcomeViewController.swift in Sources */,

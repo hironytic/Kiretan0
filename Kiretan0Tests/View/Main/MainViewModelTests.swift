@@ -32,8 +32,8 @@ class MainViewModelTests: XCTestCase {
     var resolver: MockResolver!
 
     class NullSettingViewModel: SettingViewModel {
-        let displayMessage = Observable<DisplayMessage>.never()
-        var dismissalMessage = Observable<DismissalMessage>.never()
+        let displayRequest = Observable<DisplayRequest>.never()
+        var dismissalRequest = Observable<DismissalRequest>.never()
         var tableData = Observable<[TableSectionViewModel]>.never()
         
         let onDone = ActionObserver<Void>().asObserver()

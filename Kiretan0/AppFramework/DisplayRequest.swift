@@ -1,5 +1,5 @@
 //
-// DisplayMessage.swift
+// DisplayRequest.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -32,7 +32,7 @@ public enum DisplayType {
     case push
 }
 
-public struct DisplayMessage {
+public struct DisplayRequest {
     public let viewModel: ViewModel
     public let type: DisplayType
     public let animated: Bool
@@ -47,11 +47,11 @@ public struct DisplayMessage {
 }
 
 public protocol Displayable {
-    var displayer: AnyObserver<DisplayMessage> { get }
+    var displayer: AnyObserver<DisplayRequest> { get }
 }
 
 public extension Displayable where Self: UIViewController {
-    public var displayer: AnyObserver<DisplayMessage> {
+    public var displayer: AnyObserver<DisplayRequest> {
         return Binder(self) { element, message in
             if let viewModel = message.viewModel as? ViewControllerCreatable {
                 let viewController = viewModel.createViewController()

@@ -1,5 +1,5 @@
 //
-// DismissalMessage.swift
+// DismissalRequest.swift
 // Kiretan0
 //
 // Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
@@ -32,17 +32,17 @@ public enum DismissalType {
     case pop
 }
 
-public struct DismissalMessage {
+public struct DismissalRequest {
     public let type: DismissalType
     public let animated: Bool
 }
 
 public protocol Dismissable {
-    var dismisser: AnyObserver<DismissalMessage> { get }
+    var dismisser: AnyObserver<DismissalRequest> { get }
 }
 
 public extension Dismissable where Self: UIViewController {
-    public var dismisser: AnyObserver<DismissalMessage> {
+    public var dismisser: AnyObserver<DismissalRequest> {
         return Binder(self) { element, message in
             switch message.type {
             case .dismiss:
