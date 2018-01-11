@@ -34,6 +34,7 @@
 "Kiretan0.add_insufficient_item" = "切らしているものを登録";
 "Kiretan0.do_add_item" = "登録";
 "Kiretan0.error_item_list" = "データが取得できません";
+"Kiretan0.error_item" = "<< エラー >>";
 
 "Kiretan0.setting_title" = "設定";
 "Kiretan0.setting_team" = "チーム";

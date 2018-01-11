@@ -38,6 +38,7 @@ public extension R {
         case addInsufficientItem = "Kiretan0.add_insufficient_item"
         case doAddItem = "Kiretan0.do_add_item"
         case errorItemList = "Kiretan0.error_item_list"
+        case errorItem = "Kiretan0.error_item"
 
         case settingTitle = "Kiretan0.setting_title"
         case settingTeam = "Kiretan0.setting_team"

@@ -472,7 +472,7 @@ class MainViewModelTests: XCTestCase {
     
     // MARK: - error handling scinarios
     
-    func testItemsError() {
+    func testItemListError() {
         enum TestError: Error { case error }
         
         resolver.itemRepository.mock.items.setup { teamID, insufficient in
@@ -551,5 +551,133 @@ class MainViewModelTests: XCTestCase {
         // change segment to sufficient items again
         viewModel.onSegmentSelectedIndexChange.onNext(0)
         wait(for: [expectItemsAgain, expectNoMessageAgain, expectMessageHiddenAgain], timeout: 3.0)
+    }
+    
+    func testItemError() {
+        enum TestError: Error { case error }
+        resolver.itemRepository.mock.items.setup { _, _ in
+            return Observable.just(CollectionChange(result: [
+                Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
+                Item(itemID: "item1", error: TestError.error, name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
+            ], deletions: [], insertions: [0, 1], modifications: []))
+        }
+
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+
+        var item1Opt: MainItemViewModel? = nil
+        let expectItems = expectation(description: "item list can loaded")
+        let itemListObserver = EventuallyFulfill(expectItems) { (list: MainViewItemList) in
+            guard list.viewModels.count == 2 else { return false }
+            
+            item1Opt = list.viewModels[1]
+            return true
+        }
+        viewModel.itemList
+            .bind(to: itemListObserver)
+            .disposed(by: disposeBag)
+        
+        wait(for: [expectItems], timeout: 3.0)
+        guard let item1 = item1Opt else { return }
+        
+        let expectName = expectation(description: "item's name is ERROR")
+        let nameObserver = EventuallyFulfill(expectName) { (name: String) in
+            return name == R.String.errorItem.localized()
+        }
+        item1.name
+            .bind(to: nameObserver)
+            .disposed(by: disposeBag)
+        
+        wait(for: [expectName], timeout: 3.0)
+    }
+    
+    func testErrorItemShouldNotBeChecked() {
+        enum TestError: Error { case error }
+        resolver.itemRepository.mock.items.setup { _, _ in
+            return Observable.just(CollectionChange(result: [
+                Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
+                Item(itemID: "item1", error: TestError.error, name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
+            ], deletions: [], insertions: [0, 1], modifications: []))
+        }
+        
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        
+        var item1Opt: MainItemViewModel? = nil
+        let expectItems = expectation(description: "item list can loaded")
+        let itemListObserver = EventuallyFulfill(expectItems) { (list: MainViewItemList) in
+            guard list.viewModels.count == 2 else { return false }
+            
+            item1Opt = list.viewModels[1]
+            return true
+        }
+        viewModel.itemList
+            .bind(to: itemListObserver)
+            .disposed(by: disposeBag)
+        wait(for: [expectItems], timeout: 3.0)
+        guard let item1 = item1Opt else { return }
+
+        let expectChecked = expectation(description: "checked")
+        expectChecked.isInverted = true
+        let checkedObserver = EventuallyFulfill(expectChecked) { (isChecked: Bool) in
+            return isChecked
+        }
+        item1.selected
+            .bind(to: checkedObserver)
+            .disposed(by: disposeBag)
+
+        viewModel.onItemSelected.onNext(IndexPath(row: 1, section: 0))
+        wait(for: [expectChecked], timeout: 0.3)
+    }
+
+    func testErrorItemShouldBeUnchecked() {
+        enum TestError: Error { case error }
+        let itemsSubject = PublishSubject<CollectionChange<Item>>()
+        resolver.itemRepository.mock.items.setup { _, _ in
+            return itemsSubject
+        }
+        
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        
+        var item1Opt: MainItemViewModel? = nil
+        let expectItems = expectation(description: "item list can loaded")
+        let itemListObserver = EventuallyFulfill(expectItems) { (list: MainViewItemList) in
+            guard list.viewModels.count == 2 else { return false }
+            
+            item1Opt = list.viewModels[1]
+            return true
+        }
+        viewModel.itemList
+            .bind(to: itemListObserver)
+            .disposed(by: disposeBag)
+        
+        itemsSubject.onNext(CollectionChange(result: [
+            Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
+            Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
+        ], deletions: [], insertions: [0, 1], modifications: []))
+        
+        wait(for: [expectItems], timeout: 3.0)
+        guard let item1 = item1Opt else { return }
+        
+        let expectChecked = expectation(description: "checked")
+        let checkedObserver = EventuallyFulfill(expectChecked) { (isChecked: Bool) in
+            return isChecked
+        }
+        item1.selected
+            .bind(to: checkedObserver)
+            .disposed(by: disposeBag)
+        
+        viewModel.onItemSelected.onNext(IndexPath(row: 1, section: 0))
+        wait(for: [expectChecked], timeout: 3.0)
+
+        let expectUnchecked = expectation(description: "unchecked")
+        checkedObserver.reset(expectUnchecked) { (isChecked: Bool) in
+            return !isChecked
+        }
+
+        itemsSubject.onNext(CollectionChange(result: [
+            Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
+            Item(itemID: "item1", error: TestError.error, name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
+        ], deletions: [], insertions: [], modifications: [(1, 1)]))
+
+        wait(for: [expectUnchecked], timeout: 3.0)
     }
 }

@@ -85,13 +85,28 @@ public class DefaultMainViewModel: MainViewModel {
     private let disposeBag: DisposeBag
 
     private class ItemState {
-        let itemID: String
+        var item: Item {
+            didSet {
+                name.accept(ItemState.name(of: item))
+                if item.error != nil && isSelected.value {
+                    isSelected.accept(false)
+                }
+            }
+        }
         let name: BehaviorRelay<String>
         let isSelected = BehaviorRelay<Bool>(value: false)
 
-        init(itemID: String, name: String) {
-            self.itemID = itemID
-            self.name = BehaviorRelay(value: name)
+        init(item: Item) {
+            self.item = item
+            self.name = BehaviorRelay(value: ItemState.name(of: item))
+        }
+        
+        private static func name(of item: Item) -> String {
+            if item.error == nil {
+                return item.name
+            } else {
+                return R.String.errorItem.localized()
+            }
         }
     }
 
@@ -178,8 +193,7 @@ public class DefaultMainViewModel: MainViewModel {
                     viewModels.remove(at: ix)
                 }
                 for ix in change.insertions {
-                    let itemID = change.result[ix].itemID
-                    let state = ItemState(itemID: itemID, name: change.result[ix].name)
+                    let state = ItemState(item: change.result[ix])
                     states.insert(state, at: ix)
 
                     let name = state.name.distinctUntilChanged().asObservable()
@@ -195,7 +209,7 @@ public class DefaultMainViewModel: MainViewModel {
                 for (state, itemViewModel, newIndex) in movings.sorted(by: { lhs, rhs in lhs.2 < rhs.2 }) {
                     states.insert(state, at: newIndex)
                     viewModels.insert(itemViewModel, at: newIndex)
-                    state.name.accept(change.result[newIndex].name)
+                    state.item = change.result[newIndex]
                 }
                 if acc.states.isEmpty {
                     hint = .whole
@@ -205,7 +219,9 @@ public class DefaultMainViewModel: MainViewModel {
                                           movedRows: change.modifications.map({ (IndexPath(row: $0.0, section: 0), IndexPath(row: $0.1, section: 0)) })))
                 }
             case .select(let index):
-                states[index].isSelected.accept(!states[index].isSelected.value)
+                if states[index].item.error == nil {
+                    states[index].isSelected.accept(!states[index].isSelected.value)
+                }
                 hint = .nothing
             }
 
