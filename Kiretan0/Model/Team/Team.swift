@@ -31,15 +31,24 @@ public enum TeamError: Error {
 
 public struct Team: Entity {
     public let teamID: String
-    public let name: String
+    public let error: Error?
+    public var name: String
     
-    public init(teamID: String = "", name: String) {
+    public init(teamID: String = "", error: Error? = nil, name: String) {
         self.teamID = teamID
+        self.error = error
         self.name = name
     }
     
+    private init(teamID: String, error: Error) {
+        self.init(teamID: teamID, error: error, name: "")
+    }
+    
     public init(raw: RawEntity) throws {
-        guard let name = (raw.data["name"] ?? "") as? String else { throw TeamError.invalidDataStructure }
+        guard let name = (raw.data["name"] ?? "") as? String else {
+            self.init(teamID: raw.documentID, error: TeamError.invalidDataStructure)
+            return
+        }
         
         self.init(teamID: raw.documentID, name: name)
     }

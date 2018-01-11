@@ -39,6 +39,11 @@ public protocol TeamRepository {
     func updateTeam(_ team: Team) -> Completable
 }
 
+public enum TeamRepositoryError: Error {
+    case invalidTeam
+    case invalidTeamMember
+}
+
 public protocol TeamRepositoryResolver {
     func resolveTeamRepository() -> TeamRepository
 }
@@ -85,6 +90,9 @@ public class DefaultTeamRepository: TeamRepository {
     }
 
     public func createTeam(_ team: Team, by member: TeamMember) -> Single<String> {
+        guard team.error == nil else { return Single.error(TeamRepositoryError.invalidTeam) }
+        guard member.error == nil else { return Single.error(TeamRepositoryError.invalidTeamMember) }
+        
         var teamID: String = ""
         return _dataStore.write { writer in
             let teamPath = self._dataStore.collection("team").document()
@@ -104,6 +112,8 @@ public class DefaultTeamRepository: TeamRepository {
     }
 
     public func join(to teamID: String, as member: TeamMember) -> Completable {
+        guard member.error == nil else { return Completable.error(TeamRepositoryError.invalidTeamMember) }
+        
         return _dataStore.write { writer in
             let teamPath = self._dataStore.collection("team").document(teamID)
             let memberPath = teamPath.collection("member").document(member.memberID)
@@ -126,6 +136,8 @@ public class DefaultTeamRepository: TeamRepository {
     }
 
     public func updateMember(_ member: TeamMember, in teamID: String) -> Completable {
+        guard member.error == nil else { return Completable.error(TeamRepositoryError.invalidTeamMember) }
+        
         return _dataStore.write { writer in
             let teamPath = self._dataStore.collection("team").document(teamID)
             let teamMemberPath = teamPath.collection("member").document(member.memberID)
@@ -134,6 +146,8 @@ public class DefaultTeamRepository: TeamRepository {
     }
 
     public func updateTeam(_ team: Team) -> Completable {
+        guard team.error == nil else { return Completable.error(TeamRepositoryError.invalidTeam) }
+        
         return _dataStore.write { writer in
             let teamPath = self._dataStore.collection("team").document(team.teamID)
             writer.updateDocumentData(team.raw().data, at: teamPath)

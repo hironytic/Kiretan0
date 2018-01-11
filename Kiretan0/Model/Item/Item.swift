@@ -31,20 +31,30 @@ public enum ItemError: Error {
 
 public struct Item: Entity {
     public let itemID: String
-    public let name: String
-    public let isInsufficient: Bool
+    public let error: Error?
+    public var name: String
+    public var isInsufficient: Bool
     public let lastChange: Date?
     
-    public init(itemID: String = "", name: String, isInsufficient: Bool, lastChange: Date? = nil) {
+    public init(itemID: String = "", error: Error? = nil, name: String, isInsufficient: Bool, lastChange: Date? = nil) {
         self.itemID = itemID
+        self.error = error
         self.name = name
         self.isInsufficient = isInsufficient
         self.lastChange = lastChange
     }
+
+    private init(itemID: String, error: Error) {
+        self.init(itemID: itemID, error: error, name: "", isInsufficient: true)
+    }
     
     public init(raw: RawEntity) throws {
-        guard let name = (raw.data["name"] ?? "") as? String else { throw ItemError.invalidDataStructure }
-        guard let isInsufficient = (raw.data["insufficient"] ?? false) as? Bool else { throw ItemError.invalidDataStructure }
+        guard
+        let name = (raw.data["name"] ?? "") as? String,
+        let isInsufficient = (raw.data["insufficient"] ?? false) as? Bool else {
+            self.init(itemID: raw.documentID, error: ItemError.invalidDataStructure)
+            return
+        }
         let lastChange = (raw.data["last_change"] ?? 0) as? Date
         
         self.init(itemID: raw.documentID, name: name, isInsufficient: isInsufficient, lastChange: lastChange)

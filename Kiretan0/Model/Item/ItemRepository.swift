@@ -34,6 +34,10 @@ public protocol ItemRepository {
     func removeItem(_ itemID: String, in teamID: String) -> Completable
 }
 
+public enum ItemRepositoryError: Error {
+    case invalidItem
+}
+
 public protocol ItemRepositoryResolver {
     func resolveItemRepository() -> ItemRepository
 }
@@ -70,6 +74,8 @@ public class DefaultItemRepository: ItemRepository {
     }
     
     public func createItem(_ item: Item, in teamID: String) -> Single<String> {
+        guard item.error == nil else { return Single.error(ItemRepositoryError.invalidItem) }
+        
         let itemPath = _dataStore.collection("team").document(teamID).collection("item").document()
         let itemID = itemPath.documentID
         return _dataStore.write { writer in
@@ -78,6 +84,8 @@ public class DefaultItemRepository: ItemRepository {
     }
     
     public func updateItem(_ item: Item, in teamID: String) -> Completable {
+        guard item.error == nil else { return Completable.error(ItemRepositoryError.invalidItem) }
+
         let itemPath = _dataStore.collection("team").document(teamID).collection("item").document(item.itemID)
         return _dataStore.write { writer in
             writer.updateDocumentData(self.updateLastChange(item.raw().data), at: itemPath)

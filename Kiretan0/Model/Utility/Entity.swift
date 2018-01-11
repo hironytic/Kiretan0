@@ -32,6 +32,4 @@ public struct RawEntity {
 
 public protocol Entity {
     init(raw: RawEntity) throws
-
-    func raw() -> RawEntity
 }
