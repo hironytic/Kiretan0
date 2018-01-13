@@ -50,8 +50,8 @@
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
+                                    <outlet property="checkImageView" destination="Ok4-dc-f5e" id="Rht-DB-XoR"/>
                                     <outlet property="nameLabel" destination="YaV-cJ-IaR" id="f7b-bm-5PF"/>
-                                    <outlet property="selectImageView" destination="Ok4-dc-f5e" id="JhD-lW-BQQ"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

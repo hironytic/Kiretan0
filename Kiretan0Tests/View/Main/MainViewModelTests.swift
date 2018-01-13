@@ -47,8 +47,8 @@ class MainViewModelTests: XCTestCase {
         init() {
         }
 
-        func resolveMainItemViewModel(name: Observable<String>, selected: Observable<Bool>) -> MainItemViewModel {
-            return DefaultMainItemViewModel(resolver: self, name: name, selected: selected)
+        func resolveMainItemViewModel(name: Observable<String>, isChecked: Observable<Bool>) -> MainItemViewModel {
+            return DefaultMainItemViewModel(resolver: self, name: name, isChecked: isChecked)
         }
         
         func resolveSettingViewModel() -> SettingViewModel {
@@ -438,7 +438,7 @@ class MainViewModelTests: XCTestCase {
         
         let expectSufficientSelectionToolbar = expectation(description: "sufficient selection toolbar")
         observer.reset(expectSufficientSelectionToolbar) { (toolbar: MainViewToolbar) in
-            return toolbar == .selection0
+            return toolbar == .checked0
         }
         
         // change segment to sufficient items
@@ -450,7 +450,7 @@ class MainViewModelTests: XCTestCase {
 
         let expectInsufficientSelectionToolbar = expectation(description: "insufficient selection toolbar")
         observer.reset(expectInsufficientSelectionToolbar) { (toolbar: MainViewToolbar) in
-            return toolbar == .selection1
+            return toolbar == .checked1
         }
 
         // change segment to insufficient items
@@ -620,7 +620,7 @@ class MainViewModelTests: XCTestCase {
         let checkedObserver = EventuallyFulfill(expectChecked) { (isChecked: Bool) in
             return isChecked
         }
-        item1.selected
+        item1.isChecked
             .bind(to: checkedObserver)
             .disposed(by: disposeBag)
 
@@ -661,7 +661,7 @@ class MainViewModelTests: XCTestCase {
         let checkedObserver = EventuallyFulfill(expectChecked) { (isChecked: Bool) in
             return isChecked
         }
-        item1.selected
+        item1.isChecked
             .bind(to: checkedObserver)
             .disposed(by: disposeBag)
         

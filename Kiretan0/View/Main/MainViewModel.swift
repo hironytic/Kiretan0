@@ -29,8 +29,8 @@ import RxCocoa
 
 public enum MainViewToolbar {
     case segment
-    case selection0
-    case selection1
+    case checked0
+    case checked1
 }
 
 public struct MainViewItemList {
@@ -88,13 +88,13 @@ public class DefaultMainViewModel: MainViewModel {
         var item: Item {
             didSet {
                 name.accept(ItemState.name(of: item))
-                if item.error != nil && isSelected.value {
-                    isSelected.accept(false)
+                if item.error != nil && isChecked.value {
+                    isChecked.accept(false)
                 }
             }
         }
         let name: BehaviorRelay<String>
-        let isSelected = BehaviorRelay<Bool>(value: false)
+        let isChecked = BehaviorRelay<Bool>(value: false)
 
         init(item: Item) {
             self.item = item
@@ -197,8 +197,8 @@ public class DefaultMainViewModel: MainViewModel {
                     states.insert(state, at: ix)
 
                     let name = state.name.distinctUntilChanged().asObservable()
-                    let selected = state.isSelected.asObservable()
-                    viewModels.insert(resolver.resolveMainItemViewModel(name: name, selected: selected), at: ix)
+                    let isChecked = state.isChecked.asObservable()
+                    viewModels.insert(resolver.resolveMainItemViewModel(name: name, isChecked: isChecked), at: ix)
                 }
                 var movings = [(ItemState, MainItemViewModel, Int)]()
                 for (oldIndex, newIndex) in change.modifications.sorted(by: { lhs, rhs in lhs.0 > rhs.0 }) {
@@ -220,7 +220,7 @@ public class DefaultMainViewModel: MainViewModel {
                 }
             case .select(let index):
                 if states[index].item.error == nil {
-                    states[index].isSelected.accept(!states[index].isSelected.value)
+                    states[index].isChecked.accept(!states[index].isChecked.value)
                 }
                 hint = .nothing
             }
@@ -309,11 +309,11 @@ public class DefaultMainViewModel: MainViewModel {
             return Observable
                 .combineLatest(itemListState, lastMainSegment)
                 .map { (itemListState, segmentSelectedIndex) in
-                    if itemListState.states.contains(where: { $0.isSelected.value }) {
+                    if itemListState.states.contains(where: { $0.isChecked.value }) {
                         if segmentSelectedIndex == 0 {
-                            return .selection0
+                            return .checked0
                         } else {
-                            return .selection1
+                            return .checked1
                         }
                     } else {
                         return .segment

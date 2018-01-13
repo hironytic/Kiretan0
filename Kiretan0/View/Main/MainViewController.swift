@@ -35,10 +35,10 @@ public class MainViewController: UITableViewController, Displayable {
     private var _itemListMessageLabel: UILabel!
     private var _settingBarButtonItem: UIBarButtonItem!
     private var _segment: UISegmentedControl!
-    private var _addBarButonItem: UIBarButtonItem!
-    private var _segmentItems: [UIBarButtonItem] = []
-    private var _selectionToolbarItems0: [UIBarButtonItem] = []
-    private var _selectionToolbarItems1: [UIBarButtonItem] = []
+    private var _addBarButtonItem: UIBarButtonItem!
+    private var _segmentToolbarItems: [UIBarButtonItem] = []
+    private var _checkedToolbarItems0: [UIBarButtonItem] = []
+    private var _checkedToolbarItems1: [UIBarButtonItem] = []
     private var _deselectAllBarButtonItem: UIBarButtonItem!
     private var _makeInsufficientBarButtonItem: UIBarButtonItem!
     private var _makeSufficientBarButtonItem: UIBarButtonItem!
@@ -69,31 +69,31 @@ public class MainViewController: UITableViewController, Displayable {
         _segment.setContentPositionAdjustment(UIOffset.zero, forSegmentType: .any, barMetrics: .compact)
         
         _settingBarButtonItem = UIBarButtonItem(image: R.Image.setting.image(), style:.plain , target: nil, action: nil)
-        _addBarButonItem = UIBarButtonItem(barButtonSystemItem: .add , target: nil, action: nil)
+        _addBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add , target: nil, action: nil)
         
-        _segmentItems = [
+        _segmentToolbarItems = [
             _settingBarButtonItem,
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
             UIBarButtonItem(customView: _segment),
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-            _addBarButonItem,
+            _addBarButtonItem,
         ]
         
         _deselectAllBarButtonItem = UIBarButtonItem(title: R.String.deselectAll.localized(), style: .plain, target: nil, action: nil)
         _makeInsufficientBarButtonItem = UIBarButtonItem(title: R.String.makeInsufficient.localized(), style: .plain, target: nil, action: nil)
         _makeSufficientBarButtonItem = UIBarButtonItem(title: R.String.makeSufficient.localized(), style: .plain, target: nil, action: nil)
-        _selectionToolbarItems0 = [
+        _checkedToolbarItems0 = [
             _deselectAllBarButtonItem,
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
             _makeInsufficientBarButtonItem
         ]
-        _selectionToolbarItems1 = [
+        _checkedToolbarItems1 = [
             _deselectAllBarButtonItem,
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
             _makeSufficientBarButtonItem
         ]
         
-        toolbarItems = _segmentItems
+        toolbarItems = _segmentToolbarItems
         
         bindViewModel()
     }
@@ -130,15 +130,18 @@ public class MainViewController: UITableViewController, Displayable {
             .bind(to: _itemListMessageLabel.rx.isHidden)
             .disposed(by: disposeBag)
         
+        let segmentToolbarItems = _segmentToolbarItems
+        let checkedToolbarItems0 = _checkedToolbarItems0
+        let checkedToolbarItems1 = _checkedToolbarItems1
         viewModel.mainViewToolbar
             .map { toolbar in
                 switch toolbar {
                 case .segment:
-                    return self._segmentItems
-                case .selection0:
-                    return self._selectionToolbarItems0
-                case .selection1:
-                    return self._selectionToolbarItems1
+                    return segmentToolbarItems
+                case .checked0:
+                    return checkedToolbarItems0
+                case .checked1:
+                    return checkedToolbarItems1
                 }
             }
             .bind(onNext: { items in
@@ -158,7 +161,7 @@ public class MainViewController: UITableViewController, Displayable {
             .bind(to: viewModel.onSegmentSelectedIndexChange)
             .disposed(by: disposeBag)
         
-        _addBarButonItem.rx.tap
+        _addBarButtonItem.rx.tap
             .bind(to: viewModel.onAdd)
             .disposed(by: disposeBag)
 

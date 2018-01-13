@@ -29,20 +29,20 @@ import RxCocoa
 
 public protocol MainItemViewModel: ViewModel {
     var name: Observable<String> { get }
-    var selected: Observable<Bool> { get }
+    var isChecked: Observable<Bool> { get }
 }
 
 public protocol MainItemViewModelResolver {
     func resolveMainItemViewModel(name: Observable<String>,
-                                  selected: Observable<Bool>) -> MainItemViewModel
+                                  isChecked: Observable<Bool>) -> MainItemViewModel
 }
 
 extension DefaultResolver: MainItemViewModelResolver {
     public func resolveMainItemViewModel(name: Observable<String>,
-                                         selected: Observable<Bool>) -> MainItemViewModel {
+                                         isChecked: Observable<Bool>) -> MainItemViewModel {
         return DefaultMainItemViewModel(resolver: self,
                                         name: name,
-                                        selected: selected)
+                                        isChecked: isChecked)
     }
 }
 
@@ -50,10 +50,10 @@ public class DefaultMainItemViewModel: MainItemViewModel {
     public typealias Resolver = NullResolver
 
     public let name: Observable<String>
-    public let selected: Observable<Bool>
+    public let isChecked: Observable<Bool>
     
-    public init(resolver: Resolver, name: Observable<String>, selected: Observable<Bool>) {
+    public init(resolver: Resolver, name: Observable<String>, isChecked: Observable<Bool>) {
         self.name = name
-        self.selected = selected
+        self.isChecked = isChecked
     }
 }

@@ -30,7 +30,7 @@ import RxCocoa
 public class MainItemCell: UITableViewCell {
     private var _disposeBag: DisposeBag?
     
-    @IBOutlet weak var selectImageView: UIImageView!
+    @IBOutlet weak var checkImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     
     public var viewModel: MainItemViewModel? {
@@ -44,9 +44,9 @@ public class MainItemCell: UITableViewCell {
                 .bind(to: nameLabel.rx.text)
                 .disposed(by: disposeBag)
 
-            viewModel.selected
+            viewModel.isChecked
                 .map { value -> UIImage? in value ? R.Image.checked.image() : R.Image.unchecked.image() }
-                .bind(to: selectImageView.rx.image)
+                .bind(to: checkImageView.rx.image)
                 .disposed(by: disposeBag)
             
             _disposeBag = disposeBag
