@@ -168,6 +168,14 @@ public class MainViewController: UITableViewController, Displayable {
         _uncheckAllBarButtonItem.rx.tap
             .bind(to: viewModel.onUncheckAllItems)
             .disposed(by: disposeBag)
+        
+        _makeInsufficientBarButtonItem.rx.tap
+            .bind(to: viewModel.onMakeInsufficient)
+            .disposed(by: disposeBag)
+        
+        _makeSufficientBarButtonItem.rx.tap
+            .bind(to: viewModel.onMakeSufficient)
+            .disposed(by: disposeBag)
 
         let table = tableView
         tableView.rx.itemSelected

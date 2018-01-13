@@ -52,6 +52,8 @@ public protocol MainViewModel: ViewModel {
     var onItemSelected: AnyObserver<IndexPath> { get }
     var onAdd: AnyObserver<Void> { get }
     var onUncheckAllItems: AnyObserver<Void> { get }
+    var onMakeInsufficient: AnyObserver<Void> { get }
+    var onMakeSufficient: AnyObserver<Void> { get }
 }
 
 public protocol MainViewModelResolver {
@@ -83,6 +85,8 @@ public class DefaultMainViewModel: MainViewModel {
     public let onItemSelected: AnyObserver<IndexPath>
     public let onAdd: AnyObserver<Void>
     public let onUncheckAllItems: AnyObserver<Void>
+    public let onMakeInsufficient: AnyObserver<Void>
+    public let onMakeSufficient: AnyObserver<Void>
 
     private let disposeBag: DisposeBag
 
@@ -142,6 +146,7 @@ public class DefaultMainViewModel: MainViewModel {
             let onAdd = PublishSubject<Void>()
             let onAddItem = PublishSubject<(String, Bool)>()
             let onUncheckAllItems = PublishSubject<Void>()
+            let onChangeInsufficiency = PublishSubject<Bool>()
         }
         let subject = Subject()
         
@@ -357,8 +362,29 @@ public class DefaultMainViewModel: MainViewModel {
                 .disposed(by: disposeBag)
         }
         
+        func handleMakeInsufficient() {
+            subject.onChangeInsufficiency
+                .withLatestFrom(itemListState) { ($0, $1) }
+                .subscribe(onNext: { (isInsufficient, ils) in
+                    let targetItems = ils.states
+                        .filter { $0.isChecked.value }
+                        .map { $0.item }
+                    let completables = targetItems
+                        .map { item -> Completable in
+                            var item = item
+                            item.isInsufficient = isInsufficient
+                            return itemRepository.updateItem(item, in: TEAM_ID)
+                        }
+                    Completable.merge(completables)
+                        .subscribe(onCompleted: { }, onError: { _ in }) // TODO: handle error!
+                        .disposed(by: disposeBag)
+                })
+                .disposed(by: disposeBag)
+        }
+        
         handleSegmentSelectedIndexChange()
         handleAddItem()
+        handleMakeInsufficient()
         
         // initialize stored properties
         title = createTitle()
@@ -371,9 +397,11 @@ public class DefaultMainViewModel: MainViewModel {
 
         onSetting = subject.onSetting.asObserver()
         onSegmentSelectedIndexChange = subject.onSegmentSelectedIndexChange.asObserver()
-        onItemSelected = subject.onItemSelected.asObserver().mapObserver{ $0.row }
+        onItemSelected = subject.onItemSelected.asObserver().mapObserver { $0.row }
         onAdd = subject.onAdd.asObserver()
         onUncheckAllItems = subject.onUncheckAllItems.asObserver()
+        onMakeInsufficient = subject.onChangeInsufficiency.asObserver().mapObserver { true }
+        onMakeSufficient = subject.onChangeInsufficiency.asObserver().mapObserver { false }
         
         self.disposeBag = disposeBag
     }
