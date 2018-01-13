@@ -28,7 +28,7 @@ import Foundation
 public enum TableViewUpdateHint {
     case whole
     case partial(Difference)
-    case nothing
+    case none
     
     public struct Difference {
         public let deletedRows: [IndexPath]

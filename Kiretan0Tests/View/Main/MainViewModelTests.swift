@@ -470,6 +470,53 @@ class MainViewModelTests: XCTestCase {
         wait(for: [expectSegmentToolbarAgain], timeout: 3.0)
     }
     
+    func testUncheckAllItems() {
+        resolver.itemRepository.mock.items.setup { (teamID, insufficient) in
+            return Observable.just(CollectionChange(result: [
+                Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
+                Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
+                Item(itemID: "item2", name: "Item 2", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 11, 20, 3, 40, 50)),
+                Item(itemID: "item3", name: "Item 3", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 12, 31, 20, 11, 22)),
+                ], deletions: [], insertions: [0, 1, 2, 3], modifications: []))
+        }
+        
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        let expectNoItemsAreChecked = expectation(description: "No items are checked")
+        let observer = EventuallyFulfill(expectNoItemsAreChecked) { (checkList: [Bool]) in
+            guard checkList.count == 4 else { return false }
+            return !checkList.contains(true)
+        }
+
+        viewModel.itemList
+            .flatMapLatest { itemList -> Observable<[Bool]> in
+                let isCheckedList = itemList.viewModels.map { $0.isChecked }
+                return Observable.combineLatest(isCheckedList) { $0 }
+            }
+            .bind(to: observer)
+            .disposed(by: disposeBag)
+        
+        wait(for: [expectNoItemsAreChecked], timeout: 3.0)
+
+        // select row 0 and row 2
+        let expectTwoItemsAreChecked = expectation(description: "Row 0 and row 2 are checked")
+        observer.reset(expectTwoItemsAreChecked) { (checkList: [Bool]) in
+            guard checkList.count == 4 else { return false }
+            return checkList[0] && !checkList[1] && checkList[2] && !checkList[3]
+        }
+        viewModel.onItemSelected.onNext(IndexPath(row: 0, section: 0))
+        viewModel.onItemSelected.onNext(IndexPath(row: 2, section: 0))
+        wait(for: [expectTwoItemsAreChecked], timeout: 3.0)
+        
+        // uncheck all
+        let expectNoItemsAreCheckedAnymore = expectation(description: "No items are checked anymore")
+        observer.reset(expectNoItemsAreCheckedAnymore) { (checkList: [Bool]) in
+            guard checkList.count == 4 else { return false }
+            return !checkList.contains(true)
+        }
+        viewModel.onUncheckAllItems.onNext(())
+        wait(for: [expectNoItemsAreCheckedAnymore], timeout: 3.0)
+    }
+    
     // MARK: - error handling scinarios
     
     func testItemListError() {

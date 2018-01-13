@@ -39,7 +39,7 @@ public class MainViewController: UITableViewController, Displayable {
     private var _segmentToolbarItems: [UIBarButtonItem] = []
     private var _checkedToolbarItems0: [UIBarButtonItem] = []
     private var _checkedToolbarItems1: [UIBarButtonItem] = []
-    private var _deselectAllBarButtonItem: UIBarButtonItem!
+    private var _uncheckAllBarButtonItem: UIBarButtonItem!
     private var _makeInsufficientBarButtonItem: UIBarButtonItem!
     private var _makeSufficientBarButtonItem: UIBarButtonItem!
     private var _disposeBag: DisposeBag?
@@ -79,16 +79,16 @@ public class MainViewController: UITableViewController, Displayable {
             _addBarButtonItem,
         ]
         
-        _deselectAllBarButtonItem = UIBarButtonItem(title: R.String.deselectAll.localized(), style: .plain, target: nil, action: nil)
+        _uncheckAllBarButtonItem = UIBarButtonItem(title: R.String.deselectAll.localized(), style: .plain, target: nil, action: nil)
         _makeInsufficientBarButtonItem = UIBarButtonItem(title: R.String.makeInsufficient.localized(), style: .plain, target: nil, action: nil)
         _makeSufficientBarButtonItem = UIBarButtonItem(title: R.String.makeSufficient.localized(), style: .plain, target: nil, action: nil)
         _checkedToolbarItems0 = [
-            _deselectAllBarButtonItem,
+            _uncheckAllBarButtonItem,
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
             _makeInsufficientBarButtonItem
         ]
         _checkedToolbarItems1 = [
-            _deselectAllBarButtonItem,
+            _uncheckAllBarButtonItem,
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
             _makeSufficientBarButtonItem
         ]
@@ -164,6 +164,10 @@ public class MainViewController: UITableViewController, Displayable {
         _addBarButtonItem.rx.tap
             .bind(to: viewModel.onAdd)
             .disposed(by: disposeBag)
+        
+        _uncheckAllBarButtonItem.rx.tap
+            .bind(to: viewModel.onUncheckAllItems)
+            .disposed(by: disposeBag)
 
         let table = tableView
         tableView.rx.itemSelected
@@ -219,7 +223,7 @@ extension MainViewDataSource: RxTableViewDataSourceType {
                 for (old, new) in diff.movedRows {
                     tableView.moveRow(at: old, to: new)
                 }
-            case .nothing:
+            case .none:
                 break
             }
         }

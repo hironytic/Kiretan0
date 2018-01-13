@@ -51,6 +51,7 @@ public protocol MainViewModel: ViewModel {
     var onSegmentSelectedIndexChange: AnyObserver<Int> { get }
     var onItemSelected: AnyObserver<IndexPath> { get }
     var onAdd: AnyObserver<Void> { get }
+    var onUncheckAllItems: AnyObserver<Void> { get }
 }
 
 public protocol MainViewModelResolver {
@@ -81,6 +82,7 @@ public class DefaultMainViewModel: MainViewModel {
     public let onSegmentSelectedIndexChange: AnyObserver<Int>
     public let onItemSelected: AnyObserver<IndexPath>
     public let onAdd: AnyObserver<Void>
+    public let onUncheckAllItems: AnyObserver<Void>
 
     private let disposeBag: DisposeBag
 
@@ -127,6 +129,7 @@ public class DefaultMainViewModel: MainViewModel {
     private enum ItemStateAction {
         case change(CollectionChange<Item>)
         case select(Int)
+        case uncheckAll
     }
 
     public init(resolver: Resolver) {
@@ -138,6 +141,7 @@ public class DefaultMainViewModel: MainViewModel {
             let onSetting = PublishSubject<Void>()
             let onAdd = PublishSubject<Void>()
             let onAddItem = PublishSubject<(String, Bool)>()
+            let onUncheckAllItems = PublishSubject<Void>()
         }
         let subject = Subject()
         
@@ -173,6 +177,7 @@ public class DefaultMainViewModel: MainViewModel {
                         .merge([
                             items.map { ItemStateAction.change($0) },
                             subject.onItemSelected.map { ItemStateAction.select($0) },
+                            subject.onUncheckAllItems.map { ItemStateAction.uncheckAll },
                         ])
                         .scan(initialState, accumulator: itemListStateReducer)
                         .catchError { Observable.just(ItemListState(states: [], viewModels: [], hint: .whole, error: $0)) }
@@ -222,7 +227,15 @@ public class DefaultMainViewModel: MainViewModel {
                 if states[index].item.error == nil {
                     states[index].isChecked.accept(!states[index].isChecked.value)
                 }
-                hint = .nothing
+                hint = .none
+            
+            case .uncheckAll:
+                for s in states {
+                    if s.isChecked.value {
+                        s.isChecked.accept(false)
+                    }
+                }
+                hint = .none
             }
 
             return ItemListState(states: states, viewModels: viewModels, hint: hint)
@@ -360,6 +373,7 @@ public class DefaultMainViewModel: MainViewModel {
         onSegmentSelectedIndexChange = subject.onSegmentSelectedIndexChange.asObserver()
         onItemSelected = subject.onItemSelected.asObserver().mapObserver{ $0.row }
         onAdd = subject.onAdd.asObserver()
+        onUncheckAllItems = subject.onUncheckAllItems.asObserver()
         
         self.disposeBag = disposeBag
     }
