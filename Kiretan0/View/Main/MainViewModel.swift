@@ -66,7 +66,7 @@ extension DefaultResolver: MainViewModelResolver {
     }
 }
 
-private let TEAM_ID = "TEST_TEAM_ID"
+private let TEAM_ID = Config.bundled.teamID
 
 public class DefaultMainViewModel: MainViewModel {
     public typealias Resolver = MainItemViewModelResolver & TextInputViewModelResolver & SettingViewModelResolver &

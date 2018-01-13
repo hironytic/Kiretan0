@@ -27,3 +27,6 @@ Pods/
 
 # Firebase configuration
 GoogleService-Info.plist
+
+# App configuration
+Config.plist

@@ -27,6 +27,8 @@ import XCTest
 import RxSwift
 @testable import Kiretan0
 
+private let TEAM_ID = Config.bundled.teamID
+
 class MainViewModelTests: XCTestCase {
     var disposeBag: DisposeBag!
     var resolver: MockResolver!
@@ -80,8 +82,8 @@ class MainViewModelTests: XCTestCase {
         resolver = MockResolver()
         
         resolver.teamRepository.mock.team.setup { teamID in
-            XCTAssertEqual(teamID, "TEST_TEAM_ID")
-            return Observable.just(Team(teamID: "TEST_TEAM_ID", name: "My Team"))
+            XCTAssertEqual(teamID, TEAM_ID)
+            return Observable.just(Team(teamID: TEAM_ID, name: "My Team"))
         }
         
         let segment = BehaviorSubject(value: 0)
@@ -91,7 +93,7 @@ class MainViewModelTests: XCTestCase {
         }
         
         resolver.itemRepository.mock.items.setup { (teamID, insufficient) in
-            XCTAssertEqual(teamID, "TEST_TEAM_ID")
+            XCTAssertEqual(teamID, TEAM_ID)
             return Observable.just(CollectionChange(result: [], deletions: [], insertions: [], modifications: []))
         }
     }
@@ -146,7 +148,7 @@ class MainViewModelTests: XCTestCase {
     
     func testInitialItemList() {
         resolver.itemRepository.mock.items.setup { (teamID, insufficient) in
-            XCTAssertEqual(teamID, "TEST_TEAM_ID")
+            XCTAssertEqual(teamID, TEAM_ID)
             XCTAssertEqual(insufficient, false)
             
             return Observable.just(CollectionChange(result: [

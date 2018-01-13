@@ -76,6 +76,8 @@
 		50BB548C1FA21305002E4443 /* R+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BB548B1FA21305002E4443 /* R+String.swift */; };
 		50BB548E1FA216D7002E4443 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 50BB548D1FA216D7002E4443 /* Localizable.strings */; };
 		50D0272920033822004A0C44 /* TableViewUpdateHint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D0272820033822004A0C44 /* TableViewUpdateHint.swift */; };
+		50D0272D2009EB40004A0C44 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D0272C2009EB40004A0C44 /* Config.swift */; };
+		50D0272F2009EED1004A0C44 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 50D0272E2009EED1004A0C44 /* Config.plist */; };
 		50D138081F98CE4D0064B293 /* ItemRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D138071F98CE4D0064B293 /* ItemRepositoryTests.swift */; };
 		50D1380E1F9B12EE0064B293 /* TeamRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D1380D1F9B12EE0064B293 /* TeamRepositoryTests.swift */; };
 		50D138101F9B13700064B293 /* TestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D1380F1F9B13700064B293 /* TestUtils.swift */; };
@@ -167,6 +169,8 @@
 		50BB548B1FA21305002E4443 /* R+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "R+String.swift"; sourceTree = "<group>"; };
 		50BB548D1FA216D7002E4443 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		50D0272820033822004A0C44 /* TableViewUpdateHint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewUpdateHint.swift; sourceTree = "<group>"; };
+		50D0272C2009EB40004A0C44 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		50D0272E2009EED1004A0C44 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 		50D138071F98CE4D0064B293 /* ItemRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRepositoryTests.swift; sourceTree = "<group>"; };
 		50D1380D1F9B12EE0064B293 /* TeamRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamRepositoryTests.swift; sourceTree = "<group>"; };
 		50D1380F1F9B13700064B293 /* TestUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestUtils.swift; sourceTree = "<group>"; };
@@ -295,10 +299,12 @@
 				505263A21F4EF7F300113180 /* AppFramework */,
 				5052637E1F4B02EE00113180 /* AppDelegate.swift */,
 				505263A41F4EF7F300113180 /* DefaultResolver.swift */,
+				50D0272C2009EB40004A0C44 /* Config.swift */,
 				505263851F4B02EE00113180 /* Assets.xcassets */,
 				505263871F4B02EE00113180 /* LaunchScreen.storyboard */,
 				5052638A1F4B02EE00113180 /* Info.plist */,
 				505263A01F4B155900113180 /* GoogleService-Info.plist */,
+				50D0272E2009EED1004A0C44 /* Config.plist */,
 			);
 			path = Kiretan0;
 			sourceTree = "<group>";
@@ -688,6 +694,7 @@
 				505263C71F4F14A300113180 /* Welcome.storyboard in Resources */,
 				505263891F4B02EE00113180 /* LaunchScreen.storyboard in Resources */,
 				50BB548E1FA216D7002E4443 /* Localizable.strings in Resources */,
+				50D0272F2009EED1004A0C44 /* Config.plist in Resources */,
 				505263A11F4B155900113180 /* GoogleService-Info.plist in Resources */,
 				505263861F4B02EE00113180 /* Assets.xcassets in Resources */,
 				5082DBF11FA2F43A00D17710 /* Images.xcassets in Resources */,
@@ -880,6 +887,7 @@
 				5097209E1F7737C200C623A5 /* MemberTeam.swift in Sources */,
 				5086F1A41FEB202A0024A3B8 /* CheckableTableCell.swift in Sources */,
 				5086F19E1FEA94AD0024A3B8 /* DisclosureTableCellViewModel.swift in Sources */,
+				50D0272D2009EB40004A0C44 /* Config.swift in Sources */,
 				5097209A1F7726AA00C623A5 /* Team.swift in Sources */,
 				50B3951B1F8597B300355F89 /* CollectionChange.swift in Sources */,
 				509720A01F77383B00C623A5 /* TeamRepository.swift in Sources */,
