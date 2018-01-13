@@ -341,50 +341,44 @@ public class DefaultMainViewModel: MainViewModel {
                 .observeOn(MainScheduler.instance)
         }
         
-        func handleSegmentSelectedIndexChange() {
-            subject.onSegmentSelectedIndexChange
-                .subscribe(onNext: { index in
+        func handleSegmentSelectedIndexChange() -> Observable<Void> {
+            return subject.onSegmentSelectedIndexChange
+                .map { index in
                     guard index >= 0 else { return }
                     
                     mainUserDefaultsRepository.setLastMainSegment(index)
-                })
-                .disposed(by: disposeBag)
+                }
         }
         
-        func handleAddItem() {
-            subject.onAddItem
-                .subscribe(onNext: { (name, isInsufficient) in
+        func handleAddItem() -> Observable<String> {
+            return subject.onAddItem
+                .flatMapLatest { (name, isInsufficient) -> Observable<String> in
                     let newItem = Item(name: name, isInsufficient: isInsufficient)
-                    itemRepository.createItem(newItem, in: TEAM_ID)
-                        .subscribe(onSuccess: { _ in }, onError: { _ in })  // TODO: handle error!
-                        .disposed(by: disposeBag)
-                })
-                .disposed(by: disposeBag)
+                    return itemRepository.createItem(newItem, in: TEAM_ID).asObservable()
+                }
+            // TODO: handle error case
         }
         
-        func handleMakeInsufficient() {
-            subject.onChangeInsufficiency
+        func handleMakeInsufficient() -> Observable<Void> {
+            return subject.onChangeInsufficiency
                 .withLatestFrom(itemListState) { ($0, $1) }
-                .subscribe(onNext: { (isInsufficient, ils) in
-                    let targetItems = ils.states
+                .flatMapLatest { (isInsufficient, ils) -> Observable<Void> in
+                    let completables = ils.states
                         .filter { $0.isChecked.value }
-                        .map { $0.item }
-                    let completables = targetItems
-                        .map { item -> Completable in
-                            var item = item
+                        .map { state -> Completable in
+                            var item = state.item
                             item.isInsufficient = isInsufficient
                             return itemRepository.updateItem(item, in: TEAM_ID)
                         }
-                    Completable.merge(completables)
-                        .subscribe(onCompleted: { }, onError: { _ in }) // TODO: handle error!
-                        .disposed(by: disposeBag)
-                })
-                .disposed(by: disposeBag)
+                    return Completable.merge(completables)
+                        .andThen(Observable<Void>.just(()))
+                    // TODO: handle each error case
+                }
         }
         
-        handleSegmentSelectedIndexChange()
-        handleAddItem()
-        handleMakeInsufficient()
+        handleSegmentSelectedIndexChange().publish().connect().disposed(by: disposeBag)
+        handleAddItem().publish().connect().disposed(by: disposeBag)
+        handleMakeInsufficient().publish().connect().disposed(by: disposeBag)
         
         // initialize stored properties
         title = createTitle()
