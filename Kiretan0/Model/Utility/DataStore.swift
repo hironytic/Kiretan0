@@ -124,17 +124,16 @@ public class DefaultDataStore: DataStore {
         }
     }
 
-    private class IndexChange: Hashable {
-        var hashValue: Int = 0
-        static func ==(lhs: DefaultDataStore.IndexChange, rhs: DefaultDataStore.IndexChange) -> Bool {
-            return lhs === rhs
+    private class ChangeTarget: Hashable {
+        var prevIndex: Int = NSNotFound
+        let currentIndex: Int
+        init(currentIndex: Int = NSNotFound) {
+            self.currentIndex = currentIndex
         }
-        
-        var oldIndex: Int
-        let newIndex: Int
-        init(oldIndex: Int = NSNotFound, newIndex: Int = NSNotFound) {
-            self.oldIndex = oldIndex
-            self.newIndex = newIndex
+
+        var hashValue: Int { return 0 }
+        static func ==(lhs: ChangeTarget, rhs: ChangeTarget) -> Bool {
+            return lhs === rhs
         }
     }
     
@@ -148,38 +147,37 @@ public class DefaultDataStore: DataStore {
                         let qSnapshot = querySnapshot!
                         let result = try qSnapshot.documents.map { try E.init(raw: RawEntity(documentID: $0.documentID, data: $0.data())) }
 
-                        var operatedIndices = Set<IndexChange>()
-                        var indices = [IndexChange]()
-                        for i in 0 ..< result.count {
-                            indices.append(IndexChange(newIndex: i))
-                        }
+                        // simulate targets location by applying changes in reverse order
+                        // so that we get original indices in previous snapshot
+                        var targets = Set<ChangeTarget>()
+                        var collection = result.enumerated().map { ChangeTarget(currentIndex: $0.0) }
                         for change in qSnapshot.documentChanges.reversed() {
-                            let ic: IndexChange
+                            let ct: ChangeTarget
                             switch change.type {
                             case .added:
                                 let nx = Int(change.newIndex)
-                                ic = indices.remove(at: nx)
+                                ct = collection.remove(at: nx)
                                 
                             case .removed:
                                 let ox = Int(change.oldIndex)
-                                ic = IndexChange()
-                                indices.insert(ic, at: ox)
+                                ct = ChangeTarget()
+                                collection.insert(ct, at: ox)
                                 
                             case .modified:
                                 let nx = Int(change.newIndex)
                                 let ox = Int(change.oldIndex)
-                                ic = indices.remove(at: nx)
-                                indices.insert(ic, at: ox)
+                                ct = collection.remove(at: nx)
+                                collection.insert(ct, at: ox)
                             }
-                            operatedIndices.insert(ic)
+                            targets.insert(ct)
                         }
-                        for i in 0 ..< indices.count {
-                            indices[i].oldIndex = i
+                        for (i, target) in collection.enumerated() {
+                            target.prevIndex = i
                         }
                         
-                        let deletions = operatedIndices.filter { $0.oldIndex != NSNotFound && $0.newIndex == NSNotFound }.map { $0.oldIndex }.sorted()
-                        let modifications = operatedIndices.filter { $0.oldIndex != NSNotFound && $0.newIndex != NSNotFound }.map { ($0.oldIndex, $0.newIndex) }.sorted(by: { $0.0 < $1.0 })
-                        let insertions = operatedIndices.filter { $0.oldIndex == NSNotFound && $0.newIndex != NSNotFound }.map { $0.newIndex }.sorted()
+                        let deletions = targets.filter { $0.prevIndex != NSNotFound && $0.currentIndex == NSNotFound }.map { $0.prevIndex }.sorted()
+                        let modifications = targets.filter { $0.prevIndex != NSNotFound && $0.currentIndex != NSNotFound }.map { ($0.prevIndex, $0.currentIndex) }.sorted { $0.0 < $1.0 }
+                        let insertions = targets.filter { $0.prevIndex == NSNotFound && $0.currentIndex != NSNotFound }.map { $0.currentIndex }.sorted()
                         observer.onNext(CollectionChange(result: result, deletions: deletions, insertions: insertions, modifications: modifications))
                     } catch let error {
                         observer.onError(error)
