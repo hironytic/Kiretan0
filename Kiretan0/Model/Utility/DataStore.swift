@@ -131,7 +131,7 @@ public class DefaultDataStore: DataStore {
             self.currentIndex = currentIndex
         }
 
-        var hashValue: Int { return 0 }
+        var hashValue: Int { return currentIndex }
         static func ==(lhs: ChangeTarget, rhs: ChangeTarget) -> Bool {
             return lhs === rhs
         }
