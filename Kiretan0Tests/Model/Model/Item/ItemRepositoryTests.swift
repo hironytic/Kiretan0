@@ -29,60 +29,65 @@ import RxSwift
 
 class ItemRepositoryTests: XCTestCase {
     var disposeBag: DisposeBag!
-    var itemRepository: ItemRepository!
+    var resolver: MockResolver!
+
+    class MockResolver: DefaultItemRepository.Resolver {
+        let dataStore = MockDataStore()
+        func resolveDataStore() -> DataStore {
+            return dataStore
+        }
+    }
 
     override func setUp() {
         super.setUp()
-        
-        let dataStore = MockDataStore(initialCollections: [
-            "/team/aaa/item": [
-                "item_aaa_1": [
-                    "name": "Item 1",
-                    "insufficient": false,
-                    "last_change": TestUtils.makeDate(2017, 7, 10, 17, 00, 00)
-                ],
-                "item_aaa_2": [
-                    "name": "Item 2",
-                    "insufficient": false,
-                    "last_change": TestUtils.makeDate(2017, 7, 12, 10, 00, 00)
-                ],
-                "item_aaa_3": [
-                    "name": "Item 3",
-                    "insufficient": true,
-                    "last_change": TestUtils.makeDate(2017, 7, 08, 14, 20, 30)
-                ],
-            ],
-            "/team/bbb_item": [
-                "item_bbb_1": [
-                    "name": "Item 1",
-                    "insufficient": false,
-                    "last_change": TestUtils.makeDate(2018, 1, 10, 3, 00, 00)
-                ]
-            ]
-        ])
+        continueAfterFailure = false
         
         disposeBag = DisposeBag()
-        
-        class MockResolver: DefaultItemRepository.Resolver {
-            let dataStore: DataStore
-            init(dataStore: DataStore) {
-                self.dataStore = dataStore
-            }
-            func resolveDataStore() -> DataStore {
-                return dataStore
-            }
-        }
-        itemRepository = DefaultItemRepository(resolver: MockResolver(dataStore: dataStore))
+        resolver = MockResolver()
     }
     
     override func tearDown() {
         disposeBag = nil
-        itemRepository = nil
+        resolver = nil
         
         super.tearDown()
     }
     
+    func setupMockWrite(writer: DocumentWriter) {
+        resolver.dataStore.mock.write.setup { (block) -> Completable in
+            return Completable.create { observer in
+                do {
+                    try block(writer)
+                    observer(.completed)
+                } catch let error {
+                    observer(.error(error))
+                }
+                return Disposables.create()
+            }
+        }
+    }
+    
     func testSufficientItems() {
+        let observeCollectionForItem = MockFunction<(DataStoreQuery) -> Observable<CollectionChange<Item>>>("observeCollection for Item")
+        observeCollectionForItem.setup { (query) -> Observable<CollectionChange<Item>> in
+            let mockQuery = query as! MockDataStoreQuery
+            XCTAssertEqual(mockQuery.path, "/team/aaa/item?insufficient=={false}@last_change:desc")
+            
+            let change = CollectionChange(
+                result: [
+                    Item(itemID: "item_aaa_2", name: "Item 2", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 12, 10, 00, 00)),
+                    Item(itemID: "item_aaa_1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
+                ],
+                deletions: [],
+                insertions: [0, 1],
+                modifications: []
+            )
+            return Observable.just(change).concat(Observable.never())
+        }
+        resolver.dataStore.mock.observeCollection.install(observeCollectionForItem)
+        
+        let itemRepository = DefaultItemRepository(resolver: resolver)
+
         var item0Opt: Item?
         let exp = expectation(description: "Two items are retrieved")
         let observer = EventuallyFulfill(exp) { (change: CollectionChange<Item>) in
@@ -93,7 +98,7 @@ class ItemRepositoryTests: XCTestCase {
             item0Opt = change.result[0]
             return true
         }
-        
+
         itemRepository.items(in: "aaa", insufficient: false)
             .bind(to: observer)
             .disposed(by: disposeBag)
@@ -107,6 +112,25 @@ class ItemRepositoryTests: XCTestCase {
     }
     
     func testInsufficientItems() {
+        let observeCollectionForItem = MockFunction<(DataStoreQuery) -> Observable<CollectionChange<Item>>>("observeCollection for Item")
+        observeCollectionForItem.setup { (query) -> Observable<CollectionChange<Item>> in
+            let mockQuery = query as! MockDataStoreQuery
+            XCTAssertEqual(mockQuery.path, "/team/aaa/item?insufficient=={true}@last_change:desc")
+            
+            let change = CollectionChange(
+                result: [
+                    Item(itemID: "item_aaa_3", name: "Item 3", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 7, 08, 14, 20, 30)),
+                ],
+                deletions: [],
+                insertions: [0],
+                modifications: []
+            )
+            return Observable.just(change).concat(Observable.never())
+        }
+        resolver.dataStore.mock.observeCollection.install(observeCollectionForItem)
+
+        let itemRepository = DefaultItemRepository(resolver: resolver)
+
         var item0Opt: Item?
         let exp = expectation(description: "One item is retrieved")
         let observer = EventuallyFulfill(exp) { (change: CollectionChange<Item>) in
@@ -131,13 +155,29 @@ class ItemRepositoryTests: XCTestCase {
     
     func testCreateItem() {
         var newItemID: String = ""
-        
+        var isTeamCreated = false
+
+        let writer = MockDocumentWriter()
+        writer.mock.setDocumentData.setup { (data, documentPath) in
+            newItemID = documentPath.documentID
+            let mockDocumentPath = documentPath as! MockDocumentPath
+            XCTAssertEqual(mockDocumentPath.path, "/team/aaa/item/\(newItemID)")
+
+            isTeamCreated = true
+            XCTAssertEqual(data["name"] as? String, "newItem")
+            XCTAssertEqual(data["insufficient"] as? Bool, false)
+            XCTAssertEqual(data["last_change"] as? MockDataStorePlaceholder, .serverTimestampPlaceholder)
+        }
+        setupMockWrite(writer: writer)
+
+        let itemRepository = DefaultItemRepository(resolver: resolver)
+
         let expectSuccess = expectation(description: "createItem should succeed")
         let item = Item(name: "newItem", isInsufficient: false)
         itemRepository
             .createItem(item, in: "aaa")
             .subscribe(onSuccess: { itemID in
-                newItemID = itemID
+                XCTAssertEqual(itemID, newItemID)
                 expectSuccess.fulfill()
             }, onError: { error in
                 XCTFail("error: \(error)")
@@ -145,32 +185,25 @@ class ItemRepositoryTests: XCTestCase {
             .disposed(by: disposeBag)
 
         wait(for: [expectSuccess], timeout: 3.0)
-
-        var newItemOpt: Item?
-        let expectNewItem = expectation(description: "New item should exist")
-        let observer = EventuallyFulfill(expectNewItem) { (change: CollectionChange<Item>) in
-            guard change.result.count == 3 else { return false }
-            for item in change.result {
-                if item.itemID == newItemID {
-                    newItemOpt = item
-                    return true
-                }
-            }
-            return false
-        }
-        
-        itemRepository.items(in: "aaa", insufficient: false)
-            .bind(to: observer)
-            .disposed(by: disposeBag)
-        
-        wait(for: [expectNewItem], timeout: 3.0)
-        guard let newItem = newItemOpt else { return }
-        
-        XCTAssertEqual(newItem.name, "newItem")
-        XCTAssertFalse(newItem.isInsufficient)
+        XCTAssertTrue(isTeamCreated)
     }
     
     func testUpdateItem() {
+        var isTeamUpdated = false
+        let writer = MockDocumentWriter()
+        writer.mock.updateDocumentData.setup { (data, documentPath) in
+            let mockDocumentPath = documentPath as! MockDocumentPath
+            XCTAssertEqual(mockDocumentPath.path, "/team/aaa/item/item_aaa_1")
+            
+            isTeamUpdated = true
+            XCTAssertEqual(data["name"] as? String, "newItem1")
+            XCTAssertEqual(data["insufficient"] as? Bool, true)
+            XCTAssertEqual(data["last_change"] as? MockDataStorePlaceholder, .serverTimestampPlaceholder)
+        }
+        setupMockWrite(writer: writer)
+        
+        let itemRepository = DefaultItemRepository(resolver: resolver)
+
         let expectSuccess = expectation(description: "updateItem should succeed")
         let toUpdate = Item(itemID: "item_aaa_1", name: "newItem1", isInsufficient: true)
         itemRepository
@@ -183,32 +216,22 @@ class ItemRepositoryTests: XCTestCase {
             .disposed(by: disposeBag)
         
         wait(for: [expectSuccess], timeout: 3.0)
-
-        var itemOpt: Item?
-        let expectUpdatedItem = expectation(description: "Item should be updated")
-        let observer = EventuallyFulfill(expectUpdatedItem) { (change: CollectionChange<Item>) in
-            guard change.result.count == 2 else { return false }
-            for item in change.result {
-                if item.itemID == "item_aaa_1" {
-                    itemOpt = item
-                    return true
-                }
-            }
-            return false
-        }
-        
-        itemRepository.items(in: "aaa", insufficient: true)
-            .bind(to: observer)
-            .disposed(by: disposeBag)
-        
-        wait(for: [expectUpdatedItem], timeout: 3.0)
-        guard let item = itemOpt else { return }
-        
-        XCTAssertEqual(item.name, "newItem1")
-        XCTAssertTrue(item.isInsufficient)
+        XCTAssertTrue(isTeamUpdated)
     }
     
     func testRemoveItem() {
+        var isTeamRemoved = false
+        let writer = MockDocumentWriter()
+        writer.mock.deleteDocument.setup { documentPath in
+            let mockDocumentPath = documentPath as! MockDocumentPath
+            
+            isTeamRemoved = true
+            XCTAssertEqual(mockDocumentPath.path, "/team/aaa/item/item_aaa_1")
+        }
+        setupMockWrite(writer: writer)
+
+        let itemRepository = DefaultItemRepository(resolver: resolver)
+
         let expectSuccess = expectation(description: "updateItem should succeed")
         itemRepository
             .removeItem("item_aaa_1", in: "aaa")
@@ -220,21 +243,6 @@ class ItemRepositoryTests: XCTestCase {
             .disposed(by: disposeBag)
         
         wait(for: [expectSuccess], timeout: 3.0)
-
-        let expectItemRemoved = expectation(description: "Item should be removed")
-        let observer = EventuallyFulfill(expectItemRemoved) { (change: CollectionChange<Item>) in
-            for item in change.result {
-                if item.itemID == "item_aaa_1" {
-                    return false
-                }
-            }
-            return true
-        }
-        
-        itemRepository.items(in: "aaa", insufficient: false)
-            .bind(to: observer)
-            .disposed(by: disposeBag)
-        
-        wait(for: [expectItemRemoved], timeout: 3.0)
+        XCTAssertTrue(isTeamRemoved)
     }
 }

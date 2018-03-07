@@ -66,8 +66,7 @@
 		5097209E1F7737C200C623A5 /* MemberTeam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5097209D1F7737C200C623A5 /* MemberTeam.swift */; };
 		509720A01F77383B00C623A5 /* TeamRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5097209F1F77383B00C623A5 /* TeamRepository.swift */; };
 		509720A61F77510B00C623A5 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509720A51F77510B00C623A5 /* Entity.swift */; };
-		50AD756C1F8F92ED003917E6 /* MockDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AD756B1F8F92ED003917E6 /* MockDataStore.swift */; };
-		50AD75711F91827D003917E6 /* MockDataStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AD75701F91827D003917E6 /* MockDataStoreTests.swift */; };
+		509EDA6820500FF900D756F7 /* MockDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509EDA6720500FF900D756F7 /* MockDataStore.swift */; };
 		50B395171F7F486600355F89 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B395161F7F486600355F89 /* Item.swift */; };
 		50B395191F7F4F7A00355F89 /* ItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B395181F7F4F7A00355F89 /* ItemRepository.swift */; };
 		50B3951B1F8597B300355F89 /* CollectionChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B3951A1F8597B300355F89 /* CollectionChange.swift */; };
@@ -82,7 +81,6 @@
 		50D1380E1F9B12EE0064B293 /* TeamRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D1380D1F9B12EE0064B293 /* TeamRepositoryTests.swift */; };
 		50D138101F9B13700064B293 /* TestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D1380F1F9B13700064B293 /* TestUtils.swift */; };
 		50EDC1151F9238C500E5F4FF /* RecordThenFulfill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EDC1141F9238C500E5F4FF /* RecordThenFulfill.swift */; };
-		8604AA1E1F90780A00021D99 /* Diffitic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8604AA1D1F90780A00021D99 /* Diffitic.framework */; };
 		8673AB4E1FA72EAF00EE72AB /* R+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8673AB4D1FA72EAF00EE72AB /* R+Image.swift */; };
 		B8CF05BD73E585ACE10CEEAF /* Pods_Kiretan0Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D5514D7F7DF8D3775DE2A23 /* Pods_Kiretan0Tests.framework */; };
 /* End PBXBuildFile section */
@@ -159,8 +157,7 @@
 		5097209D1F7737C200C623A5 /* MemberTeam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberTeam.swift; sourceTree = "<group>"; };
 		5097209F1F77383B00C623A5 /* TeamRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamRepository.swift; sourceTree = "<group>"; };
 		509720A51F77510B00C623A5 /* Entity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
-		50AD756B1F8F92ED003917E6 /* MockDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataStore.swift; sourceTree = "<group>"; };
-		50AD75701F91827D003917E6 /* MockDataStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataStoreTests.swift; sourceTree = "<group>"; };
+		509EDA6720500FF900D756F7 /* MockDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataStore.swift; sourceTree = "<group>"; };
 		50B395161F7F486600355F89 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		50B395181F7F4F7A00355F89 /* ItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRepository.swift; sourceTree = "<group>"; };
 		50B3951A1F8597B300355F89 /* CollectionChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionChange.swift; sourceTree = "<group>"; };
@@ -202,7 +199,6 @@
 				B8CF05BD73E585ACE10CEEAF /* Pods_Kiretan0Tests.framework in Frameworks */,
 				509720841F750CA500C623A5 /* RxCocoa.framework in Frameworks */,
 				509720851F750CA800C623A5 /* RxSwift.framework in Frameworks */,
-				8604AA1E1F90780A00021D99 /* Diffitic.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -463,8 +459,7 @@
 				504783341FF6313600E6F098 /* Team */,
 				509720881F750E6900C623A5 /* UserAccount */,
 				504783371FF6333500E6F098 /* UserDefaults */,
-				50AD756B1F8F92ED003917E6 /* MockDataStore.swift */,
-				50AD75701F91827D003917E6 /* MockDataStoreTests.swift */,
+				509EDA6620500FDB00D756F7 /* Utility */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -494,6 +489,14 @@
 				5097209F1F77383B00C623A5 /* TeamRepository.swift */,
 			);
 			path = Team;
+			sourceTree = "<group>";
+		};
+		509EDA6620500FDB00D756F7 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				509EDA6720500FF900D756F7 /* MockDataStore.swift */,
+			);
+			path = Utility;
 			sourceTree = "<group>";
 		};
 		50B395151F7F483D00355F89 /* Item */ = {
@@ -772,11 +775,9 @@
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/Diffitic.framework",
 			);
 			name = "[Carthage] Copy Frameworks";
 			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Diffitic.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -926,12 +927,10 @@
 			files = (
 				509720831F7507B900C623A5 /* RootViewModelTests.swift in Sources */,
 				504783391FF6336F00E6F098 /* MockMainUserDefaultsRepository.swift in Sources */,
-				50AD756C1F8F92ED003917E6 /* MockDataStore.swift in Sources */,
 				50D138101F9B13700064B293 /* TestUtils.swift in Sources */,
 				504783301FF4EF4700E6F098 /* MainViewModelTests.swift in Sources */,
 				50D138081F98CE4D0064B293 /* ItemRepositoryTests.swift in Sources */,
 				50EDC1151F9238C500E5F4FF /* RecordThenFulfill.swift in Sources */,
-				50AD75711F91827D003917E6 /* MockDataStoreTests.swift in Sources */,
 				504783361FF6315B00E6F098 /* MockTeamRepository.swift in Sources */,
 				5097208C1F750FF900C623A5 /* EventuallyFulfill.swift in Sources */,
 				504783331FF4F10500E6F098 /* MockItemRepository.swift in Sources */,
@@ -939,6 +938,7 @@
 				504BDC771FF877D800F2FA5B /* MockFunction.swift in Sources */,
 				50D1380E1F9B12EE0064B293 /* TeamRepositoryTests.swift in Sources */,
 				5097208F1F7516B700C623A5 /* WelcomeViewModelTests.swift in Sources */,
+				509EDA6820500FF900D756F7 /* MockDataStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
