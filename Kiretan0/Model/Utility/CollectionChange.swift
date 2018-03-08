@@ -29,3 +29,51 @@ public struct CollectionChange<Entity> {
     public let result: [Entity]
     public let events: [CollectionEvent<Entity>]
 }
+
+private class ChangeTarget: Hashable {
+    var prevIndex: Int = NSNotFound
+    let currentIndex: Int
+    init(currentIndex: Int = NSNotFound) {
+        self.currentIndex = currentIndex
+    }
+    
+    var hashValue: Int { return currentIndex }
+    static func ==(lhs: ChangeTarget, rhs: ChangeTarget) -> Bool {
+        return lhs === rhs
+    }
+}
+
+extension CollectionChange {
+    public func updateHintDifference() -> TableViewUpdateHint.Difference {
+        // simulate targets location by applying changes in reverse order
+        // so that we get original indices in previous snapshot
+        var targets = Set<ChangeTarget>()
+        var collection = result.enumerated().map { ChangeTarget(currentIndex: $0.0) }
+        for event in events.reversed() {
+            let ct: ChangeTarget
+            switch event {
+            case .inserted(let nx, _):
+                ct = collection.remove(at: nx)
+                
+            case .deleted(let ox):
+                ct = ChangeTarget()
+                collection.insert(ct, at: ox)
+                
+            case .moved(let ox, let nx, _):
+                ct = collection.remove(at: nx)
+                collection.insert(ct, at: ox)
+            }
+            targets.insert(ct)
+        }
+        for (i, target) in collection.enumerated() {
+            target.prevIndex = i
+        }
+        
+        let deletions = targets.filter { $0.prevIndex != NSNotFound && $0.currentIndex == NSNotFound }.map { $0.prevIndex }.sorted()
+        let modifications = targets.filter { $0.prevIndex != NSNotFound && $0.currentIndex != NSNotFound }.map { ($0.prevIndex, $0.currentIndex) }.sorted { $0.0 < $1.0 }
+        let insertions = targets.filter { $0.prevIndex == NSNotFound && $0.currentIndex != NSNotFound }.map { $0.currentIndex }.sorted()
+        return TableViewUpdateHint.Difference(deletedRows: deletions.map({ IndexPath(row: $0, section: 0) }),
+                                              insertedRows: insertions.map({ IndexPath(row: $0, section: 0) }),
+                                              movedRows: modifications.map({ (IndexPath(row: $0.0, section: 0), IndexPath(row: $0.1, section: 0)) }))
+    }
+}
