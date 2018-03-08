@@ -94,7 +94,7 @@ class MainViewModelTests: XCTestCase {
         
         resolver.itemRepository.mock.items.setup { (teamID, insufficient) in
             XCTAssertEqual(teamID, TEAM_ID)
-            return Observable.just(CollectionChange(result: [], deletions: [], insertions: [], modifications: []))
+            return Observable.just(CollectionChange(result: [], events: []))
         }
     }
     
@@ -151,10 +151,18 @@ class MainViewModelTests: XCTestCase {
             XCTAssertEqual(teamID, TEAM_ID)
             XCTAssertEqual(insufficient, false)
             
-            return Observable.just(CollectionChange(result: [
-                Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
-                Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
-            ], deletions: [], insertions: [0, 1], modifications: []))
+            let item0 = Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00))
+            let item1 = Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20))
+            return Observable.just(CollectionChange(
+                result: [
+                    item0,
+                    item1,
+                ],
+                events: [
+                    .inserted(0, item0),
+                    .inserted(1, item1),
+                ]
+            ))
         }
         
         let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
@@ -199,16 +207,34 @@ class MainViewModelTests: XCTestCase {
     func testItemListChangedBySelectingSegmentControl() {
         resolver.itemRepository.mock.items.setup { (teamID, insufficient) in
             if (!insufficient) {
-                return Observable.just(CollectionChange(result: [
-                    Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
-                    Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
-                ], deletions: [], insertions: [0, 1], modifications: []))
+                let item0 = Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00))
+                let item1 = Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20))
+                return Observable.just(CollectionChange(
+                    result: [
+                        item0,
+                        item1,
+                    ],
+                    events: [
+                        .inserted(0, item0),
+                        .inserted(1, item1),
+                    ]
+                ))
             } else {
-                return Observable.just(CollectionChange(result: [
-                    Item(itemID: "item2", name: "Item 2", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 11, 20, 3, 40, 50)),
-                    Item(itemID: "item3", name: "Item 3", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 12, 31, 20, 11, 22)),
-                    Item(itemID: "item4", name: "Item 4", isInsufficient: true, lastChange: TestUtils.makeDate(2018, 1, 1, 9, 00, 00)),
-                ], deletions: [], insertions: [0, 1, 2], modifications: []))
+                let item2 = Item(itemID: "item2", name: "Item 2", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 11, 20, 3, 40, 50))
+                let item3 = Item(itemID: "item3", name: "Item 3", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 12, 31, 20, 11, 22))
+                let item4 = Item(itemID: "item4", name: "Item 4", isInsufficient: true, lastChange: TestUtils.makeDate(2018, 1, 1, 9, 00, 00))
+                return Observable.just(CollectionChange(
+                    result: [
+                        item2,
+                        item3,
+                        item4,
+                    ],
+                    events: [
+                        .inserted(0, item2),
+                        .inserted(1, item3),
+                        .inserted(2, item4),
+                    ]
+                ))
             }
         }
 
@@ -267,10 +293,18 @@ class MainViewModelTests: XCTestCase {
             .bind(to: observer)
             .disposed(by: disposeBag)
 
-        itemsSubject.onNext(CollectionChange(result: [
-            Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
-            Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
-        ], deletions: [], insertions: [0, 1], modifications: []))
+        let item0 = Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00))
+        let item1 = Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20))
+        itemsSubject.onNext(CollectionChange(
+            result: [
+                item0,
+                item1,
+            ],
+            events: [
+                .inserted(0, item0),
+                .inserted(1, item1),
+            ]
+        ))
         
         wait(for: [expectItems], timeout: 3.0)
         
@@ -283,11 +317,17 @@ class MainViewModelTests: XCTestCase {
             return true
         }
 
-        itemsSubject.onNext(CollectionChange(result: [
-            Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
-            Item(itemID: "itemN", name: "New Item", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 8, 23, 10, 20, 40)),
-            Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
-        ], deletions: [], insertions: [1], modifications: []))
+        let itemN = Item(itemID: "itemN", name: "New Item", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 8, 23, 10, 20, 40))
+        itemsSubject.onNext(CollectionChange(
+            result: [
+                item0,
+                itemN,
+                item1,
+            ],
+            events: [
+                .inserted(1, itemN),
+            ]
+        ))
         
         wait(for: [expectItemInserted], timeout: 3.0)
         guard let itemVM1 = itemVM1Opt else { return }
@@ -320,10 +360,18 @@ class MainViewModelTests: XCTestCase {
             .bind(to: observer)
             .disposed(by: disposeBag)
         
-        itemsSubject.onNext(CollectionChange(result: [
-            Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
-            Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
-        ], deletions: [], insertions: [0, 1], modifications: []))
+        let item0 = Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00))
+        let item1 = Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20))
+        itemsSubject.onNext(CollectionChange(
+            result: [
+                item0,
+                item1,
+            ],
+            events: [
+                .inserted(0, item0),
+                .inserted(1, item1),
+            ]
+        ))
         
         wait(for: [expectItems], timeout: 3.0)
         
@@ -336,9 +384,14 @@ class MainViewModelTests: XCTestCase {
             return true
         }
         
-        itemsSubject.onNext(CollectionChange(result: [
-            Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
-        ], deletions: [0], insertions: [], modifications: []))
+        itemsSubject.onNext(CollectionChange(
+            result: [
+                item1,
+            ],
+            events: [
+                .deleted(0),
+            ]
+        ))
         
         wait(for: [expectItemDeleted], timeout: 3.0)
         guard let itemVM0 = itemVM0Opt else { return }
@@ -371,11 +424,21 @@ class MainViewModelTests: XCTestCase {
             .bind(to: observer)
             .disposed(by: disposeBag)
 
-        itemsSubject.onNext(CollectionChange(result: [
-            Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
-            Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
-            Item(itemID: "item2", name: "Item 2", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 11, 10, 8, 10, 05)),
-        ], deletions: [], insertions: [0, 1, 2], modifications: []))
+        let item0 = Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00))
+        let item1 = Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20))
+        let item2 = Item(itemID: "item2", name: "Item 2", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 11, 10, 8, 10, 05))
+        itemsSubject.onNext(CollectionChange(
+            result: [
+                item0,
+                item1,
+                item2,
+            ],
+            events: [
+                .inserted(0, item0),
+                .inserted(1, item1),
+                .inserted(2, item2),
+            ]
+        ))
         
         wait(for: [expectItems], timeout: 3.0)
         
@@ -388,11 +451,17 @@ class MainViewModelTests: XCTestCase {
             return true
         }
 
-        itemsSubject.onNext(CollectionChange(result: [
-            Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
-            Item(itemID: "item2", name: "Item 2", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 11, 10, 8, 10, 05)),
-            Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2018, 1, 3, 16, 20, 00)),
-        ], deletions: [], insertions: [], modifications: [(0, 2)]))
+        let item0New = Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2018, 1, 3, 16, 20, 00))
+        itemsSubject.onNext(CollectionChange(
+            result: [
+                item1,
+                item2,
+                item0New,
+            ],
+            events: [
+                .moved(0, 2, item0New),
+            ]
+        ))
         
         wait(for: [expectItemReordered], timeout: 3.0)
         guard let itemVM1 = itemVM1Opt else { return }
@@ -411,16 +480,34 @@ class MainViewModelTests: XCTestCase {
     func testToolbarChangedBySelection() {
         resolver.itemRepository.mock.items.setup { (teamID, insufficient) in
             if (!insufficient) {
-                return Observable.just(CollectionChange(result: [
-                    Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
-                    Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
-                ], deletions: [], insertions: [0, 1], modifications: []))
+                let item0 = Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00))
+                let item1 = Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20))
+                return Observable.just(CollectionChange(
+                    result: [
+                        item0,
+                        item1,
+                    ],
+                    events: [
+                        .inserted(0, item0),
+                        .inserted(1, item1),
+                    ]
+                ))
             } else {
-                return Observable.just(CollectionChange(result: [
-                    Item(itemID: "item2", name: "Item 2", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 11, 20, 3, 40, 50)),
-                    Item(itemID: "item3", name: "Item 3", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 12, 31, 20, 11, 22)),
-                    Item(itemID: "item4", name: "Item 4", isInsufficient: true, lastChange: TestUtils.makeDate(2018, 1, 1, 9, 00, 00)),
-                ], deletions: [], insertions: [0, 1, 2], modifications: []))
+                let item2 = Item(itemID: "item2", name: "Item 2", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 11, 20, 3, 40, 50))
+                let item3 = Item(itemID: "item3", name: "Item 3", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 12, 31, 20, 11, 22))
+                let item4 = Item(itemID: "item4", name: "Item 4", isInsufficient: true, lastChange: TestUtils.makeDate(2018, 1, 1, 9, 00, 00))
+                return Observable.just(CollectionChange(
+                    result: [
+                        item2,
+                        item3,
+                        item4,
+                    ],
+                    events: [
+                        .inserted(0, item2),
+                        .inserted(1, item3),
+                        .inserted(2, item4),
+                    ]
+                ))
             }
         }
         
@@ -474,12 +561,24 @@ class MainViewModelTests: XCTestCase {
     
     func testUncheckAllItems() {
         resolver.itemRepository.mock.items.setup { (teamID, insufficient) in
-            return Observable.just(CollectionChange(result: [
-                Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
-                Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
-                Item(itemID: "item2", name: "Item 2", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 11, 20, 3, 40, 50)),
-                Item(itemID: "item3", name: "Item 3", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 12, 31, 20, 11, 22)),
-                ], deletions: [], insertions: [0, 1, 2, 3], modifications: []))
+            let item0 = Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00))
+            let item1 = Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20))
+            let item2 = Item(itemID: "item2", name: "Item 2", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 11, 20, 3, 40, 50))
+            let item3 = Item(itemID: "item3", name: "Item 3", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 12, 31, 20, 11, 22))
+            return Observable.just(CollectionChange(
+                result: [
+                    item0,
+                    item1,
+                    item2,
+                    item3,
+                ],
+                events: [
+                    .inserted(0, item0),
+                    .inserted(1, item1),
+                    .inserted(2, item2),
+                    .inserted(3, item3),
+                ]
+            ))
         }
         
         let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
@@ -526,10 +625,18 @@ class MainViewModelTests: XCTestCase {
         
         resolver.itemRepository.mock.items.setup { teamID, insufficient in
             if (!insufficient) {
-                return Observable.just(CollectionChange(result: [
-                    Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
-                    Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
-                ], deletions: [], insertions: [0, 1], modifications: []))
+                let item0 = Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00))
+                let item1 = Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20))
+                return Observable.just(CollectionChange(
+                    result: [
+                        item0,
+                        item1,
+                    ],
+                    events: [
+                        .inserted(0, item0),
+                        .inserted(1, item1),
+                    ]
+                ))
             } else {
                 return Observable.error(TestError.error)
             }
@@ -605,10 +712,18 @@ class MainViewModelTests: XCTestCase {
     func testItemError() {
         enum TestError: Error { case error }
         resolver.itemRepository.mock.items.setup { _, _ in
-            return Observable.just(CollectionChange(result: [
-                Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
-                Item(itemID: "item1", error: TestError.error, name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
-            ], deletions: [], insertions: [0, 1], modifications: []))
+            let item0 = Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00))
+            let item1 = Item(itemID: "item1", error: TestError.error, name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20))
+            return Observable.just(CollectionChange(
+                result: [
+                    item0,
+                    item1,
+                ],
+                events: [
+                    .inserted(0, item0),
+                    .inserted(1, item1),
+                ]
+            ))
         }
 
         let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
@@ -642,10 +757,18 @@ class MainViewModelTests: XCTestCase {
     func testErrorItemShouldNotBeChecked() {
         enum TestError: Error { case error }
         resolver.itemRepository.mock.items.setup { _, _ in
-            return Observable.just(CollectionChange(result: [
-                Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
-                Item(itemID: "item1", error: TestError.error, name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
-            ], deletions: [], insertions: [0, 1], modifications: []))
+            let item0 = Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00))
+            let item1 = Item(itemID: "item1", error: TestError.error, name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20))
+            return Observable.just(CollectionChange(
+                result: [
+                    item0,
+                    item1,
+                ],
+                events: [
+                    .inserted(0, item0),
+                    .inserted(1, item1),
+                ]
+            ))
         }
         
         let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
@@ -686,31 +809,39 @@ class MainViewModelTests: XCTestCase {
         
         let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
         
-        var item1Opt: MainItemViewModel? = nil
+        var itemViewModel1Opt: MainItemViewModel? = nil
         let expectItems = expectation(description: "item list can loaded")
         let itemListObserver = EventuallyFulfill(expectItems) { (list: MainViewItemList) in
             guard list.viewModels.count == 2 else { return false }
             
-            item1Opt = list.viewModels[1]
+            itemViewModel1Opt = list.viewModels[1]
             return true
         }
         viewModel.itemList
             .bind(to: itemListObserver)
             .disposed(by: disposeBag)
         
-        itemsSubject.onNext(CollectionChange(result: [
-            Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
-            Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
-        ], deletions: [], insertions: [0, 1], modifications: []))
+        let item0 = Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00))
+        let item1 = Item(itemID: "item1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20))
+        itemsSubject.onNext(CollectionChange(
+            result: [
+                item0,
+                item1,
+            ],
+            events: [
+                .inserted(0, item0),
+                .inserted(1, item1),
+            ]
+        ))
         
         wait(for: [expectItems], timeout: 3.0)
-        guard let item1 = item1Opt else { return }
+        guard let itemViewModel1 = itemViewModel1Opt else { return }
         
         let expectChecked = expectation(description: "checked")
         let checkedObserver = EventuallyFulfill(expectChecked) { (isChecked: Bool) in
             return isChecked
         }
-        item1.isChecked
+        itemViewModel1.isChecked
             .bind(to: checkedObserver)
             .disposed(by: disposeBag)
         
@@ -722,10 +853,16 @@ class MainViewModelTests: XCTestCase {
             return !isChecked
         }
 
-        itemsSubject.onNext(CollectionChange(result: [
-            Item(itemID: "item0", name: "Item 0", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
-            Item(itemID: "item1", error: TestError.error, name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20)),
-        ], deletions: [], insertions: [], modifications: [(1, 1)]))
+        let item1New = Item(itemID: "item1", error: TestError.error, name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 9, 10, 14, 30, 20))
+        itemsSubject.onNext(CollectionChange(
+            result: [
+                item0,
+                item1New,
+            ],
+            events: [
+                .moved(1, 1, item1New),
+            ]
+        ))
 
         wait(for: [expectUnchecked], timeout: 3.0)
     }

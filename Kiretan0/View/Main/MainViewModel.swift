@@ -135,6 +135,19 @@ public class DefaultMainViewModel: MainViewModel {
         case select(Int)
         case uncheckAll
     }
+    
+    private class ChangeTarget: Hashable {
+        var prevIndex: Int = NSNotFound
+        let currentIndex: Int
+        init(currentIndex: Int = NSNotFound) {
+            self.currentIndex = currentIndex
+        }
+        
+        var hashValue: Int { return currentIndex }
+        static func ==(lhs: ChangeTarget, rhs: ChangeTarget) -> Bool {
+            return lhs === rhs
+        }
+    }
 
     public init(resolver: Resolver) {
         let disposeBag = DisposeBag()
@@ -198,35 +211,59 @@ public class DefaultMainViewModel: MainViewModel {
 
             switch action {
             case .change(let change):
-                for ix in change.deletions.reversed() {
-                    states.remove(at: ix)
-                    viewModels.remove(at: ix)
+                for event in change.events {
+                    switch event {
+                    case .inserted(let ix, let entity):
+                        let state = ItemState(item: entity)
+                        states.insert(state, at: ix)
+                        
+                        let name = state.name.distinctUntilChanged().asObservable()
+                        let isChecked = state.isChecked.asObservable()
+                        viewModels.insert(resolver.resolveMainItemViewModel(name: name, isChecked: isChecked), at: ix)
+                    case .deleted(let ix):
+                        states.remove(at: ix)
+                        viewModels.remove(at: ix)
+                    case .moved(let oldIndex, let newIndex, let entity):
+                        let state = states.remove(at: oldIndex)
+                        state.item = entity
+                        states.insert(state, at: newIndex)
+                        viewModels.insert(viewModels.remove(at: oldIndex), at: newIndex)
+                    }
                 }
-                for ix in change.insertions {
-                    let state = ItemState(item: change.result[ix])
-                    states.insert(state, at: ix)
-
-                    let name = state.name.distinctUntilChanged().asObservable()
-                    let isChecked = state.isChecked.asObservable()
-                    viewModels.insert(resolver.resolveMainItemViewModel(name: name, isChecked: isChecked), at: ix)
-                }
-                var movings = [(ItemState, MainItemViewModel, Int)]()
-                for (oldIndex, newIndex) in change.modifications.sorted(by: { lhs, rhs in lhs.0 > rhs.0 }) {
-                    let state = states.remove(at: oldIndex)
-                    let itemViewModel = viewModels.remove(at: oldIndex)
-                    movings.append((state, itemViewModel, newIndex))
-                }
-                for (state, itemViewModel, newIndex) in movings.sorted(by: { lhs, rhs in lhs.2 < rhs.2 }) {
-                    states.insert(state, at: newIndex)
-                    viewModels.insert(itemViewModel, at: newIndex)
-                    state.item = change.result[newIndex]
-                }
+                
                 if acc.states.isEmpty {
                     hint = .whole
                 } else {
-                    hint = .partial(.init(deletedRows: change.deletions.map({ IndexPath(row: $0, section: 0) }),
-                                          insertedRows: change.insertions.map({ IndexPath(row: $0, section: 0) }),
-                                          movedRows: change.modifications.map({ (IndexPath(row: $0.0, section: 0), IndexPath(row: $0.1, section: 0)) })))
+                    // simulate targets location by applying changes in reverse order
+                    // so that we get original indices in previous snapshot
+                    var targets = Set<ChangeTarget>()
+                    var collection = change.result.enumerated().map { ChangeTarget(currentIndex: $0.0) }
+                    for event in change.events.reversed() {
+                        let ct: ChangeTarget
+                        switch event {
+                        case .inserted(let nx, _):
+                            ct = collection.remove(at: nx)
+
+                        case .deleted(let ox):
+                            ct = ChangeTarget()
+                            collection.insert(ct, at: ox)
+
+                        case .moved(let ox, let nx, _):
+                            ct = collection.remove(at: nx)
+                            collection.insert(ct, at: ox)
+                        }
+                        targets.insert(ct)
+                    }
+                    for (i, target) in collection.enumerated() {
+                        target.prevIndex = i
+                    }
+
+                    let deletions = targets.filter { $0.prevIndex != NSNotFound && $0.currentIndex == NSNotFound }.map { $0.prevIndex }.sorted()
+                    let modifications = targets.filter { $0.prevIndex != NSNotFound && $0.currentIndex != NSNotFound }.map { ($0.prevIndex, $0.currentIndex) }.sorted { $0.0 < $1.0 }
+                    let insertions = targets.filter { $0.prevIndex == NSNotFound && $0.currentIndex != NSNotFound }.map { $0.currentIndex }.sorted()
+                    hint = .partial(.init(deletedRows: deletions.map({ IndexPath(row: $0, section: 0) }),
+                                          insertedRows: insertions.map({ IndexPath(row: $0, section: 0) }),
+                                          movedRows: modifications.map({ (IndexPath(row: $0.0, section: 0), IndexPath(row: $0.1, section: 0)) })))
                 }
             case .select(let index):
                 if states[index].item.error == nil {

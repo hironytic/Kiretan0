@@ -1,8 +1,8 @@
 //
-// CollectionChange.swift
+// CollectionEvent.swift
 // Kiretan0
 //
-// Copyright (c) 2017 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,8 @@
 
 import Foundation
 
-public struct CollectionChange<Entity> {
-    public let result: [Entity]
-    public let events: [CollectionEvent<Entity>]
+public enum CollectionEvent<Entity> {
+    case deleted(Int)
+    case inserted(Int, Entity)
+    case moved(Int, Int, Entity)
 }

@@ -132,14 +132,17 @@ class TeamRepositoryTests: XCTestCase {
             let mockQuery = query as! MockDataStoreQuery
             XCTAssertEqual(mockQuery.path, "/team/aaa/member@name:asc")
             
+            let userY = TeamMember(memberID: "user_y", name: "Jessy")
+            let userX = TeamMember(memberID: "user_x", name: "Tom")
             let change = CollectionChange<TeamMember>(
                 result: [
-                    TeamMember(memberID: "user_y", name: "Jessy"),
-                    TeamMember(memberID: "user_x", name: "Tom"),
+                    userY,
+                    userX,
                 ],
-                deletions: [],
-                insertions: [0, 1],
-                modifications: []
+                events: [
+                    .inserted(0, userY),
+                    .inserted(1, userX)
+                ]
             )
             return Observable.just(change).concat(Observable.never())
         }

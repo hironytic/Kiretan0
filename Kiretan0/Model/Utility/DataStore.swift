@@ -124,19 +124,6 @@ public class DefaultDataStore: DataStore {
         }
     }
 
-    private class ChangeTarget: Hashable {
-        var prevIndex: Int = NSNotFound
-        let currentIndex: Int
-        init(currentIndex: Int = NSNotFound) {
-            self.currentIndex = currentIndex
-        }
-
-        var hashValue: Int { return currentIndex }
-        static func ==(lhs: ChangeTarget, rhs: ChangeTarget) -> Bool {
-            return lhs === rhs
-        }
-    }
-    
     public func observeCollection<E: Entity>(matches query: DataStoreQuery) -> Observable<CollectionChange<E>> {
         return Observable.create { observer in
             let listener = (query as! DefaultDataStoreQuery).query.addSnapshotListener{ (querySnapshot, error) in
@@ -145,40 +132,29 @@ public class DefaultDataStore: DataStore {
                 } else {
                     do {
                         let qSnapshot = querySnapshot!
-                        let result = try qSnapshot.documents.map { try E.init(raw: RawEntity(documentID: $0.documentID, data: $0.data())) }
-
-                        // simulate targets location by applying changes in reverse order
-                        // so that we get original indices in previous snapshot
-                        var targets = Set<ChangeTarget>()
-                        var collection = result.enumerated().map { ChangeTarget(currentIndex: $0.0) }
-                        for change in qSnapshot.documentChanges.reversed() {
-                            let ct: ChangeTarget
+                        var generatedEntities = [String: E]()
+                        let entity: (DocumentSnapshot) throws -> E  = { doc in
+                            let docID = doc.documentID
+                            if let result = generatedEntities[docID] {
+                                return result
+                            } else {
+                                let result = try E.init(raw: RawEntity(documentID: docID, data: doc.data()))
+                                generatedEntities[docID] = result
+                                return result
+                            }
+                        }
+                        let result = try qSnapshot.documents.map(entity)
+                        let events = try qSnapshot.documentChanges.map { change -> CollectionEvent<E> in
                             switch change.type {
                             case .added:
-                                let nx = Int(change.newIndex)
-                                ct = collection.remove(at: nx)
-                                
-                            case .removed:
-                                let ox = Int(change.oldIndex)
-                                ct = ChangeTarget()
-                                collection.insert(ct, at: ox)
-                                
+                                return .inserted(Int(change.newIndex), try entity(change.document))
                             case .modified:
-                                let nx = Int(change.newIndex)
-                                let ox = Int(change.oldIndex)
-                                ct = collection.remove(at: nx)
-                                collection.insert(ct, at: ox)
+                                return .moved(Int(change.oldIndex), Int(change.newIndex), try entity(change.document))
+                            case .removed:
+                                return .deleted(Int(change.oldIndex))
                             }
-                            targets.insert(ct)
                         }
-                        for (i, target) in collection.enumerated() {
-                            target.prevIndex = i
-                        }
-                        
-                        let deletions = targets.filter { $0.prevIndex != NSNotFound && $0.currentIndex == NSNotFound }.map { $0.prevIndex }.sorted()
-                        let modifications = targets.filter { $0.prevIndex != NSNotFound && $0.currentIndex != NSNotFound }.map { ($0.prevIndex, $0.currentIndex) }.sorted { $0.0 < $1.0 }
-                        let insertions = targets.filter { $0.prevIndex == NSNotFound && $0.currentIndex != NSNotFound }.map { $0.currentIndex }.sorted()
-                        observer.onNext(CollectionChange(result: result, deletions: deletions, insertions: insertions, modifications: modifications))
+                        observer.onNext(CollectionChange(result: result, events: events))
                     } catch let error {
                         observer.onError(error)
                     }

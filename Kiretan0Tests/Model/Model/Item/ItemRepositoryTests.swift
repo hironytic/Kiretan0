@@ -73,14 +73,17 @@ class ItemRepositoryTests: XCTestCase {
             let mockQuery = query as! MockDataStoreQuery
             XCTAssertEqual(mockQuery.path, "/team/aaa/item?insufficient=={false}@last_change:desc")
             
+            let item1 = Item(itemID: "item_aaa_1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00))
+            let item2 = Item(itemID: "item_aaa_2", name: "Item 2", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 12, 10, 00, 00))
             let change = CollectionChange(
                 result: [
-                    Item(itemID: "item_aaa_2", name: "Item 2", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 12, 10, 00, 00)),
-                    Item(itemID: "item_aaa_1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00)),
+                    item2,
+                    item1,
                 ],
-                deletions: [],
-                insertions: [0, 1],
-                modifications: []
+                events: [
+                    .inserted(0, item2),
+                    .inserted(1, item1),
+                ]
             )
             return Observable.just(change).concat(Observable.never())
         }
@@ -117,13 +120,14 @@ class ItemRepositoryTests: XCTestCase {
             let mockQuery = query as! MockDataStoreQuery
             XCTAssertEqual(mockQuery.path, "/team/aaa/item?insufficient=={true}@last_change:desc")
             
+            let item3 = Item(itemID: "item_aaa_3", name: "Item 3", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 7, 08, 14, 20, 30))
             let change = CollectionChange(
                 result: [
-                    Item(itemID: "item_aaa_3", name: "Item 3", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 7, 08, 14, 20, 30)),
+                    item3,
                 ],
-                deletions: [],
-                insertions: [0],
-                modifications: []
+                events: [
+                    .inserted(0, item3)
+                ]
             )
             return Observable.just(change).concat(Observable.never())
         }
