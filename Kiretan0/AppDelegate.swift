@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        if ProcessInfo.processInfo.environment["Kiretan0Testing"] == nil {
+        if ProcessInfo.processInfo.environment["XCInjectBundleInto"] == nil {
             FirebaseApp.configure()
         }
         
