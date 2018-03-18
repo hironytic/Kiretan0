@@ -108,7 +108,7 @@ public class DefaultDataStore: DataStore {
                     let dSnapshot = documentSnapshot!
                     if dSnapshot.exists {
                         do {
-                            let entity = try E.init(raw: RawEntity(documentID: dSnapshot.documentID, data: dSnapshot.data()))
+                            let entity = try E.init(raw: RawEntity(documentID: dSnapshot.documentID, data: dSnapshot.data()!))
                             observer.onNext(entity)
                         } catch let error {
                             observer.onError(error)
@@ -138,7 +138,7 @@ public class DefaultDataStore: DataStore {
                             if let result = generatedEntities[docID] {
                                 return result
                             } else {
-                                let result = try E.init(raw: RawEntity(documentID: docID, data: doc.data()))
+                                let result = try E.init(raw: RawEntity(documentID: docID, data: doc.data()!))
                                 generatedEntities[docID] = result
                                 return result
                             }
