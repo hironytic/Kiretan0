@@ -71,18 +71,18 @@ class ItemRepositoryTests: XCTestCase {
         let observeCollectionForItem = MockFunction<(DataStoreQuery) -> Observable<CollectionChange<Item>>>("observeCollection for Item")
         observeCollectionForItem.setup { (query) -> Observable<CollectionChange<Item>> in
             let mockQuery = query as! MockDataStoreQuery
-            XCTAssertEqual(mockQuery.path, "/team/aaa/item?insufficient=={false}@last_change:desc")
+            XCTAssertEqual(mockQuery.path, "/team/aaa/item?insufficient=={false}@last_change:asc")
             
             let item1 = Item(itemID: "item_aaa_1", name: "Item 1", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 10, 17, 00, 00))
             let item2 = Item(itemID: "item_aaa_2", name: "Item 2", isInsufficient: false, lastChange: TestUtils.makeDate(2017, 7, 12, 10, 00, 00))
             let change = CollectionChange(
                 result: [
-                    item2,
                     item1,
+                    item2,
                 ],
                 events: [
-                    .inserted(0, item2),
-                    .inserted(1, item1),
+                    .inserted(0, item1),
+                    .inserted(1, item2),
                 ]
             )
             return Observable.just(change).concat(Observable.never())
@@ -95,8 +95,8 @@ class ItemRepositoryTests: XCTestCase {
         let exp = expectation(description: "Two items are retrieved")
         let observer = EventuallyFulfill(exp) { (change: CollectionChange<Item>) in
             guard change.result.count == 2 else { return false }
-            guard change.result[0].itemID == "item_aaa_2" else { return false }
-            guard change.result[1].itemID == "item_aaa_1" else { return false }
+            guard change.result[0].itemID == "item_aaa_1" else { return false }
+            guard change.result[1].itemID == "item_aaa_2" else { return false }
 
             item0Opt = change.result[0]
             return true
@@ -109,16 +109,16 @@ class ItemRepositoryTests: XCTestCase {
         wait(for: [exp], timeout: 3.0)
         guard let item0 = item0Opt else { return }
         
-        XCTAssertEqual(item0.name, "Item 2")
+        XCTAssertEqual(item0.name, "Item 1")
         XCTAssertFalse(item0.isInsufficient)
-        XCTAssertEqual(item0.lastChange, TestUtils.makeDate(2017, 7, 12, 10, 00, 00))
+        XCTAssertEqual(item0.lastChange, TestUtils.makeDate(2017, 7, 10, 17, 00, 00))
     }
     
     func testInsufficientItems() {
         let observeCollectionForItem = MockFunction<(DataStoreQuery) -> Observable<CollectionChange<Item>>>("observeCollection for Item")
         observeCollectionForItem.setup { (query) -> Observable<CollectionChange<Item>> in
             let mockQuery = query as! MockDataStoreQuery
-            XCTAssertEqual(mockQuery.path, "/team/aaa/item?insufficient=={true}@last_change:desc")
+            XCTAssertEqual(mockQuery.path, "/team/aaa/item?insufficient=={true}@last_change:asc")
             
             let item3 = Item(itemID: "item_aaa_3", name: "Item 3", isInsufficient: true, lastChange: TestUtils.makeDate(2017, 7, 08, 14, 20, 30))
             let change = CollectionChange(

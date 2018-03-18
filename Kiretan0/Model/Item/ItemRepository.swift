@@ -63,7 +63,7 @@ public class DefaultItemRepository: ItemRepository {
         let itemPath = _dataStore.collection("team").document(teamID).collection("item")
         let itemQuery = itemPath
             .whereField("insufficient", isEqualTo: insufficient)
-            .order(by: "last_change", descending: true)
+            .order(by: "last_change")
         return _dataStore.observeCollection(matches: itemQuery)
     }
     
