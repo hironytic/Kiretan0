@@ -34,10 +34,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         
-        let rootStoryboard = UIStoryboard(name: "Root", bundle: Bundle.main)
+        let rootViewModel = defaultResolver.resolveRootViewModel()
+        let rootViewController = (rootViewModel as! ViewControllerCreatable).createViewController()
         let window = UIWindow()
         self.window = window
-        window.rootViewController = rootStoryboard.instantiateInitialViewController()
+        window.rootViewController = rootViewController
         window.makeKeyAndVisible()
         return true
     }

@@ -28,27 +28,21 @@ import RxCocoa
 import RxSwift
 
 public class RootViewController: UIViewController {
-    private let viewModel: RootViewModel
-    private var currentViewController: UIViewController? = nil
+    public var viewModel: RootViewModel?
 
+    private var currentViewController: UIViewController? = nil
     private var _disposeBag: DisposeBag?
 
-    public required init?(coder aDecoder: NSCoder) {
-        viewModel = defaultResolver.resolveRootViewModel()
-
-        super.init(coder: aDecoder)
-    }
-    
     public override func viewDidLoad() {
         super.viewDidLoad()
-        if ProcessInfo.processInfo.environment["Kiretan0Testing"] == nil {
-            bindViewModel()
-        }
+        bindViewModel()
     }
     
     private func bindViewModel() {
         _disposeBag = nil
-        
+
+        guard let viewModel = viewModel else { return }
+
         let disposeBag = DisposeBag()
 
         viewModel.scene
@@ -99,5 +93,14 @@ public class RootViewController: UIViewController {
         }
 
         currentViewController = nextViewController
+    }
+}
+
+extension DefaultRootViewModel: ViewControllerCreatable {
+    public func createViewController() -> UIViewController {
+        let storyboard = UIStoryboard(name: "Root", bundle: Bundle.main)
+        let viewController = storyboard.instantiateInitialViewController() as! RootViewController
+        viewController.viewModel = self
+        return viewController
     }
 }
