@@ -30,3 +30,6 @@ GoogleService-Info.plist
 
 # App configuration
 Config.plist
+
+# Bitrise secrets
+.bitrise.secrets.yml
