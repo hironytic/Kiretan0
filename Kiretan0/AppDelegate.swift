@@ -26,17 +26,19 @@
 import UIKit
 import FirebaseCore
 
-@UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        if ProcessInfo.processInfo.environment["XCInjectBundleInto"] == nil {
-            FirebaseApp.configure()
-        }
+        FirebaseApp.configure()
         
+        let rootStoryboard = UIStoryboard(name: "Root", bundle: Bundle.main)
+        let window = UIWindow()
+        self.window = window
+        window.rootViewController = rootStoryboard.instantiateInitialViewController()
+        window.makeKeyAndVisible()
         return true
     }
 
@@ -65,3 +67,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+class AppDelegateForTesting: UIResponder, UIApplicationDelegate {
+}

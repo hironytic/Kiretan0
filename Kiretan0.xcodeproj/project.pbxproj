@@ -40,6 +40,7 @@
 		505263FC1F56FBF400113180 /* Root.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 505263FB1F56FBF400113180 /* Root.storyboard */; };
 		505263FE1F56FC1300113180 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263FD1F56FC1300113180 /* RootViewController.swift */; };
 		505264001F56FC5B00113180 /* RootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505263FF1F56FC5B00113180 /* RootViewModel.swift */; };
+		505AD979205E1C45006C2747 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505AD978205E1C45006C2747 /* main.swift */; };
 		506C36D21FC035A100D8B836 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506C36D11FC035A100D8B836 /* SettingViewController.swift */; };
 		506C36D41FC035BE00D8B836 /* SettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506C36D31FC035BE00D8B836 /* SettingViewModel.swift */; };
 		5082DBF11FA2F43A00D17710 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5082DBF01FA2F43A00D17710 /* Images.xcassets */; };
@@ -134,6 +135,7 @@
 		505263FB1F56FBF400113180 /* Root.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Root.storyboard; sourceTree = "<group>"; };
 		505263FD1F56FC1300113180 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		505263FF1F56FC5B00113180 /* RootViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
+		505AD978205E1C45006C2747 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		506C36D11FC035A100D8B836 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		506C36D31FC035BE00D8B836 /* SettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewModel.swift; sourceTree = "<group>"; };
 		5082DBF01FA2F43A00D17710 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -296,6 +298,7 @@
 				50BB54881FA21290002E4443 /* Resource */,
 				505263A21F4EF7F300113180 /* AppFramework */,
 				5052637E1F4B02EE00113180 /* AppDelegate.swift */,
+				505AD978205E1C45006C2747 /* main.swift */,
 				505263A41F4EF7F300113180 /* DefaultResolver.swift */,
 				50D0272C2009EB40004A0C44 /* Config.swift */,
 				505263851F4B02EE00113180 /* Assets.xcassets */,
@@ -879,6 +882,7 @@
 				505263AD1F4EF7F300113180 /* DismissalRequest.swift in Sources */,
 				505263FE1F56FC1300113180 /* RootViewController.swift in Sources */,
 				505263B11F4EF7F300113180 /* ViewModel.swift in Sources */,
+				505AD979205E1C45006C2747 /* main.swift in Sources */,
 				5086F1A01FEA96070024A3B8 /* DisclosureTableCell.swift in Sources */,
 				509720A61F77510B00C623A5 /* Entity.swift in Sources */,
 				5086F1A61FEB22180024A3B8 /* TeamSelectionViewController.swift in Sources */,
