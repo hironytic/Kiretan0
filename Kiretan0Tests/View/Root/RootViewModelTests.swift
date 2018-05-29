@@ -79,7 +79,11 @@ class RootViewModelTests: XCTestCase {
         let viewModel = DefaultRootViewModel(resolver: resolver)
 
         let observer = EventuallyFulfill(expectation(description: "Scene should be changed to 'welcome'")) { (scene: RootScene) in
-            return scene == .main
+            if case .main(_) = scene {
+                return true
+            } else {
+                return false
+            }
         }
         
         viewModel.scene

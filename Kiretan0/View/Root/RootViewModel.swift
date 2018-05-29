@@ -27,9 +27,11 @@ import Foundation
 
 import RxSwift
 
-public enum RootScene {
+private let TEAM_ID = Config.bundled.teamID
+
+public enum RootScene: Equatable {
     case welcome
-    case main
+    case main(String)
 }
 
 public protocol RootViewModel: ViewModel {
@@ -64,7 +66,7 @@ public class DefaultRootViewModel: RootViewModel {
                 if userAccount == nil {
                     return .welcome
                 } else {
-                    return .main
+                    return .main(TEAM_ID)
                 }
             }
             .distinctUntilChanged()

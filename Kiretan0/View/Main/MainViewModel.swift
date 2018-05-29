@@ -57,16 +57,14 @@ public protocol MainViewModel: ViewModel {
 }
 
 public protocol MainViewModelResolver {
-    func resolveMainViewModel() -> MainViewModel
+    func resolveMainViewModel(teamID: String) -> MainViewModel
 }
 
 extension DefaultResolver: MainViewModelResolver {
-    public func resolveMainViewModel() -> MainViewModel {
-        return DefaultMainViewModel(resolver: self)
+    public func resolveMainViewModel(teamID: String) -> MainViewModel {
+        return DefaultMainViewModel(resolver: self, teamID: teamID)
     }
 }
-
-private let TEAM_ID = Config.bundled.teamID
 
 public class DefaultMainViewModel: MainViewModel {
     public typealias Resolver = MainItemViewModelResolver & TextInputViewModelResolver & SettingViewModelResolver &
@@ -136,7 +134,7 @@ public class DefaultMainViewModel: MainViewModel {
         case uncheckAll
     }
     
-    public init(resolver: Resolver) {
+    public init(resolver: Resolver, teamID: String) {
         let disposeBag = DisposeBag()
         
         struct Subject {
@@ -160,7 +158,7 @@ public class DefaultMainViewModel: MainViewModel {
 
         func createTitle() -> Observable<String> {
             return teamRepository
-                .team(for: TEAM_ID)
+                .team(for: teamID)
                 .map { team in
                     team?.name ?? ""
                 }
@@ -177,7 +175,7 @@ public class DefaultMainViewModel: MainViewModel {
             return lastMainSegment
                 .flatMapLatest { (segment: Int) -> Observable<ItemListState> in
                     let initialState = ItemListState(states: [], viewModels: [], hint: .whole)
-                    let items = itemRepository.items(in: TEAM_ID, insufficient: segment == 1)
+                    let items = itemRepository.items(in: teamID, insufficient: segment == 1)
                     return Observable
                         .merge([
                             items.map { ItemStateAction.change($0) },
@@ -349,7 +347,7 @@ public class DefaultMainViewModel: MainViewModel {
             return subject.onAddItem
                 .flatMapLatest { (name, isInsufficient) -> Observable<String> in
                     let newItem = Item(name: name, isInsufficient: isInsufficient)
-                    return itemRepository.createItem(newItem, in: TEAM_ID).asObservable()
+                    return itemRepository.createItem(newItem, in: teamID).asObservable()
                 }
             // TODO: handle error case
         }
@@ -363,7 +361,7 @@ public class DefaultMainViewModel: MainViewModel {
                         .map { state -> Completable in
                             var item = state.item
                             item.isInsufficient = isInsufficient
-                            return itemRepository.updateItem(item, in: TEAM_ID)
+                            return itemRepository.updateItem(item, in: teamID)
                         }
                     return Completable.merge(completables)
                         .andThen(Observable<Void>.just(()))

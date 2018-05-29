@@ -67,8 +67,8 @@ public class RootViewController: UIViewController {
             guard let vcCreator = welcomeViewModel as? ViewControllerCreatable else { return }
             nextViewController = vcCreator.createViewController()
             
-        case .main:
-            let mainViewModel = defaultResolver.resolveMainViewModel()
+        case .main(let teamID):
+            let mainViewModel = defaultResolver.resolveMainViewModel(teamID: teamID)
             guard let vcCreator = mainViewModel as? ViewControllerCreatable else { return }
             nextViewController = vcCreator.createViewController()
         }

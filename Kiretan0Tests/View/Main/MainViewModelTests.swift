@@ -108,7 +108,7 @@ class MainViewModelTests: XCTestCase {
     // MARK: - normal scinarios
     
     func testTitle() {
-        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver, teamID: TEAM_ID)
         let expect = expectation(description: "title")
         let observer = EventuallyFulfill(expect) { (title: String) in
             if title == "My Team" {
@@ -124,7 +124,7 @@ class MainViewModelTests: XCTestCase {
     }
     
     func testSegment() {
-        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver, teamID: TEAM_ID)
 
         let expect1 = expectation(description: "segment 0 is selected")
         let segmentSelectedIndexObserver = EventuallyFulfill(expect1) { (index: Int) in
@@ -165,7 +165,7 @@ class MainViewModelTests: XCTestCase {
             ))
         }
         
-        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver, teamID: TEAM_ID)
 
         var itemVM0Opt: MainItemViewModel?
         var itemVM1Opt: MainItemViewModel?
@@ -238,7 +238,7 @@ class MainViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver, teamID: TEAM_ID)
         
         let expectSufficient = expectation(description: "sufficient items")
         let observer = EventuallyFulfill(expectSufficient) { (list: MainViewItemList) in
@@ -282,7 +282,7 @@ class MainViewModelTests: XCTestCase {
             return itemsSubject
         }
 
-        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver, teamID: TEAM_ID)
         
         let expectItems = expectation(description: "items")
         let observer = EventuallyFulfill(expectItems) { (list: MainViewItemList) in
@@ -349,7 +349,7 @@ class MainViewModelTests: XCTestCase {
             return itemsSubject
         }
         
-        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver, teamID: TEAM_ID)
         
         let expectItems = expectation(description: "items")
         let observer = EventuallyFulfill(expectItems) { (list: MainViewItemList) in
@@ -413,7 +413,7 @@ class MainViewModelTests: XCTestCase {
             return itemsSubject
         }
 
-        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver, teamID: TEAM_ID)
         
         let expectItems = expectation(description: "items")
         let observer = EventuallyFulfill(expectItems) { (list: MainViewItemList) in
@@ -511,7 +511,7 @@ class MainViewModelTests: XCTestCase {
             }
         }
         
-        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver, teamID: TEAM_ID)
         
         let expectSegmentToolbar = expectation(description: "segment toolbar")
         let observer = EventuallyFulfill(expectSegmentToolbar) { (toolbar: MainViewToolbar) in
@@ -581,7 +581,7 @@ class MainViewModelTests: XCTestCase {
             ))
         }
         
-        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver, teamID: TEAM_ID)
         let expectNoItemsAreChecked = expectation(description: "No items are checked")
         let observer = EventuallyFulfill(expectNoItemsAreChecked) { (checkList: [Bool]) in
             guard checkList.count == 4 else { return false }
@@ -642,7 +642,7 @@ class MainViewModelTests: XCTestCase {
             }
         }
         
-        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver, teamID: TEAM_ID)
 
         let expectItems = expectation(description: "item list can loaded")
         let itemListObserver = EventuallyFulfill(expectItems) { (list: MainViewItemList) in
@@ -726,7 +726,7 @@ class MainViewModelTests: XCTestCase {
             ))
         }
 
-        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver, teamID: TEAM_ID)
 
         var item1Opt: MainItemViewModel? = nil
         let expectItems = expectation(description: "item list can loaded")
@@ -771,7 +771,7 @@ class MainViewModelTests: XCTestCase {
             ))
         }
         
-        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver, teamID: TEAM_ID)
         
         var item1Opt: MainItemViewModel? = nil
         let expectItems = expectation(description: "item list can loaded")
@@ -807,7 +807,7 @@ class MainViewModelTests: XCTestCase {
             return itemsSubject
         }
         
-        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver)
+        let viewModel: MainViewModel = DefaultMainViewModel(resolver: resolver, teamID: TEAM_ID)
         
         var itemViewModel1Opt: MainItemViewModel? = nil
         let expectItems = expectation(description: "item list can loaded")
