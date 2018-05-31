@@ -41,7 +41,7 @@ extension DefaultResolver: TeamSelectionViewModelResolver {
 }
 
 public class DefaultTeamSelectionViewModel: TeamSelectionViewModel {
-    public typealias Resolver = NullResolver
+    public typealias Resolver = UserAccountRepositoryResolver & TeamRepositoryResolver
 
     public let tableData: Observable<[TableSectionViewModel]>
     
@@ -53,12 +53,36 @@ public class DefaultTeamSelectionViewModel: TeamSelectionViewModel {
         let checkSubject = PublishSubject<String>()
         let checkedItem = checkSubject.scan("") { $1 }
         
-        tableData = Observable.just([
-            StaticTableSectionViewModel(cells: [
-                CheckableTableCellViewModel(text: "うちのいえ", checked: checkedItem.map { $0 == "0" }, onSelect: checkSubject.mapObserver { "0" }),
-                CheckableTableCellViewModel(text: "バスケ部", checked: checkedItem.map { $0 == "1" }, onSelect: checkSubject.mapObserver { "1" }),
-                CheckableTableCellViewModel(text: "ほげほげ", checked: checkedItem.map { $0 == "2" }, onSelect: checkSubject.mapObserver { "2" }),
-            ])
-        ])
+        let userAccountRepository = resolver.resolveUserAccountRepository()
+        let teamRepository = resolver.resolveTeamRepository()
+        
+        let teamIDList: Observable<[String]> = userAccountRepository
+            .currentUser
+            .flatMapLatest { user -> Observable<[String]> in
+                guard let user = user else { return Observable.just([]) }
+                
+                return teamRepository.teamList(of: user.userID).map { $0.teamIDList }
+            }
+        
+        let teamNameAndIDList: Observable<[(name: String, teamID: String)]> = teamIDList
+            .flatMapLatest { list -> Observable<[(name: String, teamID: String)]> in
+                let observables: [Observable<(name: String, teamID: String)>] = list.map { teamID in
+                    return teamRepository
+                        .team(for: teamID)
+                        .map { (name: $0?.name ?? "", teamID: teamID) }
+                        .startWith((name: R.String.teamLoading.localized(), teamID: teamID))
+                }
+                return Observable.combineLatest(observables)
+            }
+        
+        tableData = teamNameAndIDList
+            .map { list in
+                let sortedList = list.sorted { (item1, item2) -> Bool in item1.name < item2.name }
+                return [
+                    StaticTableSectionViewModel(cells: sortedList.map { team in
+                        return CheckableTableCellViewModel(text: team.name, checked: checkedItem.map { $0 == team.teamID }, onSelect: checkSubject.mapObserver { team.teamID })
+                    })
+                ]
+            }
     }
 }
