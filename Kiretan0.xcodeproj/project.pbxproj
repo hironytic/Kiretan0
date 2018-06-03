@@ -56,6 +56,7 @@
 		5086F1A41FEB202A0024A3B8 /* CheckableTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5086F1A31FEB202A0024A3B8 /* CheckableTableCell.swift */; };
 		5086F1A61FEB22180024A3B8 /* TeamSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5086F1A51FEB22180024A3B8 /* TeamSelectionViewController.swift */; };
 		5086F1A81FEB22260024A3B8 /* TeamSelectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5086F1A71FEB22260024A3B8 /* TeamSelectionViewModel.swift */; };
+		508F1DBE20C3B16300596B69 /* TeamSelectionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508F1DBD20C3B16300596B69 /* TeamSelectionViewModelTests.swift */; };
 		509720831F7507B900C623A5 /* RootViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509720821F7507B900C623A5 /* RootViewModelTests.swift */; };
 		509720841F750CA500C623A5 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B21F4EF9C500113180 /* RxCocoa.framework */; };
 		509720851F750CA800C623A5 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 505263B31F4EF9C500113180 /* RxSwift.framework */; };
@@ -151,6 +152,7 @@
 		5086F1A31FEB202A0024A3B8 /* CheckableTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckableTableCell.swift; sourceTree = "<group>"; };
 		5086F1A51FEB22180024A3B8 /* TeamSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamSelectionViewController.swift; sourceTree = "<group>"; };
 		5086F1A71FEB22260024A3B8 /* TeamSelectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamSelectionViewModel.swift; sourceTree = "<group>"; };
+		508F1DBD20C3B16300596B69 /* TeamSelectionViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamSelectionViewModelTests.swift; sourceTree = "<group>"; };
 		509720821F7507B900C623A5 /* RootViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModelTests.swift; sourceTree = "<group>"; };
 		509720891F750E7500C623A5 /* MockUserAccountRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserAccountRepository.swift; sourceTree = "<group>"; };
 		5097208B1F750FF900C623A5 /* EventuallyFulfill.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventuallyFulfill.swift; sourceTree = "<group>"; };
@@ -430,11 +432,20 @@
 			path = TableUI;
 			sourceTree = "<group>";
 		};
+		508F1DBC20C3B13300596B69 /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				508F1DBD20C3B16300596B69 /* TeamSelectionViewModelTests.swift */,
+			);
+			path = Setting;
+			sourceTree = "<group>";
+		};
 		509720801F75077200C623A5 /* View */ = {
 			isa = PBXGroup;
 			children = (
 				5047832E1FF4EF1400E6F098 /* Main */,
 				509720811F75077B00C623A5 /* Root */,
+				508F1DBC20C3B13300596B69 /* Setting */,
 				5097208D1F75169200C623A5 /* Welcome */,
 			);
 			path = View;
@@ -937,6 +948,7 @@
 				504783391FF6336F00E6F098 /* MockMainUserDefaultsRepository.swift in Sources */,
 				50D138101F9B13700064B293 /* TestUtils.swift in Sources */,
 				504783301FF4EF4700E6F098 /* MainViewModelTests.swift in Sources */,
+				508F1DBE20C3B16300596B69 /* TeamSelectionViewModelTests.swift in Sources */,
 				50D138081F98CE4D0064B293 /* ItemRepositoryTests.swift in Sources */,
 				50EDC1151F9238C500E5F4FF /* RecordThenFulfill.swift in Sources */,
 				504783361FF6315B00E6F098 /* MockTeamRepository.swift in Sources */,
