@@ -28,27 +28,22 @@ import RxSwift
 @testable import Kiretan0
 
 class MockUserAccountRepository: UserAccountRepository {
-    let currentUser: Observable<UserAccount?>
-    
-    let mockCurrentUser = Variable<UserAccount?>(nil)
-    var mockSignInAnonymously: (@escaping PrimitiveSequenceType.CompletableObserver) -> Void = { _ in }
-    var mockSignOut: (@escaping PrimitiveSequenceType.CompletableObserver) -> Void = { _ in }
-    
-    init() {
-        currentUser = mockCurrentUser.asObservable()
+    class Mock {
+        var currentUser = MockFunction<() -> Observable<UserAccount?>>("MockUserAccountRepository.currentUser")
+        var signInAnonymously = MockFunction<() -> Completable>("MockUserAccountRepository.signInAnonymously")
+        var signOut = MockFunction<() -> Completable>("MockUserAccountRepository.signOut")
     }
+    let mock = Mock()
     
+    var currentUser: Observable<UserAccount?> {
+        return mock.currentUser.call()
+    }
+
     func signInAnonymously() -> Completable {
-        return Completable.create { (observer) -> Disposable in
-            self.mockSignInAnonymously(observer)
-            return Disposables.create()
-        }
+        return mock.signInAnonymously.call()
     }
-    
+
     func signOut() -> Completable {
-        return Completable.create { (observer) -> Disposable in
-            self.mockSignOut(observer)
-            return Disposables.create()
-        }
+        return mock.signOut.call()
     }
 }

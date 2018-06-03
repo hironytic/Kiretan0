@@ -28,7 +28,6 @@ import RxSwift
 @testable import Kiretan0
 
 class WelcomeViewModelTests: XCTestCase {
-    var viewModel: WelcomeViewModel!
     var disposeBag: DisposeBag!
     var resolver: MockResolver!
     
@@ -48,13 +47,11 @@ class WelcomeViewModelTests: XCTestCase {
 
         disposeBag = DisposeBag()
         resolver = MockResolver()
-        viewModel = DefaultWelcomeViewModel(resolver: resolver)
     }
     
     override func tearDown() {
         disposeBag = nil
         resolver = nil
-        viewModel = nil
         
         super.tearDown()
     }
@@ -62,11 +59,16 @@ class WelcomeViewModelTests: XCTestCase {
     func testSignInAnonymousThenSucceed() {
         var signInObserver: PrimitiveSequenceType.CompletableObserver!
         let expect1 = expectation(description: "signInAnonymously should be called")
-        resolver.mockUserAccountRepository.mockSignInAnonymously = { observer in
-            expect1.fulfill()
-            signInObserver = observer
+        resolver.mockUserAccountRepository.mock.signInAnonymously.setup {
+            return Completable.create { (observer) -> Disposable in
+                expect1.fulfill()
+                signInObserver = observer
+                return Disposables.create()
+            }
         }
         
+        let viewModel = DefaultWelcomeViewModel(resolver: resolver)
+
         let newAnonymousUserEnabledObserver = EventuallyFulfill(expectation(description: "newAnonymousUser button should be disabled")) { (isEnabled: Bool) in
             return !isEnabled
         }
@@ -89,11 +91,16 @@ class WelcomeViewModelTests: XCTestCase {
             case failed
         }
         let expect = expectation(description: "signInAnonymously should be called")
-        resolver.mockUserAccountRepository.mockSignInAnonymously = { observer in
-            expect.fulfill()
-            observer(.error(TestError.failed))
+        resolver.mockUserAccountRepository.mock.signInAnonymously.setup {
+            return Completable.create { (observer) -> Disposable in
+                expect.fulfill()
+                observer(.error(TestError.failed))
+                return Disposables.create()
+            }
         }
-        
+
+        let viewModel = DefaultWelcomeViewModel(resolver: resolver)
+
         viewModel.onNewAnonymousUser.onNext(())
         waitForExpectations(timeout: 3.0)
     }

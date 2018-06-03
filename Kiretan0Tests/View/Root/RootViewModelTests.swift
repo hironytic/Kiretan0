@@ -28,7 +28,6 @@ import RxSwift
 @testable import Kiretan0
 
 class RootViewModelTests: XCTestCase {
-    var viewModel: RootViewModel!
     var disposeBag: DisposeBag!
     var resolver: MockResolver!
 
@@ -48,20 +47,20 @@ class RootViewModelTests: XCTestCase {
 
         disposeBag = DisposeBag()
         resolver = MockResolver()
-        viewModel = DefaultRootViewModel(resolver: resolver)
     }
     
     override func tearDown() {
         disposeBag = nil
         resolver = nil
-        viewModel = nil
         
         super.tearDown()
     }
 
     func testSceneChangedToWelcomeWhenUserNotAuthenticated() {
-        resolver.mockUserAccountRepository.mockCurrentUser.value = nil
+        resolver.mockUserAccountRepository.mock.currentUser.setup() { Observable<UserAccount?>.just(nil) }
         
+        let viewModel = DefaultRootViewModel(resolver: resolver)
+
         let observer = EventuallyFulfill(expectation(description: "Scene should be changed to 'welcome'")) { (scene: RootScene) in
             return scene == .welcome
         }
@@ -74,8 +73,11 @@ class RootViewModelTests: XCTestCase {
     }
     
     func testSceneChangedToMainWhenUserAuthenticated() {
-        resolver.mockUserAccountRepository.mockCurrentUser.value = nil
+        let currentUser = BehaviorSubject<UserAccount?>(value: nil)
+        resolver.mockUserAccountRepository.mock.currentUser.setup() { currentUser }
         
+        let viewModel = DefaultRootViewModel(resolver: resolver)
+
         let observer = EventuallyFulfill(expectation(description: "Scene should be changed to 'welcome'")) { (scene: RootScene) in
             return scene == .main
         }
@@ -84,7 +86,7 @@ class RootViewModelTests: XCTestCase {
             .bind(to: observer)
             .disposed(by: disposeBag)
 
-        resolver.mockUserAccountRepository.mockCurrentUser.value = UserAccount(userID: "mock_user", isAnonymous: true)
+        currentUser.onNext(UserAccount(userID: "mock_user", isAnonymous: true))
         
         waitForExpectations(timeout: 3.0)
     }
